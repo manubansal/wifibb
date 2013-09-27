@@ -1,0 +1,52 @@
+#!/bin/bash
+
+#rate="54M"
+#rate="48M"
+#rate="36M"
+#rate="24M"
+#rate="18M"
+#rate="12M"
+#rate="9M"
+rate="6M"
+
+case $1 in
+  "s")
+    ifconfig wlan1 down
+    iwconfig wlan1 mode Ad-Hoc essid openradio ap auto
+    ifconfig wlan1 up
+    ifconfig wlan1 192.168.1.1
+    iwconfig wlan1 rate $rate
+
+    case $2 in
+      "add")
+	#iw dev wlan1 interface add mon1 type monitor
+	airmon-ng start wlan1
+	;;
+      "del")
+	#iw mon1 del
+	airmon-ng stop wlan1
+	;;
+    esac
+
+    ;;
+
+  "c")
+    ifconfig wlan0 down
+    iwconfig wlan0 mode Ad-Hoc essid openradio ap auto
+    ifconfig wlan0 up
+    ifconfig wlan0 192.168.1.2
+    #iwconfig wlan0 rate 54M
+    iwconfig wlan0 rate $rate
+
+    case $2 in
+      "add")
+	#iw dev wlan0 interface add mon0 type monitor
+	airmon-ng start wlan0
+	;;
+      "del")
+	#iw mon0 del
+	airmon-ng stop wlan0
+	;;
+    esac
+    ;;
+esac

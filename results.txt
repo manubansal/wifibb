@@ -1,0 +1,5 @@
+18db   0       [9dB], 23dB
+15db   0       [10dB], 20dB
+12db   2x10^-4 [9dB], 17dB -- side subcarrier
+5.2db  1x10^-2 [10dB], 11dB -- side subcarrier
+2.5db  5x10^-2 [7dB], 7dB -- side

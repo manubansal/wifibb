@@ -1,0 +1,28 @@
+1. Set the main system (flowon) to adhoc mode:
+
+./adhoc s
+
+2. Set the second system (miti) to adhoc mode:
+
+./adhoc c
+
+3. start udp server on miti:
+
+./udpserver.py
+
+4. start udpclient on flowon:
+
+./udpclient.py
+
+5. start trace capture on flowon:
+
+./frx_cmd
+
+It's best to run all of these as root. Also, it doesn't really matter which side is 
+made udpclient which udpserver, as the sniffer is sniffing the channel, which will 
+see the same packets in either case. Running the client on flowon, however, seems
+to pose less load on it, as the udpserver prints out content (for verification). So
+trace capturing performance is better. But in the adhoc script, flowon is being set 
+by adhoc s, which thinks of flowon as the server. This has no bearing on udpclient/server
+status, as it only set the interface properties and is agnostic to machine's status 
+as either client or server.
