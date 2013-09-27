@@ -1,6 +1,6 @@
 
 function binaryStf()
-  DATA_DIR = '../ofdmpacket-traces/data'
+  DATA_DIR = '../wifibb-traces/data'
 
   [stf_time_domain, stf_time_domain_16bit] = wifi_shortTrainingField()
 

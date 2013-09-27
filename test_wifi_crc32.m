@@ -10,10 +10,10 @@ end
 function test5()
   nbytes = 169;		%includes crc bytes but not service bytes
 
-  load('../ofdmpacket-traces/match/descr_out.txt');
+  load('../wifibb-traces/match/descr_out.txt');
   b = descr_out(:,2:end);
 
-  %load('../ofdmpacket-traces/match/descr_ref.txt');
+  %load('../wifibb-traces/match/descr_ref.txt');
   %b = descr_ref(:,2:end);
 
   b = b';

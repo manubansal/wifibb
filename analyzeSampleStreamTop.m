@@ -25,7 +25,7 @@ function stats = analyzeSampleStream(scale, mod, opt)
     %opt.traceFolder = 'traces-decim/'
     %opt.traceFolder = 'traces-sbx-decim/'
     %opt.traceFolder = 'traces-wifi-sbx-decim/'
-    opt.traceFolder = '../ofdmpacket-traces/traces-wifi-sbx-decim/'
+    opt.traceFolder = '../wifibb-traces/traces-wifi-sbx-decim/'
     %opt.mod = 1;			%tx modulation scheme, bpsk is 1, qpsk is 2
 
     if (nargin < 2)
