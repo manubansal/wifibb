@@ -1,5 +1,5 @@
 
-function QAM64_symbols_out = wifi_mapper_map64qam(input_bits)
+function [QAM64_symbols_out, databits_i, databits_q] = wifi_mapper_map64qam(input_bits)
 
   %Generate 64qam symbol table:
 	   
@@ -32,4 +32,7 @@ function QAM64_symbols_out = wifi_mapper_map64qam(input_bits)
 
   %%%QAM64_symbols_cstyle = convert_complex_to_cstyle(QAM64_symbols_out.int16)
   %%QAM64_symbols_cstyle = convert_complex_to_cstyle(QAM64_symbols_out_fi.int16)
+  ib = reshape(input_bits, 6, :)
+  databits_i = reshape(input_bits(1:3, :), 1, :)
+  databits_q = reshape(input_bits(4:6, :), 1, :)
 end

@@ -1,5 +1,5 @@
 
-function [samples_f, n_ofdm_syms] = wifi_tx_chain(msg, rate)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all] = wifi_tx_chain(msg, rate)
   base_msg = msg
   base_msg_len_bits = length(base_msg)
 
@@ -50,13 +50,22 @@ function [samples_f, n_ofdm_syms] = wifi_tx_chain(msg, rate)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   msg_int_syms = wifi_interleave(msg_code_syms, ncbps);
 
+  msg_int_syms = msg_int_syms
+  n_ofdm_syms = n_ofdm_syms
+  size(msg_int_syms)
+  pause
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% map bits onto constellation symbols
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   mapped_syms = [];
+  databits_i_all = [];
+  databits_q_all = [];
   for i = 1:n_ofdm_syms
-    mapped_syms = [mapped_syms wifi_map(msg_int_syms(:,i), nbpsc)];
+    [mapped_sym, databits_i, databits_q] = wifi_map(msg_int_syms(:,i), nbpsc)
+    mapped_syms = [mapped_syms mapped_sym];
+    databits_i_all = [databits_i_all databits_i];
+    databits_q_all = [databits_q_all databits_q];
   end
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);
 end

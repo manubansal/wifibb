@@ -1,19 +1,9 @@
-
-function binaryPkt(scale)
-
-
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+function gen_wifi_pkt(scale)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Configuration parameters
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%%%%%%%%
   writeFiles = false;
   DATA_DIR = '../wifibb-traces/data'
-
-  mod = 1;	%bpsk
-  %mod = 2;	%qpsk
-
-  %nsyms = 10;		%number of ofdm symbols in data part of the packet
-  %nsyms = 2;		%number of ofdm symbols in data part of the packet
-  nsyms = 250;		%number of ofdm symbols in data part of the packet
 
   if (nargin < 1)
     %scale = 1;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
@@ -21,10 +11,63 @@ function binaryPkt(scale)
     scale = sqrt(2);		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
   end
   
+
+  zero_pad_dur_us = 100;		%zero samples of this duration (us) will be prefixed to the packet
+
+
+  %MOD = 1;	%bpsk
+  MOD = 2;	%qpsk
+
+  %nsyms = 10;		%number of ofdm symbols in data part of the packet
+  %nsyms = 2;		%number of ofdm symbols in data part of the packet
+  %nsyms = 250;		%number of ofdm symbols in data part of the packet
+  nsyms = 35;		%number of ofdm symbols in data part of the packet
+
+
+  %%%%%%%%%%%%%%
+  %% pick a rate
+  %%%%%%%%%%%%%%
+  %rate = 54;
+  %rate = 36;
+  %rate = 24;
+  %rate = 6;
+  rate = 12;
+
+  %%%%%%%%%%%%%%%%%%%
+  %% pick the message
+  %%%%%%%%%%%%%%%%%%%
+  %msg_hex = [
+  %'04'; '02'; '00'; '2e'; '00'; '60'; '08'; 'cd'; '37'; 'a6'; '00'; '20'; 'd6'; '01'; '3c'; 'f1'; '00'; '60'; '08'; 'ad'; '3b'; 'af'; '00'; '00'; '4a'; '6f'; '79'; '2c'; '20'; '62'; '72'; '69'; '67'; '68'; '74'; '20'; '73'; '70'; '61'; '72'; '6b'; '20'; '6f'; '66'; '20'; '64'; '69'; '76'; '69'; '6e'; '69'; '74'; '79'; '2c'; '0a'; '44'; '61'; '75'; '67'; '68'; '74'; '65'; '72'; '20'; '6f'; '66'; '20'; '45'; '6c'; '79'; '73'; '69'; '75'; '6d'; '2c'; '0a'; '46'; '69'; '72'; '65'; '2d'; '69'; '6e'; '73'; '69'; '72'; '65'; '64'; '20'; '77'; '65'; '20'; '74'; '72'; '65'; '61'; 'da'; '57'; '99'; 'ed']
+
+  %msg_hex = [
+  %'04'; '02'; '00'; '2e'; '00'; '60'; '08'; 'cd';]
+  %msg_hex = [
+  %'04'; '02';] 
+  msg_hex = [
+  '04'; '02'; '00'; '2e';] 
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% pick other settings
+  %%%%%%%%%%%%%%%%%%%%%%
+  softbit_scale_nbits = 6;	%soft-bit scale
+  %softbit_scale_nbits = 8;	%soft-bit scale
+  tblen = 36;
+  %tblen = 72;
+
+  snr = 30;
+  %snr = 17; 	
+  
+  %54mbps
+  %snr 15	16	17	18
+  %ber 0.1412 	0.0275	0	0
+
+  softbit_scale = 2^softbit_scale_nbits - 1;
+
+
+  %%%%%%%%%%%%%%%%%%%
   dt = datestr(now, 'yyyymmdd_HHMMSS')
   %%pktparams = strcat('nsyms_',int2str(nsyms),'_mod_',int2str(mod),'_scale_',int2str(scale));
-  pktparams = strcat('nsyms_',int2str(nsyms),'_mod_',int2str(mod),'_scale_',num2str(scale));
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  pktparams = strcat('nsyms_',int2str(nsyms),'_mod_',int2str(MOD),'_scale_',num2str(scale));
 
   pktTxtFile = strcat(DATA_DIR, '/txpkt_',pktparams,'.txt');
   pktBinFile = strcat(DATA_DIR, '/txpkt_',pktparams,'.dat');
@@ -38,45 +81,60 @@ function binaryPkt(scale)
   t_qBitsFile  = strcat(DATA_DIR, '/qbits_',pktparams,'_',dt,'.mat');
   t_symbsFile  = strcat(DATA_DIR, '/symbs_',pktparams,'_',dt,'.mat');
 
-  zero_pad_dur_us = 100;		%zero samples of this duration (us) will be prefixed to the packet
+
+  %%%%%%%%%%%%%%%%%%%
+  %%%%%%%%%%%%%%%%%%%
+
+  msg_dec = hex2dec(msg_hex);
+  %msg_dec = msg_dec(1:15)
+  %pause
+
+  msg = dec2bin(msg_dec, 8);
+  msg = fliplr(msg);	%lsb msb flip
+  msg = msg';
+  msg = reshape(msg, prod(size(msg)), 1);
+  msg = str2num(msg);
+
+  %msg_len = 500;
+  %msg = randint(msg_len,1);
+
+  base_msg = msg;
+  base_msg_len_bits = length(base_msg);
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Generate pkt portions
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
   zero_pad_samples = zeros(20 * zero_pad_dur_us - 1, 1); 	%-1 in zero-pad-length is because data portion is generated with one
-  								%extra sample due to windowing. this makes the length exactly match up.
-  [ig1, ig2, stf_sync_total] = wifi_shortTrainingField();
-  ltf_sync_total = wifi_longTrainingField();
 
-  [td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(mod, nsyms);
+  %--------------------------------------------------------------------------
+  [samples_f, n_ofdm_syms, databits_i, databits_q] = wifi_tx_chain(msg, rate);
+  %[td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(MOD, nsyms);
+  %[td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(MOD, n_ofdm_syms);
+  [td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(MOD, n_ofdm_syms, databits_i, databits_q);
+
+  s1 = size(samples_f)
+  s3 = size(datasyms)
+  s2 = size(td_data_samples)
+  pause
+
+  datasyms_f = reshape(datasyms, prod(size(datasyms)), 1)
+  size(datasyms_f)
+  comp = [samples_f datasyms_f   samples_f - datasyms_f]
+  pause
+  %--------------------------------------------------------------------------
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  %% let's add some AWGN noise
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  %%rx_samples_f = awgn(samples_f, snr, 'measured');
+  %rx_samples_f = samples_f;
 
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Join stf and ltf
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  [[stf_sync_total; zeros(160,1)] [zeros(160,1); ltf_sync_total]];
-  %pause
+  % add preamble
+  td_pkt_samples = util_prepend_preamble(td_data_samples)
 
-  stf_ltf_sync_total = [ stf_sync_total; zeros(160,1)] + [zeros(160,1); ltf_sync_total];
-  %stf_ltf_sync_total_16bit = round(stf_ltf_sync_total*32767/1.0*3);
-
-  size(stf_ltf_sync_total)
-  %pause
-
-
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % Join preamble and data
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  % stf_ltf_sync_total is 321 samples long
-  % td_data_samples is to be joined by overlapping the 321'st sample of preamble
-
-  td_pkt_samples = [stf_ltf_sync_total(1:end-1); td_data_samples];
-  td_pkt_samples(321) = td_pkt_samples(321) + stf_ltf_sync_total(321);
-  %size(td_pkt_samples)
-  %pause
-
-  %---------------------------------------------------------------------------------------------------
+  %--------------------------------------------------------------------------
 
   %%Here is the complete short sync OFDM symbol, with ones padding the end:
   %short_sync_time_total = [window_func.*short_sync_time_total(1:161,1);

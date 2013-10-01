@@ -1,5 +1,5 @@
 
-function [stf_time_domain, stf_time_domain_16bit] = wifi_shortTrainingField()
+function [stf_time_domain, stf_time_domain_16bit, stf_sync_total] = wifi_shortTrainingField()
   short_sync_freq_domain = zeros(64,1);
 
   index_offset = 33;
