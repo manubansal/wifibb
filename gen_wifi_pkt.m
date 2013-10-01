@@ -108,21 +108,32 @@ function gen_wifi_pkt(scale)
   zero_pad_samples = zeros(20 * zero_pad_dur_us - 1, 1); 	%-1 in zero-pad-length is because data portion is generated with one
 
   %--------------------------------------------------------------------------
-  [samples_f, n_ofdm_syms, databits_i, databits_q] = wifi_tx_chain(msg, rate);
-  %[td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(MOD, nsyms);
-  %[td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(MOD, n_ofdm_syms);
-  [td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(MOD, n_ofdm_syms, databits_i, databits_q);
+  %%[samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples_] = wifi_tx_chain(msg, rate);
 
-  s1 = size(samples_f)
-  s3 = size(datasyms)
-  s2 = size(td_data_samples)
-  pause
+  %[td_data_samples databits_i databits_q datasyms] = wifi_random_data_samples(MOD, nsyms);
+  %[td_data_samples databits_i databits_q datasyms] = wifi_random_data_samples(MOD, n_ofdm_syms);
+  %%[td_data_samples databits_i databits_q datasyms] = wifi_random_data_samples(MOD, n_ofdm_syms, databits_i, databits_q);
 
-  datasyms_f = reshape(datasyms, prod(size(datasyms)), 1)
-  size(datasyms_f)
-  comp = [samples_f datasyms_f   samples_f - datasyms_f]
-  pause
+  %%s1 = size(samples_f)
+  %%s2 = size(td_data_samples_)
+
+  %%s3 = size(datasyms)
+  %%s4 = size(td_data_samples)
+  %%pause
+
+  %%datasyms_f = reshape(datasyms, prod(size(datasyms)), 1)
+  %%size(datasyms_f)
+  %%comp = [samples_f datasyms_f   samples_f - datasyms_f]
+  %%pause
+  %%mydiff = sum(sum(abs(td_data_samples - td_data_samples_)))
+  %%pause
   %--------------------------------------------------------------------------
+
+  % generate data samples
+  %--------------------------------------------------------------------------
+  [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples] = wifi_tx_chain(msg, rate);
+  %--------------------------------------------------------------------------
+
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% let's add some AWGN noise
@@ -131,18 +142,6 @@ function gen_wifi_pkt(scale)
   %rx_samples_f = samples_f;
 
 
-  % add preamble
-  td_pkt_samples = util_prepend_preamble(td_data_samples)
-
-  %--------------------------------------------------------------------------
-
-  %%Here is the complete short sync OFDM symbol, with ones padding the end:
-  %short_sync_time_total = [window_func.*short_sync_time_total(1:161,1);
-  %                           0.2*ones(161,1)];
-  %short_sync_time_total_16bit = round(3*short_sync_time_total*32767/1.0);
-
-  %stf_sync_total_16bit = round(stf_sync_total*32767/1.0*3);
-  %ltf_sync_total_16bit = round(ltf_sync_total*32767/1.0*3);
 
   %scale samples down by the given input factor to modify tx gain
   td_pkt_samples = td_pkt_samples/scale;

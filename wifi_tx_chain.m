@@ -1,5 +1,5 @@
 
-function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all] = wifi_tx_chain(msg, rate)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples] = wifi_tx_chain(msg, rate)
   base_msg = msg
   base_msg_len_bits = length(base_msg)
 
@@ -67,5 +67,24 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all] = wifi_tx_chai
     databits_i_all = [databits_i_all databits_i];
     databits_q_all = [databits_q_all databits_q];
   end
+
+  %s0 = size(mapped_syms)
+  %pause
+
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);
+
+  datasyms = mapped_syms
+
+  %--------------------------------------------------------------------------------------
+  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms)
+  %--------------------------------------------------------------------------------------
+
+  %--------------------------------------------------------------------------------------
+  td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms)
+  %--------------------------------------------------------------------------------------
+
+  % add preamble
+  %--------------------------------------------------------------------------
+  td_pkt_samples = util_prepend_preamble(td_data_samples)
+  %--------------------------------------------------------------------------
 end

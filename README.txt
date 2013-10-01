@@ -1,6 +1,6 @@
-This directory contains code to generate ofdm-modulated WiFi-like data. It picks random constellation points to load onto ofdm data subcarriers and loads pilot subcarriers according to the standard. Preamble is generated and prefixed to the data sample sequence. Thus, the packet is reprensetative of a wifi packet except that the actual data content is random, and no channel coding, interleaving and scrambling are performed.
+Code to generate ofdm-modulated WiFi-like data. It picks random constellation points to load onto ofdm data subcarriers and loads pilot subcarriers according to the standard. Preamble is generated and prefixed to the data sample sequence. Thus, the packet is reprensetative of a wifi packet except that the actual data content is random, and no channel coding, interleaving and scrambling are performed.
 
 
-binaryStf.m : generates the stf portion and stores to a binary file (and text)
+gen_wifi_stf.m : generates the stf portion and stores to a binary file (and text)
 
-binryPkt.m  : generates a packet as described above and stored to binary file (and text)
+gen_wifi_pkt_random.m  : generates a packet as described above and stored to binary file (and text)

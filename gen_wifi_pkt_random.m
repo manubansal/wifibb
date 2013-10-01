@@ -1,5 +1,5 @@
 
-function binaryPkt(scale)
+function gen_wifi_pkt_random(scale)
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -49,7 +49,7 @@ function binaryPkt(scale)
   [ig1, ig2, stf_sync_total] = wifi_shortTrainingField();
   ltf_sync_total = wifi_longTrainingField();
 
-  [td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(mod, nsyms);
+  [td_data_samples databits_i databits_q datasyms] = wifi_random_data_samples(mod, nsyms);
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%

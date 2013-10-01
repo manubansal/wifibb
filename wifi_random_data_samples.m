@@ -1,7 +1,7 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generate data portion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [td_data_samples databits_i databits_q datasyms] = gen_random_data_samples(mod, nsyms, databits_i, databits_q)
+function [td_data_samples databits_i databits_q datasyms] = wifi_random_data_samples(mod, nsyms, databits_i, databits_q)
   bpskmap = [1, -1];
   bpskbmap_i = [1, 0];
   bpskbmap_q = [0, 0];
