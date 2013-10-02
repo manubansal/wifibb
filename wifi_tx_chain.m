@@ -52,8 +52,8 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
   msg_int_syms = msg_int_syms
   n_ofdm_syms = n_ofdm_syms
-  size(msg_int_syms)
-  pause
+  %size(msg_int_syms)
+  %pause
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% map bits onto constellation symbols
