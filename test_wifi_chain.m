@@ -62,7 +62,7 @@ function test1()
   %rx_samples_f = samples_f;
 
   %--------------------------------------------------------------------------
-  rx_data_field = wifi_rx_chain(rx_samples_f, rate, n_ofdm_syms, base_msg_len_bits, softbit_scale_nbits, tblen);
+  rx_data_field = wifi_rx_chain_simple(rx_samples_f, rate, n_ofdm_syms, base_msg_len_bits, softbit_scale_nbits, tblen);
   %--------------------------------------------------------------------------
 
   [(1:length(base_msg))' rx_data_field base_msg rx_data_field - base_msg]
