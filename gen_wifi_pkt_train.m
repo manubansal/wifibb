@@ -19,11 +19,11 @@ function gen_wifi_pkt(scale)
   %%%%%%%%%%%%%%
   %% pick a rate
   %%%%%%%%%%%%%%
-  %rate = 54;
+  rate = 54;
   %rate = 36;
   %rate = 24;
   %rate = 6;
-  rate = 12;
+  %rate = 12;
 
 
   %%%%%%%%%%%%%%
