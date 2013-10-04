@@ -10,7 +10,7 @@ end
 function test5()
   nbytes = 169;		%includes crc bytes but not service bytes
 
-  load('../wifibb-traces/match/descr_out.txt');
+  load(strcat(getenv('TRACE_DIR'), '/match/descr_out.txt'));
   b = descr_out(:,2:end);
 
   %load('../wifibb-traces/match/descr_ref.txt');
