@@ -7,5 +7,5 @@ function util_printHexOctets(hex_octets)
   spaces = repmat([' '], size(print_data, 1), 1);
   print_data = [print_data spaces];
   print_data = reshape(print_data',48,prod(size(print_data))/48)';
-  print_data
+  hex_data_bytes = print_data
 end

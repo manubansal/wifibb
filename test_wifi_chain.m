@@ -1,5 +1,22 @@
 function test_wifi_chain()
-  test1()
+  %test1()
+  test2()
+end
+
+function test2()
+  rate = 54;
+  %snr = 30;
+  snr = Inf;
+  scale = sqrt(2);
+
+  msgs_hex = util_msg_hex()
+  n_msgs = length(msgs_hex)
+
+  td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
+  n_tx_samples = length(td_pkt_samples_16bit)
+  pause
+  %msgs_hex, rate, snr, scale = wifi_rx_pkt_train(td_pkt_samples_16bit)
+  wifi_rx_pkt_train(td_pkt_samples_16bit)
 end
 
 function test1()
@@ -78,3 +95,4 @@ function test1()
   %[msg_scr_no_pad rx_decoded_bits msg_scr_no_pad - rx_decoded_bits]
   %n_bit_err_scr = sum(abs(msg_scr_no_pad - rx_decoded_bits))
 end
+

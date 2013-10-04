@@ -22,10 +22,10 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% preprocess and encode message(s)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  all_td_pkt_samples = {}
-  cat_td_pkt_samples = []
+  all_td_pkt_samples = {};
+  cat_td_pkt_samples = [];
   for ii = 1:n_msgs
-    msg_hex = msgs_hex{ii}
+    msg_hex = msgs_hex{ii};
     msg_dec = hex2dec(msg_hex);
     %msg_dec = msg_dec(1:15)
     %pause
@@ -44,10 +44,10 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
     [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples] = wifi_tx_chain(msg, rate);
     %--------------------------------------------------------------------------
 
-    all_td_pkt_samples{end+1} = td_pkt_samples
+    all_td_pkt_samples{end+1} = td_pkt_samples;
     cat_td_pkt_samples = [cat_td_pkt_samples; td_pkt_samples];
   end
-  size(cat_td_pkt_samples)
+  %size(cat_td_pkt_samples)
 
   display('number of samples in data packet(s): ')
   n_samples = length(cat_td_pkt_samples)
@@ -58,13 +58,13 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% add some AWGN noise and compose the packet train with pads
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  signal_rms = rms(cat_td_pkt_samples)
+  signal_rms = rms(cat_td_pkt_samples);
 
   rms_prepad_samples = zeros(20 * zero_prepad_dur_us - 1, 1) + signal_rms; 	
   %-1 in zero-pad-length is because data portion is generated with one
   %extra sample for windowing
 
-  td_pkt_samples = []
+  td_pkt_samples = [];
   for ii = 1:n_msgs
     td_pkt_samples = [td_pkt_samples; rms_prepad_samples; all_td_pkt_samples{ii}];
   end
@@ -82,7 +82,7 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
   %-1 in zero-pad-length is because data portion is generated with one
   %extra sample for windowing
 
-  td_pkt_samples = []
+  td_pkt_samples = [];
   for ii = 1:n_msgs
     td_pkt_samples = [td_pkt_samples; zero_prepad_samples; all_td_pkt_samples{ii}];
   end

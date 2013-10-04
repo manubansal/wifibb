@@ -22,7 +22,7 @@ function [crc_val crcValid] = wifi_crc32(msg)
 
   %computed_crc_ti = wifi_bit_crc32_ti(msg_bin_lin);
   [computed_crc computed_crc_v2];% computed_crc_ti]
-  pause
+  %pause
 
   crc_val = computed_crc;
   crcValid = sum(computed_crc == rx_crc_bin_lin) == 32;
