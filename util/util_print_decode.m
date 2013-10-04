@@ -1,6 +1,6 @@
 
 %----------------------------------------------------------------------------------------------------------------------------
-function print_decode(rx_data_bits_dec, nbits_per_symbol, nchunks_per_symbol)
+function util_print_decode(rx_data_bits_dec, nbits_per_symbol, nchunks_per_symbol)
 %----------------------------------------------------------------------------------------------------------------------------
   display('decoded bits, each ROW is a symbol (not each column)');
   fprintf(1, 'size of rx_data_bits_dec: %d\n', size(rx_data_bits_dec));

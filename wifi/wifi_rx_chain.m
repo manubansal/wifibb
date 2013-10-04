@@ -23,13 +23,13 @@ function stats = wifi_rx_chain(data, opt, stats)
   [stats data rx_data_syms]  		= wifi_cleanup_and_ofdm_demod_packet(data.sig_samples, nsyms, data, opt, stats);
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
 
-  print_demapPacket_plcp(rx_data_syms, opt);
+  util_print_demapPacket_plcp(rx_data_syms, opt);
 
   %display('after demapping:');
   %rx_data_bits
   %pause
 
-  [stats ber]   	     		= computeModulationBER(data, opt, stats);
+  [stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]       = deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
   %display('after deinterleave:');
@@ -61,7 +61,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   rx_data_syms = rx_data_syms(:,1:nsyms);
 
   if (opt.printVars_equalize)
-    print_equalize(rx_data_syms);
+    util_print_equalize(rx_data_syms);
     if (opt.PAUSE_AFTER_EVERY_PACKET)
 	    pause
     end
@@ -73,13 +73,13 @@ function stats = wifi_rx_chain(data, opt, stats)
   %rx_data_syms = reshape(rx_data_syms, prod(size(rx_data_syms)), 1);
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, data.sig_nsyms, data.sig_modu, data, opt, stats);
 
-  print_demapPacket_data(rx_data_bits, opt);
+  util_print_demapPacket_data(rx_data_bits, opt);
 
-  %[stats ber]   	     		= computeModulationBER(data, opt, stats);
+  %[stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]  	= deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
   if (opt.printVars_deinterleave)
-	  print_deinterleave(rx_data_bits_deint);
+	  util_print_deinterleave(rx_data_bits_deint);
 	  if (opt.PAUSE_AFTER_EVERY_PACKET)
 		  pause
 	  end
@@ -107,7 +107,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %pause
 
   if (opt.printVars_decodedBits)
-	  print_decode(rx_data_bits_dec, data.sig_ndbps, opt.n_decoded_symbols_per_ofdm_symbol);
+	  util_print_decode(rx_data_bits_dec, data.sig_ndbps, opt.n_decoded_symbols_per_ofdm_symbol);
 	  if (opt.PAUSE_AFTER_EVERY_PACKET)
 		  pause
 	  end
@@ -124,7 +124,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   [rx_data_bits_descr]			= descramble(rx_data_bits_dec);
 
   if (opt.printVars_descrambledBits)
-	  print_descramble(rx_data_bits_descr, data.sig_ndbps);
+	  util_print_descramble(rx_data_bits_descr, data.sig_ndbps);
 	  if (opt.PAUSE_AFTER_EVERY_PACKET)
 		  pause
 	  end
@@ -169,7 +169,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %%*********************************************************************************************************************************************
 
   if (opt.printVars_data_syms)
-	  print_data_syms(...
+	  util_print_data_syms(...
 	    opt, ...
 	    data,...
 	    rx_data_syms, ...
@@ -200,7 +200,7 @@ function [stats data rx_data_bits] = demapPacket_old(rx_data_syms, data, opt, st
   end
   %stats.n_packets_processed = stats.n_packets_processed + 1;
 
-  plotConstellation(rx_data_syms, opt);
+  util_plotConstellation(rx_data_syms, opt);
 
   %hard-demap symbols to bits according to bpsk
   rx_data_syms_i = real(rx_data_syms);
@@ -227,7 +227,7 @@ function [stats data rx_data_bits] = demapPacket(rx_data_syms, nsyms, nbpsc, dat
   end
   %stats.n_packets_processed = stats.n_packets_processed + 1;
 
-  plotConstellation(rx_data_syms, opt);
+  util_plotConstellation(rx_data_syms, opt);
 
   %rx_data_syms = reshape(rx_data_syms, prod(size(rx_data_syms)), 1);
   rx_data_bits = wifi_softSlice(rx_data_syms, nbpsc, opt.soft_slice_nbits);

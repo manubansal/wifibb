@@ -719,7 +719,7 @@ function stats = analyzeSinglePacket(data, opt, stats)
   %rx_data_bits
   %pause
 
-  [stats ber]   	     		= computeModulationBER(data, opt, stats);
+  [stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]       = deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
   %display('after deinterleave:');
@@ -748,7 +748,7 @@ function stats = analyzeSinglePacket(data, opt, stats)
 
   %rx_data_syms = reshape(rx_data_syms, prod(size(rx_data_syms)), 1);
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, data.sig_nsyms, data.sig_modu, data, opt, stats);
-  %[stats ber]   	     		= computeModulationBER(data, opt, stats);
+  %[stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]  	= deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
   %display('after deinterleave:');
@@ -1357,7 +1357,7 @@ function [stats data rx_data_bits] = demapPacket_old(rx_data_syms, data, opt, st
   end
   %stats.n_packets_processed = stats.n_packets_processed + 1;
 
-  plotConstellation(rx_data_syms, opt);
+  util_plotConstellation(rx_data_syms, opt);
 
   %hard-demap symbols to bits according to bpsk
   rx_data_syms_i = real(rx_data_syms);
@@ -1384,7 +1384,7 @@ function [stats data rx_data_bits] = demapPacket(rx_data_syms, nsyms, nbpsc, dat
   end
   %stats.n_packets_processed = stats.n_packets_processed + 1;
 
-  plotConstellation(rx_data_syms, opt);
+  util_plotConstellation(rx_data_syms, opt);
 
   %rx_data_syms = reshape(rx_data_syms, prod(size(rx_data_syms)), 1);
   rx_data_bits = wifi_softSlice(rx_data_syms, nbpsc, opt.soft_slice_nbits);
@@ -1392,7 +1392,7 @@ end
 
 
 %----------------------------------------------------------------------------------------------------------------------------
-function plotConstellation(rx_data_syms, opt)
+function util_plotConstellation(rx_data_syms, opt)
 %----------------------------------------------------------------------------------------------------------------------------
 
   if (opt.GENERATE_PER_PACKET_PLOTS)
@@ -1444,7 +1444,7 @@ function plotConstellation(rx_data_syms, opt)
 end
 
 %----------------------------------------------------------------------------------------------------------------------------
-function [stats ber] = computeModulationBER(data, opt, stats)
+function [stats ber] = util_computeModulationBER(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
   ber = -1;
   stats.ber(end+1,:) = ber;

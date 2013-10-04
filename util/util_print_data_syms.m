@@ -1,6 +1,6 @@
 
 %----------------------------------------------------------------------------------------------------------------------------
-function print_data_syms(opt, data, rx_data_syms_eq_const_pnts, rx_data_bits, rx_data_bits_deint, rx_data_bits_dec)
+function util_print_data_syms(opt, data, rx_data_syms_eq_const_pnts, rx_data_bits, rx_data_bits_deint, rx_data_bits_dec)
 %----------------------------------------------------------------------------------------------------------------------------
   fprintf(1,'\nbegin print_data_syms');
   pause
