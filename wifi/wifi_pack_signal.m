@@ -17,9 +17,9 @@ function tx_sig_field = wifi_pack_signal(rate, len)
   rate_field = zeros(1,4);
   rate_field(4) = 1;
 
-  idx = find(rate == rate_chart)
-  rate_idx = rate_idx(idx)
-  rate_field(1:3) = de2bi(rate_idx, 3, 'left-msb')
+  idx = find(rate == rate_chart);
+  rate_idx = rate_idx(idx);
+  rate_field(1:3) = de2bi(rate_idx, 3, 'left-msb');
 
   length_field = fliplr(de2bi(len, 12, 'left-msb'));
 

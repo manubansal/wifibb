@@ -15,7 +15,7 @@ function td_pkt_samples = util_prepend_preamble(td_data_samples)
   stf_ltf_sync_total = [ stf_sync_total; zeros(160,1)] + [zeros(160,1); ltf_sync_total];
   %stf_ltf_sync_total_16bit = round(stf_ltf_sync_total*32767/1.0*3);
 
-  size(stf_ltf_sync_total)
+  %size(stf_ltf_sync_total)
   %pause
 
 

@@ -1,5 +1,5 @@
 function td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms)
-  nsyms = size(tdsyms, 2)
+  nsyms = size(tdsyms, 2);
 
   extra_for_windowing = tdsyms(1, :);
   tdsyms_w_cp = [tdsyms_w_cp; extra_for_windowing];

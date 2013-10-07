@@ -23,6 +23,6 @@ function [symbols_out, databits_i, databits_q] = wifi_mapper_mapbpsk(input_bits)
   %symbols_out = fi(symbols_out,1,16,9);
 
   %symbols_cstyle = convert_complex_to_cstyle(symbols_out.int16)
-  databits_i = input_bits
-  databits_q = zeros(size(databits_i))
+  databits_i = input_bits;
+  databits_q = zeros(size(databits_i));
 end

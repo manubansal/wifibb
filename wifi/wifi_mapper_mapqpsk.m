@@ -29,6 +29,6 @@ function [QPSK_symbols_out, databits_i, databits_q] = wifi_mapper_mapqpsk(input_
   %
   %QPSK_symbols_cstyle = convert_complex_to_cstyle(QPSK_symbols_out.int16)
 
-  databits_i = input_bits(1:2:end)
-  databits_q = input_bits(2:2:end)
+  databits_i = input_bits(1:2:end);
+  databits_q = input_bits(2:2:end);
 end

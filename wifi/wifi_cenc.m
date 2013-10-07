@@ -5,11 +5,11 @@ function outcode=wifi_cenc(inmsg, ratetimes120)
 
 
 if (nargin < 2)
-  ratetimes120 = 60
+  ratetimes120 = 60;
 end
 
 
-trellis=poly2trellis(7,[133 171])
+trellis=poly2trellis(7,[133 171]);
 
 %if nargin > 0
     msg = inmsg;

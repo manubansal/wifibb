@@ -26,8 +26,8 @@ function gen_wifi_pkt_train(scale)
   %%%%%%%%%%%%%%
   %% pick an snr
   %%%%%%%%%%%%%%
-  %snr = Inf;
-  snr = 30;
+  snr = Inf;
+  %snr = 30;
   %snr = 17; 	
 
   %%%%%%%%%%%%%%%%%%%%%%
@@ -39,7 +39,9 @@ function gen_wifi_pkt_train(scale)
   %%%%%%%%%%%%%%%%%%%%%%
   %% modulate messages
   %%%%%%%%%%%%%%%%%%%%%%
-  td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
+  td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
+  n_tx_samples = length(td_pkt_samples_16bit)
+  pause
 
   if (writeFiles)
     %%%%%%%%%%%%%%%%%%%

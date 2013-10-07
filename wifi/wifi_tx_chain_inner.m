@@ -1,5 +1,5 @@
 function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate)
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate)
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate);
   n_ofdm_syms = length(msg_scr)/ndbps;
   %pause
 
@@ -32,7 +32,7 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
   databits_i_all = [];
   databits_q_all = [];
   for i = 1:n_ofdm_syms
-    [mapped_sym, databits_i, databits_q] = wifi_map(msg_int_syms(:,i), nbpsc)
+    [mapped_sym, databits_i, databits_q] = wifi_map(msg_int_syms(:,i), nbpsc);
     mapped_syms = [mapped_syms mapped_sym];
     databits_i_all = [databits_i_all databits_i];
     databits_q_all = [databits_q_all databits_q];

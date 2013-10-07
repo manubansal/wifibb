@@ -6,16 +6,16 @@ function [stf_time_domain, stf_time_domain_16bit, stf_sync_total] = wifi_shortTr
   %NOTE: SQRT(13/6) IS 1.472
   short_sync_freq_domain(-24 + index_offset) = 1.472 + 1.472*j;
   short_sync_freq_domain(-20 + index_offset) = -1.472 - 1.472*j; 
-  short_sync_freq_domain(-16 + index_offset) = 1.472 + 1.472*i 
-  short_sync_freq_domain(-12 + index_offset) = -1.472 - 1.472*i 
-  short_sync_freq_domain(-8 + index_offset)  = -1.472 - 1.472*i 
-  short_sync_freq_domain(-4 + index_offset)  = 1.472 + 1.472*i 
-  short_sync_freq_domain(4 + index_offset)   = -1.472 - 1.472*i
-  short_sync_freq_domain(8 + index_offset)   = -1.472 - 1.472*i
-  short_sync_freq_domain(12 + index_offset)  = 1.472 + 1.472*i
-  short_sync_freq_domain(16 + index_offset)  = 1.472 + 1.472*i
-  short_sync_freq_domain(20 + index_offset)  = 1.472 + 1.472*i
-  short_sync_freq_domain(24 + index_offset)  = 1.472 + 1.472*i
+  short_sync_freq_domain(-16 + index_offset) = 1.472 + 1.472*i;
+  short_sync_freq_domain(-12 + index_offset) = -1.472 - 1.472*i; 
+  short_sync_freq_domain(-8 + index_offset)  = -1.472 - 1.472*i; 
+  short_sync_freq_domain(-4 + index_offset)  = 1.472 + 1.472*i; 
+  short_sync_freq_domain(4 + index_offset)   = -1.472 - 1.472*i;
+  short_sync_freq_domain(8 + index_offset)   = -1.472 - 1.472*i;
+  short_sync_freq_domain(12 + index_offset)  = 1.472 + 1.472*i;
+  short_sync_freq_domain(16 + index_offset)  = 1.472 + 1.472*i;
+  short_sync_freq_domain(20 + index_offset)  = 1.472 + 1.472*i;
+  short_sync_freq_domain(24 + index_offset)  = 1.472 + 1.472*i;
 
 
 

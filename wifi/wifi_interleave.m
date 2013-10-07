@@ -23,7 +23,7 @@ function [interleaved_bits j] = wifi_interleave(coded_bits, N_CBPS)
   i= (N_CBPS/16) * mod(k,16) + floor(k./16);
 
   %second permutation
-  j=s*floor(i./s) + mod((i + N_CBPS - floor(16.*i./N_CBPS)),s)
+  j = s*floor(i./s) + mod((i + N_CBPS - floor(16.*i./N_CBPS)),s);
 
   %interleave them
   %interleaved_bits(j+1) = coded_bits;

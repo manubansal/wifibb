@@ -36,7 +36,7 @@ function [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms)
 
     pilot_sc_ext = [pilot_sc pilot_sc pilot_sc pilot_sc pilot_sc]; %127 * 5 = 635 long - enough for all packet lengths
 
-    psubc_idx = (nsubc/2)+[(1+[-21 -7 7 21])]	%regular order (dc in middle)
+    psubc_idx = (nsubc/2)+[(1+[-21 -7 7 21])];	%regular order (dc in middle)
     psubc_ind = zeros(nsubc,1);
     psubc_ind(psubc_idx) = 1;
     [psubc_ind [1:64]'];
@@ -64,5 +64,5 @@ function [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms)
 
     %add cyclic prefixes and additional sample for windowing
     prefixes = tdsyms([end-cplength+1:end], :);
-    tdsyms_w_cp = [prefixes; tdsyms]
+    tdsyms_w_cp = [prefixes; tdsyms];
 end

@@ -10,7 +10,7 @@ function [QAM64_symbols_out, databits_i, databits_q] = wifi_mapper_map64qam(inpu
   QAM64=zeros(8,8);
   for i=1:8
       for k=1:8
-	  QAM64(i,k) = iq_pattern(i) + 1i*iq_pattern(k)
+	  QAM64(i,k) = iq_pattern(i) + 1i*iq_pattern(k);
       end
   end
   QAM64 = reshape(transpose(QAM64),64,1)./sqrt(42);
@@ -32,7 +32,7 @@ function [QAM64_symbols_out, databits_i, databits_q] = wifi_mapper_map64qam(inpu
 
   %%%QAM64_symbols_cstyle = convert_complex_to_cstyle(QAM64_symbols_out.int16)
   %%QAM64_symbols_cstyle = convert_complex_to_cstyle(QAM64_symbols_out_fi.int16)
-  ib = reshape(input_bits, 6, [])
-  databits_i = reshape(input_bits(1:3, :), 1, [])
-  databits_q = reshape(input_bits(4:6, :), 1, [])
+  ib = reshape(input_bits, 6, []);
+  databits_i = reshape(input_bits(1:3, :), 1, []);
+  databits_q = reshape(input_bits(4:6, :), 1, []);
 end

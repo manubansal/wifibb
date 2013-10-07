@@ -35,7 +35,7 @@ function [QAM16_symbols_out, databits_i, databits_q] = wifi_mapper_map64qam(inpu
   %%QAM16_symbols_out = fi(QAM16_symbols_out,1,16,9);
 
   %%QAM16_symbols_cstyle = convert_complex_to_cstyle(QAM16_symbols_out.int16)
-  ib = reshape(input_bits, 4, [])
-  databits_i = reshape(input_bits(1:2, :), 1, [])
-  databits_q = reshape(input_bits(3:4, :), 1, [])
+  ib = reshape(input_bits, 4, []);
+  databits_i = reshape(input_bits(1:2, :), 1, []);
+  databits_q = reshape(input_bits(3:4, :), 1, []);
 end

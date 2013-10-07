@@ -35,7 +35,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   pad = zeros(npad,1);
   msg = [msg; pad];
 
-  n_ofdm_syms = length(msg)/ndbps;
+  n_ofdm_syms = length(msg)/ndbps
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% scramble the message
@@ -54,21 +54,21 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);
 
   %datasyms = mapped_syms
-  sa = size(mapped_syms)
-  sb = size(sigsym)
+  sa = size(mapped_syms);
+  sb = size(sigsym);
   %pause
   datasyms = [sigsym mapped_syms];
 
   %--------------------------------------------------------------------------------------
-  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms)
+  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms);
   %--------------------------------------------------------------------------------------
 
   %--------------------------------------------------------------------------------------
-  td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms)
+  td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms);
   %--------------------------------------------------------------------------------------
 
   % add preamble
   %--------------------------------------------------------------------------
-  td_pkt_samples = util_prepend_preamble(td_data_samples)
+  td_pkt_samples = util_prepend_preamble(td_data_samples);
   %--------------------------------------------------------------------------
 end
