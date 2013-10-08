@@ -3,26 +3,32 @@
 % suitable for using with a C wifi decoder chain.
 
 %----------------------------------------------------------------------------------------------------------------------------
-function util_binToTxt()
+function util_binToTxt(DATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter)
 %----------------------------------------------------------------------------------------------------------------------------
+  if (nargin < 2)
   DATA_DIR = '../wifibb-traces/data1'
   INP_FILE = 'trace.dat'
+  end
 
+  if (nargin < 4)
   %ns_to_skip  = 0;
   %ns_to_write = 800000;
 
   %ns_to_skip  = 400000;
   %ns_to_write = 100000;
-  %ns_per_iter = 10000;
 
   ns_to_skip  = 400000;
   %ns_to_write = 10000;
   ns_to_write = 50000;
-  ns_per_iter = 10000;
 
   %ns_to_skip  = 0;
   %ns_to_write = 8000;
-  %ns_per_iter = 8000;
+  end
+
+  if (nargin < 5)
+  ns_per_iter = 10000;
+  end
+
 
   %inpfilename = '../traces/trac-wifi-sbx-decim/trace.dat'
   %inpfilename = 'cdata/trace_6mbps.dat'
@@ -31,10 +37,13 @@ function util_binToTxt()
   %outfilename = strcat('cdata/',tracename,'.c');
   inpfilename = strcat(DATA_DIR,'/',INP_FILE)
   tracename = strcat('trace_skip_',num2str(ns_to_skip),'_ns_',num2str(ns_to_write));
-  outfilename = strcat(DATA_DIR,'/',tracename,'.c')
+  %outfilename = strcat(DATA_DIR,'/',tracename,'.c')
+  outfilename = strcat(DATA_DIR,'/',INP_FILE,'_',tracename,'.c')
 
 
-  convertFile(filename, outfilename, ns_to_skip, ns_to_write, ns_per_iter, tracename);
+  fprintf(1, 'Reading from %s\n', inpfilename);
+  fprintf(1, 'Writing to %s\n', outfilename);
+  convertFile(inpfilename, outfilename, ns_to_skip, ns_to_write, ns_per_iter, tracename);
 end
 
 %----------------------------------------------------------------------------------------------------------------------------
@@ -56,7 +65,7 @@ function convertFile(filename, outfilename, ns_to_skip, ns_to_write, ns_per_iter
   ns = ns_per_iter;
 
   %fprintf(outfd, '#include "swpform.h"\n\nUint16 traceData[] = {\n');
-  fprintf(outfd, '#include "swpform.h"\n\nInt16 %s[] = {\n',tracename);
+  fprintf(outfd, '#include <osl/inc/swpform.h>\n\nInt16 %s[] = {\n',tracename);
 
   for (i = 1:niter)
 	  display(strcat(num2str(i),'.of.',num2str(niter)));

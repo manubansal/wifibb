@@ -51,9 +51,9 @@ function [stats data rx_data_syms] = wifi_cleanup_and_ofdm_demod_packet(samples,
     display('plcp signal field in frequency domain before equalization');
     if (opt.printVars_ofdmDemodPlcp)
 	    display('plcp data subcarriers:');
-	  [ [1:48]' fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx))]
+	  [ [1:48]' fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1))]
 	    display('plcp pilot subcarriers:');
-	  [ [1:4]' fix(opt.ti_factor_after_cfo * (ofdm_syms_f(psubc_idx) .* conj(tx_pilot_syms)))]
+	  [ [1:4]' fix(opt.ti_factor_after_cfo * (ofdm_syms_f(psubc_idx, 1) .* conj(tx_pilot_syms(:,1))))]
 	  if (opt.PAUSE_AFTER_EVERY_PACKET)
 	    pause
 	  end

@@ -87,22 +87,22 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
 
 
     %---- these are only being printed, but not written to files ------%
-    opt.printVars_corr = false;
-    opt.printVars_chEsts = false;
-    opt.printVars_cfoCorrectedPlcp = false;
-    opt.printVars_ofdmDemodPlcp = false;
+    opt.printVars_corr = true;
+    opt.printVars_chEsts = true;
+    opt.printVars_cfoCorrectedPlcp = true;
+    opt.printVars_ofdmDemodPlcp = true;
 
-    opt.printVars_ofdmEqualizedPlcp = false;
-    opt.printVars_equalize = false;
+    opt.printVars_ofdmEqualizedPlcp = true;
+    opt.printVars_equalize = true;
 
-    opt.printVars_softBits_plcp = false;
-    opt.printVars_softBits_data = false;
+    opt.printVars_softBits_plcp = true;
+    opt.printVars_softBits_data = true;
 
-    opt.printVars_deinterleave = false;
-    opt.printVars_softBits_deint = false;
+    opt.printVars_deinterleave = true;
+    opt.printVars_softBits_deint = true;
 
     opt.printVars_decodedBits = true;
-    opt.printVars_descrambledBits = false;
+    opt.printVars_descrambledBits = true;
 
     %----- all print after total data decode for the packet -----
     opt.printVars_data_syms = false;
