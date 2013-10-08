@@ -95,6 +95,15 @@ function gen_wifi_pkt_train(scale)
     %save(iBitsFile, 'databits_i');
     %save(qBitsFile, 'databits_q');
     %save(symbsFile, 'datasyms');
+
+
+    % C-style trace file
+    INP_FILE = strcat('txpkt_',pktparams,'.dat');
+    ns_to_skip = 0;
+    ns_to_write = length(td_pkt_samples_16bit);
+    ns_per_iter = length(td_pkt_samples_16bit);
+    util_binToTxt(DATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter);
+
   else
     display('not writing any files');
   end
