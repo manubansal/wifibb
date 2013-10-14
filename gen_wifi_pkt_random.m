@@ -1,12 +1,12 @@
 
 function gen_wifi_pkt_random(scale)
-
+  [DATA_DIR, TRACE_DIR] = setup_paths()
+  %DATA_DIR = '../wifibb-traces/data'
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Configuration parameters
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   writeFiles = false;
-  DATA_DIR = '../wifibb-traces/data'
 
   mod = 1;	%bpsk
   %mod = 2;	%qpsk

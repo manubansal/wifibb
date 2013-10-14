@@ -1,4 +1,5 @@
 function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
+  [DATA_DIR, TRACE_DIR] = setup_paths()
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % user configuration
@@ -16,7 +17,8 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     %opt.trace.traceFolder = 'traces-sbx-decim/'
     %opt.trace.traceFolder = 'traces-wifi-sbx-decim/'
 
-    opt.trace.traceFolder = '../wifibb-traces/traces-wifi-sbx-decim/'
+    %opt.trace.traceFolder = '../wifibb-traces/traces-wifi-sbx-decim/'
+    opt.trace.traceFolder = strcat(TRACE_DIR, '/traces-wifi-sbx-decim/')
 
     %scale = 1;			%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     if (nargin < 1)
@@ -80,16 +82,16 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     %---- these are written to c files ready to be imported for debugging ------%
     opt.writeVars_corr = false;
     opt.writeVars_startPnts = false;
-    opt.writeVars_cfos = false;
-    opt.writeVars_deinterleave = false;
-    opt.writeVars_depuncture = false;
-    opt.writeVars_decode = false;
+    opt.writeVars_cfos = true;
+    opt.writeVars_deinterleave = true;
+    opt.writeVars_depuncture = true;
+    opt.writeVars_decode = true;
 
 
     %---- these are only being printed, but not written to files ------%
-    opt.printVars_corr = true;
-    opt.printVars_chEsts = true;
-    opt.printVars_cfoCorrectedPlcp = true;
+    opt.printVars_corr = false;
+    opt.printVars_chEsts = false;
+    opt.printVars_cfoCorrectedPlcp = false;
     opt.printVars_ofdmDemodPlcp = true;
 
     opt.printVars_ofdmEqualizedPlcp = true;

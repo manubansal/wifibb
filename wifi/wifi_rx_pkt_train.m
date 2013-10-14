@@ -267,18 +267,6 @@ end
 
 
 %----------------------------------------------------------------------------------------------------------------------------
-function writeVars_corr(corrvec, abscorrvec, abscorrvecsq, norm1val, norm2val, normval, corrwin, norm1terms, norm2terms, isMetricHigh)
-%----------------------------------------------------------------------------------------------------------------------------
-  util_writeVarToCFile(norm1terms, 'norm1terms', 0, 30, 'Uint32');
-  %util_writeVarToCFile(norm1val, 'norm1val', ceil(log2(corrwin)), 30, 'Uint32');	%scale down by window size rounded to 
-  											%(ceiled to) power of 2
-  util_writeVarToCFile(norm1val, 'norm1val', 0, 30, 'Uint32');				%no scaling down
-  util_writeVarToCFile(norm1val .* norm1val, 'norm1sqval', 0, 30, 'Uint32');				%no scaling down
-
-  util_writeVarToCFile(isMetricHigh, 'isMetricHigh', 0, 0, 'Uint32');			%Qval = 0 corresponds to integer
-end
-
-%----------------------------------------------------------------------------------------------------------------------------
 function writeVars_startPnts(pkt_start_points)
 %----------------------------------------------------------------------------------------------------------------------------
   whos
@@ -287,54 +275,6 @@ function writeVars_startPnts(pkt_start_points)
   util_writeVarToCFile(pkt_start_points, 'pkt_start_points', 0, 0, 'Uint32', 1, 1);			%Qval = 0 corresponds to integer
 end
 
-%----------------------------------------------------------------------------------------------------------------------------
-function writeVars_deinterleave(rx_data_bits, rx_data_bits_deint)
-%----------------------------------------------------------------------------------------------------------------------------
-  fprintf(1,'\nbegin writeVars_deinterleave');
-
-  fprintf(1,'\ndeinterleaved bits\n');
-  size(rx_data_bits_deint)
-  rx_data_bits_deint = reshape(rx_data_bits_deint, prod(size(rx_data_bits_deint)), 1);
-  size(rx_data_bits_deint)
-
-  [rx_data_bits_deint(1:10) rx_data_bits_deint(1:10) - 64]
-  rx_data_bits_deint = rx_data_bits_deint - 64;
-  pause
-
-  util_writeVarToCFile(rx_data_bits_deint, ['rx_data_bits_deint_len_',num2str(length(rx_data_bits_deint))], 0, 0, 'Int8', 1, 1);		%Qval = 0 corresponds to integer
-  fprintf(1,'end writeVars_deinterleave\n');
-  pause
-end
-
-%----------------------------------------------------------------------------------------------------------------------------
-function writeVars_depuncture(rx_data_bits_deint, soft_slice_nbits, coderate, rx_data_bits_depunct)
-%----------------------------------------------------------------------------------------------------------------------------
-  fprintf(1,'\nbegin writeVars_depuncture');
-
-  fprintf(1,'\ndepunctured bits\n');
-
-  size(rx_data_bits_depunct)
-  rx_data_bits_depunct = reshape(rx_data_bits_depunct, prod(size(rx_data_bits_depunct)), 1);
-  size(rx_data_bits_depunct)
-
-  [rx_data_bits_depunct(1:10) rx_data_bits_depunct(1:10) - 64]
-  rx_data_bits_depunct = rx_data_bits_depunct - 64;
-  pause
-
-  util_writeVarToCFile(rx_data_bits_depunct, ['rx_data_bits_depunct_len_',num2str(length(rx_data_bits_depunct))], 0, 0, 'Int8', 1, 1);		%Qval = 0 corresponds to integer
-  fprintf(1,'end writeVars_depuncture\n');
-  pause
-end
-
-%----------------------------------------------------------------------------------------------------------------------------
-function writeVars_decode(rx_data_bits_depunct, nbits_precision, tblen, rx_data_bits_dec)
-%----------------------------------------------------------------------------------------------------------------------------
-  fprintf(1,'\nbegin writeVars_decode');
-  pause
-  util_writeVarToCFile(rx_data_bits_dec, ['rx_data_bits_dec_len_',num2str(length(rx_data_bits_dec))], 0, 0, 'Uint8', 1, 1);			%Qval = 0 corresponds to integer
-  fprintf(1,'end writeVars_decode\n');
-  pause
-end
 
 %----------------------------------------------------------------------------------------------------------------------------
 function writeVars_cfos(coarse_cfo_freq_off_khz, fine_cfo_freq_off_khz)
@@ -346,3 +286,4 @@ function writeVars_cfos(coarse_cfo_freq_off_khz, fine_cfo_freq_off_khz)
   fprintf(1,'end writeVars_cfos\n');
   pause
 end
+

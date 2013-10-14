@@ -1,9 +1,11 @@
 function gen_wifi_pkt(scale)
+  %DATA_DIR = '../wifibb-traces/data'
+  [DATA_DIR, TRACE_DIR] = setup_paths()
+
   %%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Configuration parameters
   %%%%%%%%%%%%%%%%%%%%%%%%%%
   writeFiles = false;
-  DATA_DIR = '../wifibb-traces/data'
 
   if (nargin < 1)
     %scale = 1;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
