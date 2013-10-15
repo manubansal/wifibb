@@ -14,7 +14,7 @@ function test2()
 
   td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
   n_tx_samples = length(td_pkt_samples_16bit)
-  pause
+  %pause
   %msgs_hex, rate, snr, scale = wifi_rx_pkt_train(td_pkt_samples_16bit)
   wifi_rx_pkt_train(td_pkt_samples_16bit)
 end

@@ -18,7 +18,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate_sig);
   %n_ofdm_syms_sig = 1;
   tx_sig_field = tx_sig_field
-  pause
+  %pause
   [sigsym, ig1, ig2] = wifi_tx_chain_inner(tx_sig_field, rate_sig);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 

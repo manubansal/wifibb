@@ -203,7 +203,7 @@ function [stats data] = wifi_cleanup_packet(data, opt, stats)
     fine_cfo_freq_off_khz = freq_off_khz;
 
     net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
-    pause
+    %pause
 
     %version 1, where stf starts at t = 0
     %%freq_off_hz = freq_off_khz * 1000;

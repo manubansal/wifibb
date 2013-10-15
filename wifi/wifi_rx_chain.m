@@ -20,7 +20,15 @@ function stats = wifi_rx_chain(data, opt, stats)
 
   nbpsc = 1;	%signal field is coded with bpsk
   nsyms = 1;	%signal field occupies one ofdm symbol
-  [stats data rx_data_syms]  		= wifi_cleanup_and_ofdm_demod_packet(data.sig_samples, nsyms, data, opt, stats);
+  [stats data ofdm_syms_f]  		= wifi_ofdm_demod(data.sig_samples, nsyms, data, opt, stats);
+
+  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f);
+  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
+  [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
+	wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
+  [stats data] = util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
+
+
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
 
   util_print_demapPacket_plcp(rx_data_syms, opt);
@@ -56,7 +64,18 @@ function stats = wifi_rx_chain(data, opt, stats)
   nbpsc = data.sig_modu;
   nsyms = data.sig_nsyms;
   coderate = data.sig_code;
-  [stats data rx_data_syms]  = wifi_cleanup_and_ofdm_demod_packet([data.sig_samples data.data_samples], data.sig_nsyms + 1, data, opt, stats);
+  %[stats data rx_data_syms]  = wifi_cleanup_and_ofdm_demod_packet([data.sig_samples data.data_samples], data.sig_nsyms + 1, data, opt, stats);
+  [stats data ofdm_syms_f]  		= wifi_ofdm_demod([data.sig_samples data.data_samples], nsyms+ 1, data, opt, stats);
+
+  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms + 1, opt, data, stats, ofdm_syms_f);
+  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
+  [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
+	wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
+  [stats data] = util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
+
+
+
+
   rx_data_syms(:,1)=[];
   rx_data_syms = rx_data_syms(:,1:nsyms);
 
