@@ -109,6 +109,9 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     %----- all print after total data decode for the packet -----
     opt.printVars_data_syms = false;
     %opt.printVars_data_syms = true;
+
+    %----- variable binary dumps ---------%
+    opt.dumpVars_ofdmDemodPlcp = true;
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

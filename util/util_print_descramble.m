@@ -4,7 +4,6 @@ function util_print_descramble(rx_data_bits_descr, nbits_per_symbol)
 %----------------------------------------------------------------------------------------------------------------------------
   display('descrambled bits, each ROW is a symbol (not each column)');
   size(rx_data_bits_descr)
-  pause
   nsyms = ceil(length(rx_data_bits_descr)/nbits_per_symbol)
   nbits_ceil = nsyms * (nbits_per_symbol)
   padlength = nbits_ceil - length(rx_data_bits_descr)

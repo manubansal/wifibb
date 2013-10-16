@@ -19,7 +19,6 @@ function util_print_deinterleave(rx_data_bits_deint)
 	  symi = rx_data_bits_deint(:, i);
 	  i = i
 	  symi_deint = reshape(symi, 4, length(symi)/4)'
-	  pause
   end
 
   %pause

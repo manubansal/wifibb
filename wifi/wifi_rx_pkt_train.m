@@ -280,10 +280,8 @@ end
 function writeVars_cfos(coarse_cfo_freq_off_khz, fine_cfo_freq_off_khz)
 %----------------------------------------------------------------------------------------------------------------------------
   fprintf(1,'\nbegin writeVars_cfos\n');
-  pause
   cfo_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz;	%since on TI, we do a single estimate
   util_writeVarToCFile(cfo_khz, 'cfo_khz', 0, 0, 'float', 1, 1);
   fprintf(1,'end writeVars_cfos\n');
-  pause
 end
 

@@ -1,4 +1,4 @@
-function [DATA_DIR, TRACE_DIR, CDATA_DIR] = setup_paths()
+function [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   addpath('./wifi')
   addpath('./util')
   addpath('./unit_tests')
@@ -8,5 +8,6 @@ function [DATA_DIR, TRACE_DIR, CDATA_DIR] = setup_paths()
 
   TRACE_DIR = '../wifibb-traces'
   DATA_DIR = strcat(TRACE_DIR, '/data')
-  CDATA_DIR = strcat(TRACE_DIR, '/cdata')
+  CDATA_DIR = strcat(TRACE_DIR, '/cdata')	%c-style data
+  BDATA_DIR = strcat(TRACE_DIR, '/bdata')	%binary data
 end

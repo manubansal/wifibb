@@ -43,23 +43,6 @@ function [stats data ofdm_syms_f] = wifi_ofdm_demod(samples, nsyms, data, opt, s
   %%%%%tx_data1_syms = data.tx_data_syms(d1subc_idx, :);
 
 
-  %%%%%%%%%%%%%%%%%%%%%%%
-  nsubc = 64;
-  psubc_idx = (nsubc/2)+[(1+[-21 -7 7 21])];					%regular order (dc in middle)
-  dsubc_idx = (nsubc/2)+[(1+[-26:-22 -20:-8 -6:-1]) (1+[1:6 8:20 22:26])];	%regular order (dc in middle)
-    display('plcp signal field in frequency domain before equalization');
-    if (opt.printVars_ofdmDemodPlcp)
-	    display('plcp data subcarriers:');
-	  [ [1:48]' fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1))]
-	    display('plcp pilot subcarriers:');
-	  [ [1:4]' fix(opt.ti_factor_after_cfo * (ofdm_syms_f(psubc_idx, 1) .* conj(tx_pilot_syms(:,1))))]
-	  if (opt.PAUSE_AFTER_EVERY_PACKET)
-	    pause
-	  end
-    end
-  %%%%%%%%%%%%%%%%%%%%%%%
-
-
   [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
 
 

@@ -15,9 +15,7 @@ function util_print_equalize(rx_data_syms)
   for i = 1:nsyms
 	  i = i
           symi_eq_pnts = [(1:48)' rx_data_syms(:, i)]
-          pause
   end
-  pause
 
 
   fprintf(1,'end print_equalize\n');

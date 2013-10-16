@@ -16,7 +16,6 @@ function util_print_demapPacket_data(rx_data_bits, opt)
 		  %[[1:length(rx_data_bits)]' (rx_data_bits - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
 		  %[[1:size(rx_data_bits,1)]' (rx_data_bits(i+1,1) - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
 		  [[1:size(rx_data_bits,1)]' (rx_data_bits(:,i+1) - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
-		  pause
 	    end
 	    if (opt.PAUSE_AFTER_EVERY_PACKET)
 	      pause

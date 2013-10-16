@@ -3,8 +3,10 @@
 %function stats = analyzeSinglePacket(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
 function stats = wifi_rx_chain(data, opt, stats)
+%----------------------------------------------------------------------------------------------------------------------------
+
   %n_p_d = stats.n_packets_processed
-  [stats data] = wifi_cleanup_packet(data, opt, stats);
+  [stats data] 				= wifi_cleanup_packet(data, opt, stats);
 
   if (~data.cleanupDone)
     display('wifi_cleanup_packet failed');
@@ -14,19 +16,48 @@ function stats = wifi_rx_chain(data, opt, stats)
   stats.n_packets_processed = stats.n_packets_processed + 1;
   %n_p_d = stats.n_packets_processed
 
-  %%*********************************************************************************************************************************************
+  %%********************************
   %%%%%%%%% process signal field
-  %%*********************************************************************************************************************************************
+  %%********************************
 
   nbpsc = 1;	%signal field is coded with bpsk
   nsyms = 1;	%signal field occupies one ofdm symbol
+
   [stats data ofdm_syms_f]  		= wifi_ofdm_demod(data.sig_samples, nsyms, data, opt, stats);
 
-  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f);
-  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
-  [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
-	wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
-  [stats data] = util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+  %%%%%%%%%%%%%%%%%%%%%%%
+  if (opt.printVars_ofdmDemodPlcp)
+    display('plcp signal field in frequency domain before equalization');
+      display('plcp data subcarriers:');
+    [ [1:48]' fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1))]
+      display('plcp pilot subcarriers:');
+    tx_pilot_syms = data.sig_and_data_tx_pilot_syms(:,1:nsyms);
+    [ [1:4]' fix(opt.ti_factor_after_cfo * (ofdm_syms_f(psubc_idx, 1) .* conj(tx_pilot_syms(:,1))))]
+  end
+  %%%%%%%%%%%%%%%%%%%%%%%
+
+  if (opt.dumpVars_ofdmDemodPlcp)
+    util_dumpData('ofdmDemodPlcp', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
+
+  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] ...
+  					= wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f);
+
+  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] ...
+  					= wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
+
+  [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] ...
+  					= wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
+
+  [stats data] 				= util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
 
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
@@ -57,14 +88,14 @@ function stats = wifi_rx_chain(data, opt, stats)
   end
 
 
-  %%*********************************************************************************************************************************************
+  %%*********************************
   %%%%%% process data field
-  %%*********************************************************************************************************************************************
+  %%*********************************
 
   nbpsc = data.sig_modu;
   nsyms = data.sig_nsyms;
   coderate = data.sig_code;
-  %[stats data rx_data_syms]  = wifi_cleanup_and_ofdm_demod_packet([data.sig_samples data.data_samples], data.sig_nsyms + 1, data, opt, stats);
+
   [stats data ofdm_syms_f]  		= wifi_ofdm_demod([data.sig_samples data.data_samples], nsyms+ 1, data, opt, stats);
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms + 1, opt, data, stats, ofdm_syms_f);
@@ -171,9 +202,9 @@ function stats = wifi_rx_chain(data, opt, stats)
   %parsed_data
   util_printHexOctets(data.parsed_data);
 
-  %%*********************************************************************************************************************************************
+  %%***************************************
   %% display plcp intermediaries/results
-  %%*********************************************************************************************************************************************
+  %%***************************************
 
 
   display('------------------------------------------------------------');
@@ -183,9 +214,9 @@ function stats = wifi_rx_chain(data, opt, stats)
   display('------------------------------------------------------------');
 
 
-  %%*********************************************************************************************************************************************
+  %%***************************************
   %% display data intermediaries/results
-  %%*********************************************************************************************************************************************
+  %%***************************************
 
   if (opt.printVars_data_syms)
 	  util_print_data_syms(...
@@ -198,8 +229,8 @@ function stats = wifi_rx_chain(data, opt, stats)
 	    );
   end
 
-  %%*********************************************************************************************************************************************
-  %%*********************************************************************************************************************************************
+  %%***************************************
+  %%***************************************
   %function stats = updateStats(data, stats)
   stats = updateStats(data, opt, stats);
 
@@ -328,7 +359,6 @@ function [stats data rx_data_bits_dec ndbps nsyms] = parse_signal(data, opt, sta
   data.sig_valid = valid;
   data.sig_ndbps = ndbps;
   data.sig_nsyms = nsyms;
-  pause
 end
 
 
