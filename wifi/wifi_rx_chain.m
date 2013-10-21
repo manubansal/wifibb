@@ -6,10 +6,38 @@ function stats = wifi_rx_chain(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
 
   %n_p_d = stats.n_packets_processed
-  [stats data] 				= wifi_cleanup_packet(data, opt, stats);
+  [stats data pkt_samples] 			= wifi_get_packet(data, opt, stats);
+
+
+  [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correction(opt, stats, pkt_samples, data.corrvec, data.pkt_start_point)
+  [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(opt, stats, pkt_samples)
+
+  net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
+  %pause
+
+  [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] ...
+  		= wifi_preamble_channel_estimation(opt, stats, pkt_samples)
+
+  stf_len = opt.stf_len;
+  ltf_len = opt.ltf_len;
+  sig_len = opt.sig_len;
+  sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
+  data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
+  %data.ch = ch;
+  %data.sig_samples = sig_samples;
+  %data.data_samples = data_samples;
+  %data.chi = chi;
+
+  data.cleanupDone = 1;
+
+
+  if (opt.GENERATE_PER_PACKET_PLOTS)
+  util_plot_channel_estimates(ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db)
+  end
+
 
   if (~data.cleanupDone)
-    display('wifi_cleanup_packet failed');
+    display('wifi cleanup of packet failed');
     return;
   end
   %n_p_d = stats.n_packets_processed
@@ -23,7 +51,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   nbpsc = 1;	%signal field is coded with bpsk
   nsyms = 1;	%signal field occupies one ofdm symbol
 
-  [stats data ofdm_syms_f]  		= wifi_ofdm_demod(data.sig_samples, nsyms, data, opt, stats);
+  [stats data ofdm_syms_f]  		= wifi_ofdm_demod(sig_samples, nsyms, data, opt, stats);
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
@@ -49,7 +77,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] ...
-  					= wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f);
+  					= wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f, chi);
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] ...
   					= wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
@@ -96,9 +124,9 @@ function stats = wifi_rx_chain(data, opt, stats)
   nsyms = data.sig_nsyms;
   coderate = data.sig_code;
 
-  [stats data ofdm_syms_f]  		= wifi_ofdm_demod([data.sig_samples data.data_samples], nsyms+ 1, data, opt, stats);
+  [stats data ofdm_syms_f]  		= wifi_ofdm_demod([sig_samples data_samples], nsyms+ 1, data, opt, stats);
 
-  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms + 1, opt, data, stats, ofdm_syms_f);
+  [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms + 1, opt, data, stats, ofdm_syms_f, chi);
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
   [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
 	wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
@@ -232,7 +260,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %%***************************************
   %%***************************************
   %function stats = updateStats(data, stats)
-  stats = updateStats(data, opt, stats);
+  stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch);
 
 
 end
@@ -395,30 +423,30 @@ end
 
 
 %----------------------------------------------------------------------------------------------------------------------------
-function stats = updateStats(data, opt, stats)
+function stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch)
 %----------------------------------------------------------------------------------------------------------------------------
   if (data.frame_type == opt.ftype.data)
     stats.ber_vec_data(end+1) = data.ber;
     stats.crc_vec_data(end+1) = data.crcValid;
 
     %stats.ltf_sync_freq_domain = ltf_sync_freq_domain;
-    stats.uu_ltf1_data(:,end+1) = data.uu_ltf1;
-    stats.uu_ltf2_data(:,end+1) = data.uu_ltf2;
-    stats.ch_data(:,end+1) = data.ch;
+    stats.uu_ltf1_data(:,end+1) = uu_ltf1;
+    stats.uu_ltf2_data(:,end+1) = uu_ltf2;
+    stats.ch_data(:,end+1) = ch;
   elseif (data.frame_type == opt.ftype.ack)
     stats.ber_vec_ack(end+1) = data.ber;
     stats.crc_vec_ack(end+1) = data.crcValid;
 
-    stats.uu_ltf1_ack(:,end+1) = data.uu_ltf1;
-    stats.uu_ltf2_ack(:,end+1) = data.uu_ltf2;
-    stats.ch_ack(:,end+1) = data.ch;
+    stats.uu_ltf1_ack(:,end+1) = uu_ltf1;
+    stats.uu_ltf2_ack(:,end+1) = uu_ltf2;
+    stats.ch_ack(:,end+1) = ch;
   elseif (data.frame_type == opt.ftype.unknown)
     stats.ber_vec_unknown(end+1) = data.ber;
     stats.crc_vec_unknown(end+1) = data.crcValid;
 
-    stats.uu_ltf1_unknown(:,end+1) = data.uu_ltf1;
-    stats.uu_ltf2_unknown(:,end+1) = data.uu_ltf2;
-    stats.ch_unknown(:,end+1) = data.ch;
+    stats.uu_ltf1_unknown(:,end+1) = uu_ltf1;
+    stats.uu_ltf2_unknown(:,end+1) = uu_ltf2;
+    stats.ch_unknown(:,end+1) = ch;
   end
 end
 

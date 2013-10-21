@@ -77,7 +77,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
 							  %introduced due to sampling frequency offset
     opt.GENERATE_ONE_TIME_PLOTS = false;
     opt.GENERATE_PER_PACKET_PLOTS = false;
-    opt.PAUSE_AFTER_EVERY_PACKET = false;
+    opt.PAUSE_AFTER_EVERY_PACKET = true;
 
     %---- these are written to c files ready to be imported for debugging ------%
     opt.writeVars_corr = false;
@@ -91,7 +91,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     %---- these are only being printed, but not written to files ------%
     opt.printVars_corr = false;
     opt.printVars_chEsts = false;
-    opt.printVars_cfoCorrectedPlcp = false;
+    opt.printVars_cfoCorrectedPlcp = true;
     opt.printVars_ofdmDemodPlcp = true;
 
     opt.printVars_ofdmEqualizedPlcp = true;
