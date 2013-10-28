@@ -18,7 +18,7 @@ function gen_wifi_stf()
   ri = [rr ii].';
   display('writing the following as interleaved 16bit signed integers in column order to binary file:')
   ri
-  fwrite(fid, ri, 'int16');
+  fwrite(fid, ri, 'int16', 'ieee-be');
   fclose(fid);
 
   %fid=fopen('data/stf_padded.dat','w');

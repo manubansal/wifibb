@@ -4,9 +4,20 @@
 %----------------------------------------------------------------------------------------------------------------------------
 function stats = wifi_rx_chain(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
+  stf_len = opt.stf_len;
+  ltf_len = opt.ltf_len;
+  sig_len = opt.sig_len;
 
   %n_p_d = stats.n_packets_processed
   [stats data pkt_samples] 			= wifi_get_packet(data, opt, stats);
+
+  %base signal field samples, before any rx processing
+  sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
+  if (opt.dumpVars_plcpBaseSamples)
+    util_dumpData('plcpBaseSamples', sig_samples)
+  else
+    display('not dumping')
+  end
 
 
   [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correction(opt, stats, pkt_samples, data.corrvec, data.pkt_start_point)
@@ -15,12 +26,18 @@ function stats = wifi_rx_chain(data, opt, stats)
   net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
   %pause
 
+  %signal field samples after cfo correction
+  sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
+  if (opt.dumpVars_plcpCfoCorrected)
+    util_dumpData('plcpCfoCorrected', sig_samples)
+  else
+    display('not dumping')
+  end
+
+
   [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] ...
   		= wifi_preamble_channel_estimation(opt, stats, pkt_samples)
 
-  stf_len = opt.stf_len;
-  ltf_len = opt.ltf_len;
-  sig_len = opt.sig_len;
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
   %data.ch = ch;
@@ -66,8 +83,8 @@ function stats = wifi_rx_chain(data, opt, stats)
   end
   %%%%%%%%%%%%%%%%%%%%%%%
 
-  if (opt.dumpVars_ofdmDemodPlcp)
-    util_dumpData('ofdmDemodPlcp', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
+  if (opt.dumpVars_plcpOfdmDemod)
+    util_dumpData('plcpOfdmDemod', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
   else
     display('not dumping')
   end
@@ -85,16 +102,42 @@ function stats = wifi_rx_chain(data, opt, stats)
   [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] ...
   					= wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
 
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_plcpOfdmEq)
+    util_dumpData('plcpOfdmEq', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
+
   [stats data] 				= util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
 
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
 
-  util_print_demapPacket_plcp(rx_data_syms, opt);
+  util_print_demapPacket_plcp(rx_data_bits, opt);
 
   %display('after demapping:');
   %rx_data_bits
   %pause
+
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_plcpDemap)
+    nbits = opt.soft_slice_nbits;
+    scale = 2^(nbits - 1);		%for 8 bits, this is 128, so that we can contain the soft estimates in [-128, 128]
+    %[[1:length(rx_data_bits)]' (rx_data_bits - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
+    %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
+    util_dumpData('plcpDemap', rx_data_bits(:,1) - scale)
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]       = deinterleave(data, opt, stats, rx_data_bits, nbpsc);

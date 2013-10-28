@@ -70,11 +70,7 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
   end
 
 
-  if snr < Inf
-    noisy_td_pkt_samples = awgn(td_pkt_samples, snr, 'measured');
-  else
-    noisy_td_pkt_samples = td_pkt_samples;
-  end
+  noisy_td_pkt_samples = wifi_awgn(td_pkt_samples, snr);
 
   noise_vector = noisy_td_pkt_samples - td_pkt_samples;
 

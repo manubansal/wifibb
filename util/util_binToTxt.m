@@ -74,9 +74,9 @@ function convertFile(filename, outfilename, ns_to_skip, ns_to_write, ns_per_iter
   for (i = 1:niter)
 	  display(strcat(num2str(i),'.of.',num2str(niter)));
 	  if (ns == 0)
-	    [d,count]=fread(fid,[2,inf],'int16');
+	    [d,count]=fread(fid,[2,inf],'int16', 0, 'ieee-be');
 	  else
-	    [d,count]=fread(fid,[2,ns],'int16');
+	    [d,count]=fread(fid,[2,ns],'int16', 0, 'ieee-be');
 	  end
 	  %%%%samples = (d(1,:) + i * d(2,:))/32767;
 	  %%%%samples = samples.';

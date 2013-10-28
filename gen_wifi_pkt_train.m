@@ -29,9 +29,11 @@ function gen_wifi_pkt_train(scale)
   %% pick an snr
   %%%%%%%%%%%%%%
   %snr = Inf;
-  snr = 50;
+  %snr = 50;
+  snr = 35;
   %snr = 30;
   %snr = 17; 	
+
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% pick the message(s)

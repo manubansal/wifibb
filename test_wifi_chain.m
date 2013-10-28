@@ -38,6 +38,7 @@ function test1()
 
   snr = 30;
   %snr = 17; 	
+
   
   %54mbps
   %snr 15	16	17	18
@@ -75,7 +76,7 @@ function test1()
   %% let's add some AWGN noise
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
-  rx_samples_f = awgn(samples_f, snr, 'measured');
+  rx_samples_f = wifi_awgn(samples_f, snr);
   %rx_samples_f = samples_f;
 
   %--------------------------------------------------------------------------

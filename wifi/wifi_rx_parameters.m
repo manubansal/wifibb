@@ -111,7 +111,11 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     %opt.printVars_data_syms = true;
 
     %----- variable binary dumps ---------%
-    opt.dumpVars_ofdmDemodPlcp = true;
+    opt.dumpVars_plcpBaseSamples = true;
+    opt.dumpVars_plcpCfoCorrected = true;
+    opt.dumpVars_plcpOfdmDemod = true;
+    opt.dumpVars_plcpOfdmEq = true;
+    opt.dumpVars_plcpDemap = true;
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
