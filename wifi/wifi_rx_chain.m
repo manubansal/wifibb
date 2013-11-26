@@ -138,7 +138,9 @@ function stats = wifi_rx_chain(data, opt, stats)
     scale = 2^(nbits - 1);		%for 8 bits, this is 128, so that we can contain the soft estimates in [-128, 128]
     %[[1:length(rx_data_bits)]' (rx_data_bits - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
-    util_dumpData('plcpDemap', rx_data_bits(:,1) - scale)
+    dumped_soft_bits = rx_data_bits(:,1) - scale
+    pause
+    util_dumpData('plcpDemap', dumped_soft_bits)
   else
     display('not dumping')
   end

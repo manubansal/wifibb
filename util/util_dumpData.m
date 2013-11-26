@@ -137,7 +137,9 @@ function util_dumpData(id, data)
     fn = strcat(BDATA_DIR, '/plcpDemap.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'int16', 'ieee-be');
+    %data = data
+    %pause
+    count = fwrite(f, data, 'int8', 'ieee-be');
     fclose(f);
     if (count ~= 48)
       error('something went wrong')
