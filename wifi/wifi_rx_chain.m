@@ -104,7 +104,15 @@ function stats = wifi_rx_chain(data, opt, stats)
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_plcpOfdmEq)
-    util_dumpData('plcpOfdmEq', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
+    util_dumpData('plcpOfdmEq.eqPnts', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
+    util_dumpData('plcpOfdmEq.channeli', chi)
+    [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+
+    ch_dsubc = ch(dsubc_idx)
+    util_dumpData('plcpOfdmEq.channel_dsubc', ch_dsubc)
+
+    ch_psubc = ch(psubc_idx)
+    util_dumpData('plcpOfdmEq.channel_psubc', ch_psubc)
   else
     display('not dumping')
   end
