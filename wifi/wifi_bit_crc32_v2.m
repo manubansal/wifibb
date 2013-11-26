@@ -6,7 +6,9 @@
 function ret = wifi_bit_crc32_v2(bits)
 %-------------------------------------------------------------------------------
   %display('crc32');
-  poly = [1 de2bi(hex2dec('EDB88320'), 32)]';
+
+  poly = [1 de2bi(hex2dec('EDB88320'), 32)]';	%doesn't work on R2010b
+
   bits = bits(:);
 
   % Add 32 zeros at the back
