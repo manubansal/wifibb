@@ -238,11 +238,38 @@ function stats = wifi_rx_chain(data, opt, stats)
   %pause
 
   if (opt.printVars_decodedBits)
-	  util_print_decode(rx_data_bits_dec, data.sig_ndbps, opt.n_decoded_symbols_per_ofdm_symbol);
+	  all_chunks = ...
+	   util_print_decode(rx_data_bits_dec, data.sig_ndbps, opt.n_decoded_symbols_per_ofdm_symbol);
 	  if (opt.PAUSE_AFTER_EVERY_PACKET)
 		  pause
 	  end
   end
+
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_dataVitdecChunks)
+    if (opt.printVars_decodedBits)
+      util_dumpData('dataVitdecChunks', all_chunks)
+    else
+      fprint(1, 'Need opt.printVars_decodedBits for opt.dumpVars_dataVitdecChunks\n');
+    end
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
+
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_dataVitdec)
+    util_dumpData('dataVitdec', rx_data_bits_dec)
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
 
 
   %display('scrambled service field:');

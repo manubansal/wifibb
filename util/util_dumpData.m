@@ -144,6 +144,44 @@ function util_dumpData(id, data)
     if (count ~= 48)
       error('something went wrong')
     end
+
+  elseif strcmp(id, 'dataVitdecChunks')
+    fprintf(1, 'Dumping dataVitdecChunks\n');
+    if (size(data,2) ~= 1)
+      data = data
+      size_data = size(data)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    fn = strcat(BDATA_DIR, '/dataVitdecChunks.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    %data = data
+    %pause
+    count = fwrite(f, data, 'uint8', 'ieee-be');
+    fclose(f);
+    if (count ~= size(data,1))
+      error('something went wrong')
+    end
+
+  elseif strcmp(id, 'dataVitdec')
+    fprintf(1, 'Dumping dataVitdec\n');
+    if (size(data,2) ~= 1)
+      data = data
+      size_data = size(data)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    fn = strcat(BDATA_DIR, '/dataVitdec.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    %data = data
+    %pause
+    count = fwrite(f, data, 'uint8', 'ieee-be');
+    fclose(f);
+    if (count ~= size(data,1))
+      error('something went wrong')
+    end
   else
     error('bad dump option')
   end

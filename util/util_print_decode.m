@@ -1,7 +1,9 @@
 
 %----------------------------------------------------------------------------------------------------------------------------
-function util_print_decode(rx_data_bits_dec, nbits_per_symbol, nchunks_per_symbol)
+function all_chunks = util_print_decode(rx_data_bits_dec, nbits_per_symbol, nchunks_per_symbol)
 %----------------------------------------------------------------------------------------------------------------------------
+  all_chunks = [];
+
   display('decoded bits, each ROW is a symbol (not each column)');
   fprintf(1, 'size of rx_data_bits_dec: %d\n', size(rx_data_bits_dec));
   %pause
@@ -29,6 +31,7 @@ function util_print_decode(rx_data_bits_dec, nbits_per_symbol, nchunks_per_symbo
   for i = 1:nchunks
     fprintf(1, 'chunk_number=%d\n', i)
     chunk = [dec_bits_reshape(i,:) pad_chunk];
+    all_chunks = [all_chunks chunk]
     for j = 1:nwords
       si = 1 + (j-1)*32;
       word = chunk(si : si + 32 - 1);
@@ -40,4 +43,6 @@ function util_print_decode(rx_data_bits_dec, nbits_per_symbol, nchunks_per_symbo
       fprintf(1, '\n')
     end
   end
+
+  all_chunks = all_chunks(:);
 end

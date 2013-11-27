@@ -116,6 +116,9 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.dumpVars_plcpOfdmDemod = true;
     opt.dumpVars_plcpOfdmEq = true;
     opt.dumpVars_plcpDemap = true;
+
+    opt.dumpVars_dataVitdecChunks = true;
+    opt.dumpVars_dataVitdec = true;
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
