@@ -2,7 +2,7 @@
 %----------------------------------------------------------------------------------------------------------------------------
 %function stats = analyzeSinglePacket(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
-function stats = wifi_rx_chain(data, opt, stats)
+function stats = wifi_rx_chain(data, opt, stats, confStr)
 %----------------------------------------------------------------------------------------------------------------------------
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
@@ -14,7 +14,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %base signal field samples, before any rx processing
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   if (opt.dumpVars_plcpBaseSamples)
-    util_dumpData('plcpBaseSamples', sig_samples)
+    util_dumpData('plcpBaseSamples', confStr, sig_samples)
   else
     display('not dumping')
   end
@@ -29,7 +29,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %signal field samples after cfo correction
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   if (opt.dumpVars_plcpCfoCorrected)
-    util_dumpData('plcpCfoCorrected', sig_samples)
+    util_dumpData('plcpCfoCorrected', confStr, sig_samples)
   else
     display('not dumping')
   end
@@ -84,7 +84,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %%%%%%%%%%%%%%%%%%%%%%%
 
   if (opt.dumpVars_plcpOfdmDemod)
-    util_dumpData('plcpOfdmDemod', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
+    util_dumpData('plcpOfdmDemod', confStr, fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
   else
     display('not dumping')
   end
@@ -104,15 +104,15 @@ function stats = wifi_rx_chain(data, opt, stats)
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_plcpOfdmEq)
-    util_dumpData('plcpOfdmEq.eqPnts', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
-    util_dumpData('plcpOfdmEq.channeli', chi)
+    util_dumpData('plcpOfdmEq.eqPnts', confStr, fix(ofdm_syms_f(dsubc_idx, 1)))
+    util_dumpData('plcpOfdmEq.channeli', confStr, chi)
     [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
 
     ch_dsubc = ch(dsubc_idx)
-    util_dumpData('plcpOfdmEq.channel_dsubc', ch_dsubc)
+    util_dumpData('plcpOfdmEq.channel_dsubc', confStr, ch_dsubc)
 
     ch_psubc = ch(psubc_idx)
-    util_dumpData('plcpOfdmEq.channel_psubc', ch_psubc)
+    util_dumpData('plcpOfdmEq.channel_psubc', confStr, ch_psubc)
   else
     display('not dumping')
   end
@@ -140,7 +140,7 @@ function stats = wifi_rx_chain(data, opt, stats)
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
     dumped_soft_bits = rx_data_bits(:,1) - scale
     pause
-    util_dumpData('plcpDemap', dumped_soft_bits)
+    util_dumpData('plcpDemap', confStr, dumped_soft_bits)
   else
     display('not dumping')
   end
@@ -191,12 +191,39 @@ function stats = wifi_rx_chain(data, opt, stats)
   rx_data_syms(:,1)=[];
   rx_data_syms = rx_data_syms(:,1:nsyms);
 
+  %size_ofdm_syms_f = size(ofdm_syms_f)
+  %nsyms = nsyms
+  ofdm_syms_f = ofdm_syms_f(:,2:end);
+  %size_ofdm_syms_f = size(ofdm_syms_f)
+  %pause
+
   if (opt.printVars_equalize)
     util_print_equalize(rx_data_syms);
     if (opt.PAUSE_AFTER_EVERY_PACKET)
 	    pause
     end
   end
+
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_dataOfdmEq)
+    %util_dumpData('dataOfdmEq.eqPnts', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, :)))
+    util_dumpData('dataOfdmEq.eqPnts', confStr, ofdm_syms_f(dsubc_idx, :))
+    %util_dumpData('dataOfdmEq.channeli', chi)
+    %[ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+
+    %ch_dsubc = ch(dsubc_idx)
+    %util_dumpData('dataOfdmEq.channel_dsubc', ch_dsubc)
+
+    %ch_psubc = ch(psubc_idx)
+    %util_dumpData('dataOfdmEq.channel_psubc', ch_psubc)
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
+
 
   %display('size of rx_data_syms before demapping:');
   %size(rx_data_syms)
@@ -248,7 +275,7 @@ function stats = wifi_rx_chain(data, opt, stats)
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataVitdecChunks)
     if (opt.printVars_decodedBits)
-      util_dumpData('dataVitdecChunks', all_chunks)
+      util_dumpData('dataVitdecChunks', confStr, all_chunks)
     else
       fprint(1, 'Need opt.printVars_decodedBits for opt.dumpVars_dataVitdecChunks\n');
     end
@@ -262,7 +289,7 @@ function stats = wifi_rx_chain(data, opt, stats)
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataVitdec)
-    util_dumpData('dataVitdec', rx_data_bits_dec)
+    util_dumpData('dataVitdec', confStr, rx_data_bits_dec)
   else
     display('not dumping')
   end

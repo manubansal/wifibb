@@ -1,4 +1,4 @@
-function wifi_rx_pkt_train(samples)
+function wifi_rx_pkt_train(samples, confStr)
   %scale = sqrt(2);
   scale = 'kk';
   %mod = 'jj';
@@ -101,7 +101,7 @@ function wifi_rx_pkt_train(samples)
 
     %analyze next packet
     %stats = analyzeSinglePacket(data, opt, stats);
-    stats = wifi_rx_chain(data, opt, stats);
+    stats = wifi_rx_chain(data, opt, stats, confStr);
     ber = stats.ber(end);
 
     %remove the analyzed packet from sample stream and associated data structures

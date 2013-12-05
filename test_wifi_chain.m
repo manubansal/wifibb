@@ -1,32 +1,70 @@
 function test_wifi_chain()
-  %test1()
-  test2()
-end
 
-function test2()
-  rate = 54;
-  %snr = 30;
-  snr = Inf;
-  scale = sqrt(2);
-
-  msgs_hex = util_msg_hex()
-  n_msgs = length(msgs_hex)
-
-  td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
-  n_tx_samples = length(td_pkt_samples_16bit)
-  %pause
-  %msgs_hex, rate, snr, scale = wifi_rx_pkt_train(td_pkt_samples_16bit)
-  wifi_rx_pkt_train(td_pkt_samples_16bit)
-end
-
-function test1()
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  %% pick a rate
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   rate = 54;
   %rate = 36;
   %rate = 24;
   %rate = 6;
+
+  %snr = 30;
+  %snr = 35;
+  snr = Inf;
+  %snr = 30;
+  %snr = 17; 	
+
+
+  %test1(rate, snr)
+  test2(rate, snr)
+end
+
+function test2(rate, snr)
+  scale = sqrt(2);
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% pick the message(s)
+  %%%%%%%%%%%%%%%%%%%%%%
+  msgs_hex = util_msg_hex()
+  n_msgs = length(msgs_hex)
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% conf string
+  %%%%%%%%%%%%%%%%%%%%%%
+  %pktparams = strcat('nmsgs',int2str(n_msgs),'_rate_',int2str(rate),'_snr_',num2str(snr),'_scale_',num2str(scale));
+  confStr = sprintf('rate%d.snr%d.nmsgs%d.scale%04.2f', rate, snr, n_msgs, scale)
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% remove old files
+  %%%%%%%%%%%%%%%%%%%%%%
+  [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
+  path = sprintf('%s/%s*', BDATA_DIR, confStr);
+  fprintf(1, 'Deleting %s, press any key...\n', path)
+  pause
+  delete(path)
+  %pause
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% modulate messages
+  %%%%%%%%%%%%%%%%%%%%%%
+  td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
+  n_tx_samples = length(td_pkt_samples_16bit)
+
+  %pause
+  %msgs_hex, rate, snr, scale = wifi_rx_pkt_train(td_pkt_samples_16bit)
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% write samples
+  %%%%%%%%%%%%%%%%%%%%%%
+  util_writeSamples(td_pkt_samples_16bit, confStr)
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% decode messages
+  %%%%%%%%%%%%%%%%%%%%%%
+  wifi_rx_pkt_train(td_pkt_samples_16bit, confStr)
+end
+
+function test1(rate, snr)
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  %% pick a rate
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% pick other settings
@@ -35,9 +73,6 @@ function test1()
   %softbit_scale_nbits = 8;	%soft-bit scale
   tblen = 36;
   %tblen = 72;
-
-  snr = 30;
-  %snr = 17; 	
 
   
   %54mbps

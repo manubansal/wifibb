@@ -1,6 +1,6 @@
 %Dump data into a binary file for scripted comparison/test case generation
 %
-function util_dumpData(id, data)
+function util_dumpData(id, confStr, data)
   [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
 
@@ -14,7 +14,7 @@ function util_dumpData(id, data)
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/plcpBaseSamples.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpBaseSamples.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
@@ -31,7 +31,7 @@ function util_dumpData(id, data)
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/plcpCfoCorrected.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpCfoCorrected.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
@@ -48,7 +48,7 @@ function util_dumpData(id, data)
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/plcpOfdmDemod.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmDemod.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
@@ -65,7 +65,7 @@ function util_dumpData(id, data)
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/plcpOfdmEq.eqPnts.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.eqPnts.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
@@ -83,7 +83,7 @@ function util_dumpData(id, data)
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/plcpOfdmEq.channeli.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channeli.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
@@ -101,7 +101,7 @@ function util_dumpData(id, data)
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/plcpOfdmEq.channel_dsubc.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channel_dsubc.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
@@ -119,7 +119,7 @@ function util_dumpData(id, data)
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/plcpOfdmEq.channel_psubc.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channel_psubc.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
@@ -134,7 +134,7 @@ function util_dumpData(id, data)
       fprintf(1, 'Bad size, skipping\n');
       return;
     end
-    fn = strcat(BDATA_DIR, '/plcpDemap.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpDemap.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     %data = data
@@ -145,6 +145,31 @@ function util_dumpData(id, data)
       error('something went wrong')
     end
 
+  elseif strcmp(id, 'dataOfdmEq.eqPnts')
+    fprintf(1, 'Dumping dataOfdmEq.eqPnts\n');
+    size_data = size(data)
+    pause
+    data_m = data;
+    for jj = 1:size(data_m, 2)
+      data = data_m(:,jj)
+      if (sum(size(data(:)) == [48,1]) ~= 2)
+	fprintf(1, 'Bad size, skipping\n');
+	return;
+      end
+      dr = real(data); dr = dr(:);
+      di = imag(data); di = di(:);
+      data = [dr di].';
+      fn = strcat(BDATA_DIR, '/', confStr, '.dataOfdmEq.eqPnts.mdat');
+      fprintf(1, ['Writing to ',fn]);
+      f = fopen(fn, 'a+');
+      %count = fwrite(f, data, 'int16', 'ieee-be');
+      count = fwrite(f, data, 'double', 'ieee-be');
+      fclose(f);
+      if (count ~= 48 * 2)
+	error('something went wrong')
+      end
+    end
+
   elseif strcmp(id, 'dataVitdecChunks')
     fprintf(1, 'Dumping dataVitdecChunks\n');
     if (size(data,2) ~= 1)
@@ -153,7 +178,7 @@ function util_dumpData(id, data)
       fprintf(1, 'Bad size, skipping\n');
       return;
     end
-    fn = strcat(BDATA_DIR, '/dataVitdecChunks.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataVitdecChunks.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     %data = data
@@ -172,7 +197,7 @@ function util_dumpData(id, data)
       fprintf(1, 'Bad size, skipping\n');
       return;
     end
-    fn = strcat(BDATA_DIR, '/dataVitdec.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataVitdec.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     %data = data
