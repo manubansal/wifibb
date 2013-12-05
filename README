@@ -1,6 +1,13 @@
+-- current --
 MATLAB version:
 R2010b or higher, need Communication Toolbox
 
+>> setup_paths
+>> test_wifi_chain
+
+
+
+-- old --
 Code to generate ofdm-modulated WiFi-like data. It picks random constellation points to load onto ofdm data subcarriers and loads pilot subcarriers according to the standard. Preamble is generated and prefixed to the data sample sequence. Thus, the packet is reprensetative of a wifi packet except that the actual data content is random, and no channel coding, interleaving and scrambling are performed.
 
 
