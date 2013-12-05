@@ -5,6 +5,25 @@ function util_dumpData(id, confStr, data)
   [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
 
   if strcmp(id, '')
+
+  elseif strcmp(id, 'ltfRxSamples')
+    fprintf(1, 'Dumping ltfRxSamples\n');
+    if (sum(size(data(:)) == [160,1]) ~= 2)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.ltfRxSamples.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'int16', 'ieee-be');
+    fclose(f);
+    if (count ~= 160 * 2)
+      error('something went wrong')
+    end
+
   elseif strcmp(id, 'plcpBaseSamples')
     fprintf(1, 'Dumping plcpBaseSamples\n');
     if (sum(size(data(:)) == [80,1]) ~= 2)
@@ -37,6 +56,24 @@ function util_dumpData(id, confStr, data)
     count = fwrite(f, data, 'int16', 'ieee-be');
     fclose(f);
     if (count ~= 80 * 2)
+      error('something went wrong')
+    end
+  elseif strcmp(id, 'dataCfoCorrected')
+    fprintf(1, 'Dumping dataCfoCorrected\n');
+    if ~ isvector(data)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataCfoCorrected.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
       error('something went wrong')
     end
   elseif strcmp(id, 'plcpOfdmDemod')
@@ -142,6 +179,24 @@ function util_dumpData(id, confStr, data)
     count = fwrite(f, data, 'int8', 'ieee-be');
     fclose(f);
     if (count ~= 48)
+      error('something went wrong')
+    end
+
+  elseif strcmp(id, 'dataOfdmDemod')
+    fprintf(1, 'Dumping ofdmDemodPlcp\n');
+    size_data = size(data)
+    pause
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataOfdmDemod.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
       error('something went wrong')
     end
 

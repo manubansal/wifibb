@@ -11,6 +11,16 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   %n_p_d = stats.n_packets_processed
   [stats data pkt_samples] 			= wifi_get_packet(data, opt, stats);
 
+
+  %base ltf samples, before any rx processing
+  ltf_samples = pkt_samples(stf_len++1:stf_len+ltf_len);
+  if (opt.dumpVars_ltfRxSamples)
+    util_dumpData('ltfRxSamples', confStr, ltf_samples)
+  else
+    display('not dumping')
+  end
+
+
   %base signal field samples, before any rx processing
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   if (opt.dumpVars_plcpBaseSamples)
@@ -28,8 +38,14 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
 
   %signal field samples after cfo correction
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
+  data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
   if (opt.dumpVars_plcpCfoCorrected)
     util_dumpData('plcpCfoCorrected', confStr, sig_samples)
+  else
+    display('not dumping')
+  end
+  if (opt.dumpVars_dataCfoCorrected)
+    util_dumpData('dataCfoCorrected', confStr, data_samples)
   else
     display('not dumping')
   end
@@ -178,6 +194,15 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   coderate = data.sig_code;
 
   [stats data ofdm_syms_f]  		= wifi_ofdm_demod([sig_samples data_samples], nsyms+ 1, data, opt, stats);
+
+  if (opt.dumpVars_dataOfdmDemod)
+    util_dumpData('dataOfdmDemod', confStr, ofdm_syms_f(dsubc_idx, 2:end))
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms + 1, opt, data, stats, ofdm_syms_f, chi);
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
