@@ -13,6 +13,7 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
 
   %zero_prepad_dur_us = 100;		%zero samples of this duration (us) will be prefixed to every packet
   zero_prepad_dur_us = 10;		%zero samples of this duration (us) will be prefixed to every packet
+  zero_postpad_dur_us = 5;
   
   %54mbps
   %snr 15	16	17	18
@@ -65,9 +66,12 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
   %-1 in zero-pad-length is because data portion is generated with one
   %extra sample for windowing
 
+  rms_postpad_samples = zeros(20 * zero_postpad_dur_us, 1) + signal_rms; 	
+
   td_pkt_samples = [];
   for ii = 1:n_msgs
-    td_pkt_samples = [td_pkt_samples; rms_prepad_samples; all_td_pkt_samples{ii}];
+    td_pkt_samples = [td_pkt_samples; rms_prepad_samples; ...
+    	all_td_pkt_samples{ii}; rms_postpad_samples];
   end
 
 
@@ -79,9 +83,12 @@ function td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
   %-1 in zero-pad-length is because data portion is generated with one
   %extra sample for windowing
 
+  zero_postpad_samples = zeros(20 * zero_postpad_dur_us, 1);
+
   td_pkt_samples = [];
   for ii = 1:n_msgs
-    td_pkt_samples = [td_pkt_samples; zero_prepad_samples; all_td_pkt_samples{ii}];
+    td_pkt_samples = [td_pkt_samples; zero_prepad_samples; ...
+    	all_td_pkt_samples{ii}; zero_postpad_samples];
   end
 
   td_pkt_samples = td_pkt_samples + noise_vector;
