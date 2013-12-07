@@ -7,7 +7,7 @@ function util_writeVarToCFile(var, varname, nbitsToRightShift, Qval, datatype, f
   ns_to_write = 10000;
 
   tracename = strcat('trace_skip_',num2str(ns_to_skip),'_ns_',num2str(ns_to_write),'_',varname);
-  outfilename = strcat(CDATA_DIR,tracename,'.c');
+  outfilename = strcat(CDATA_DIR,'/',tracename,'.c');
 
   if (nargin > 5 && forgetbitshift)
 	  data = var;
