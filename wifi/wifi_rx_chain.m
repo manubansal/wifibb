@@ -23,8 +23,16 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
 
   %base signal field samples, before any rx processing
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
+  data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
+
   if (opt.dumpVars_plcpBaseSamples)
     util_dumpData('plcpBaseSamples', confStr, sig_samples)
+  else
+    display('not dumping')
+  end
+
+  if (opt.dumpVars_dataBaseSamples)
+    util_dumpData('dataBaseSamples', confStr, data_samples)
   else
     display('not dumping')
   end

@@ -58,24 +58,7 @@ function util_dumpData(id, confStr, data)
     if (count ~= 80 * 2)
       error('something went wrong')
     end
-  elseif strcmp(id, 'dataCfoCorrected')
-    fprintf(1, 'Dumping dataCfoCorrected\n');
-    if ~ isvector(data)
-      fprintf(1, 'Bad size, skipping\n');
-      return;
-    end
-    len = length(data);
-    dr = real(data); dr = dr(:);
-    di = imag(data); di = di(:);
-    data = [dr di].';
-    fn = strcat(BDATA_DIR, '/', confStr, '.dataCfoCorrected.mdat');
-    fprintf(1, ['Writing to ',fn]);
-    f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'double', 'ieee-be');
-    fclose(f);
-    if (count ~= len * 2)
-      error('something went wrong')
-    end
+
   elseif strcmp(id, 'plcpOfdmDemod')
     fprintf(1, 'Dumping ofdmDemodPlcp\n');
     if (sum(size(data(:)) == [48,1]) ~= 2)
@@ -179,6 +162,44 @@ function util_dumpData(id, confStr, data)
     count = fwrite(f, data, 'int8', 'ieee-be');
     fclose(f);
     if (count ~= 48)
+      error('something went wrong')
+    end
+
+  elseif strcmp(id, 'dataBaseSamples')
+    fprintf(1, 'Dumping dataBaseSamples\n');
+    if ~ isvector(data)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataBaseSamples.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+      error('something went wrong')
+    end
+
+  elseif strcmp(id, 'dataCfoCorrected')
+    fprintf(1, 'Dumping dataCfoCorrected\n');
+    if ~ isvector(data)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataCfoCorrected.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
       error('something went wrong')
     end
 
