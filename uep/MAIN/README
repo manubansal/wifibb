@@ -1,0 +1,22 @@
+uep_simul is the file that simulates UEP and computes BER. It's results are stored in ./results/
+
+vidwifi_interleave and vidwifi_deinterleave are the major changes in the chain. The complete chain is visible in uep_simul.m
+
+interleave_test_case shows you an example of how the interleaved block looks.
+
+Located in Apex/jeff
+Apex should be shared with you.
+
+Results include files named uep_ber_54_1 and the likes. 54 = 54 MBps. 1 = P:I ratio.  Load the file to get UEP_BIT_ERRORS map.
+UEP_BIT_ERRORS(20) will give you the UEP ber for I data, P data and total data.
+eg.
+
+>> UEP_BIT_ERRORS(20)
+
+ans =
+
+   1.0e-03 *
+
+            0    0.1094    0.0911
+
+
