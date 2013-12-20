@@ -206,7 +206,6 @@ function util_dumpData(id, confStr, data)
   elseif strcmp(id, 'dataOfdmDemod')
     fprintf(1, 'Dumping ofdmDemodPlcp\n');
     size_data = size(data)
-    pause
     data = data(:);
     len = length(data);
     dr = real(data); dr = dr(:);
@@ -224,7 +223,6 @@ function util_dumpData(id, confStr, data)
   elseif strcmp(id, 'dataOfdmEq.eqPnts')
     fprintf(1, 'Dumping dataOfdmEq.eqPnts\n');
     size_data = size(data)
-    pause
     data_m = data;
     for jj = 1:size(data_m, 2)
       data = data_m(:,jj)
@@ -245,6 +243,33 @@ function util_dumpData(id, confStr, data)
 	error('something went wrong')
       end
     end
+
+  elseif strcmp(id, 'dataDemap')
+    fprintf(1, 'Dumping dataDemap\n');
+    data = data(:);
+    len = length(data);
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataDemap.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'int8', 'ieee-be');
+    fclose(f);
+    if (count ~= len)
+      error('something went wrong')
+    end
+
+  elseif strcmp(id, 'dataDepunct')
+    fprintf(1, 'Dumping dataDepunct\n');
+    data = data(:);
+    len = length(data);
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataDepunct.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'int8', 'ieee-be');
+    fclose(f);
+    if (count ~= len)
+      error('something went wrong')
+    end
+
 
   elseif strcmp(id, 'dataVitdecChunks')
     fprintf(1, 'Dumping dataVitdecChunks\n');

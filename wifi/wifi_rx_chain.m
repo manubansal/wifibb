@@ -159,11 +159,11 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_plcpDemap)
     nbits = opt.soft_slice_nbits;
-    scale = 2^(nbits - 1);		%for 8 bits, this is 128, so that we can contain the soft estimates in [-128, 128]
-    %[[1:length(rx_data_bits)]' (rx_data_bits - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
+    scale = 2^(nbits - 1);		%for 8 bits, this is 128, so that we can 
+    					%contain the soft estimates in [-128, 128]
+
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
     dumped_soft_bits = rx_data_bits(:,1) - scale
-    pause
     util_dumpData('plcpDemap', confStr, dumped_soft_bits)
   else
     display('not dumping')
@@ -266,6 +266,24 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
 
   util_print_demapPacket_data(rx_data_bits, opt);
 
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_dataDemap)
+    nbits = opt.soft_slice_nbits;
+    scale = 2^(nbits - 1);		%for 8 bits, this is 128, so that we can 
+    					%contain the soft estimates in [-128, 128]
+
+    %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
+    dumped_soft_bits = rx_data_bits(:,:) - scale
+    util_dumpData('dataDemap', confStr, dumped_soft_bits)
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
+
+
   %[stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]  	= deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
@@ -286,6 +304,23 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   %display('after depuncture');
   %rx_data_bits_depunct
   %pause
+
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_dataDemap)
+    nbits = opt.soft_slice_nbits;
+    scale = 2^(nbits - 1);		%for 8 bits, this is 128, so that we can 
+    					%contain the soft estimates in [-128, 128]
+
+    %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
+    dumped_soft_bits_depunct = rx_data_bits_depunct(:,1) - scale
+    util_dumpData('dataDepunct', confStr, dumped_soft_bits_depunct)
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
 
   %decode the actual data length portion
   data_and_tail_length_bits = 16 + data.sig_payload_length * 8 + 6;	%first 16 for service, last 6 for tail
