@@ -44,7 +44,7 @@ function test2(rate, snr)
   %%%%%%%%%%%%%%%%%%%%%%
   %% modulate messages
   %%%%%%%%%%%%%%%%%%%%%%
-  td_pkt_samples_16bit = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
+  [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
   n_tx_samples = length(td_pkt_samples_16bit)
 
   %pause
@@ -58,14 +58,12 @@ function test2(rate, snr)
   %%%%%%%%%%%%%%%%%%%%%%
   %% decode messages
   %%%%%%%%%%%%%%%%%%%%%%
-  rx_pkts = wifi_rx_pkt_train(td_pkt_samples_16bit, confStr)
+  rx_pkts = wifi_rx_pkt_train(td_pkt_samples_16bit, confStr);
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% detailed comparison
   %%%%%%%%%%%%%%%%%%%%%%
-  display('Comparing messages byte-by-byte, press any key to continue...')
-  pause
-  util_compare_tx_rx_pkts(msgs_hex, rx_pkts)
+  util_compare_tx_rx_pkts(msgs_hex, rx_pkts, msgs_scr)
 end
 
 function test1(rate, snr)

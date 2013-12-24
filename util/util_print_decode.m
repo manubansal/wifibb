@@ -13,7 +13,7 @@ function all_chunks = util_print_decode(rx_data_bits_dec, nbits_per_symbol, nchu
   fprintf(1, 'nbits_ceil: %d\n', nbits_ceil);
   padlength = nbits_ceil - length(rx_data_bits_dec);
   fprintf(1, 'padlength: %d\n', padlength);
-  rx_data_bits_dec =  [rx_data_bits_dec zeros(padlength, 1)];
+  rx_data_bits_dec =  [rx_data_bits_dec; zeros(padlength, 1)];
   %dec_bits_reshape = reshape(rx_data_bits_dec, nbits_per_symbol, nsyms)';
   %dec_bits_out = [(1:nsyms)' dec_bits_reshape]
   nchunks = nsyms * nchunks_per_symbol;

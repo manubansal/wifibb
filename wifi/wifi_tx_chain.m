@@ -1,5 +1,5 @@
 
-function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples] = wifi_tx_chain(msg, rate)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate)
   %%%%%%%%%%%%%%
   %% add the crc 
   %%%%%%%%%%%%%%

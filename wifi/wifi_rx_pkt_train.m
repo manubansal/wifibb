@@ -59,8 +59,8 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr)
 
 
     %analyze next packet
-    [stats parsed_data frame_type crcValid] = wifi_rx_chain(data, opt, stats, confStr)
-    rx_pkts{end+1} = {parsed_data frame_type crcValid}
+    [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chain(data, opt, stats, confStr)
+    rx_pkts{end+1} = {parsed_data frame_type crcValid rx_data_bits_dec}
     ber = stats.ber(end);
 
     last_pkt_start_point = stats.pkt_start_points(end)

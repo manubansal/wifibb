@@ -2,7 +2,7 @@
 %----------------------------------------------------------------------------------------------------------------------------
 %function stats = analyzeSinglePacket(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
-function [stats parsed_data frame_type crcValid] = wifi_rx_chain(data, opt, stats, confStr)
+function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chain(data, opt, stats, confStr)
 %----------------------------------------------------------------------------------------------------------------------------
 
   stf_len = opt.stf_len;
@@ -296,7 +296,8 @@ function [stats parsed_data frame_type crcValid] = wifi_rx_chain(data, opt, stat
   data_and_tail_length_bits = 16 + data.sig_payload_length * 8 + 6;	%first 16 for service, last 6 for tail
   actual_data_portion_with_tail = rx_data_bits_depunct(1:(data_and_tail_length_bits * 2));	%since it's a half rate code
 
-  [stats data rx_data_bits_dec]         = decode(data, opt, stats, rx_data_bits_depunct, opt.tblen_data);
+  %[stats data rx_data_bits_dec]         = decode(data, opt, stats, rx_data_bits_depunct, opt.tblen_data);
+  [stats data rx_data_bits_dec]         = decode(data, opt, stats, actual_data_portion_with_tail, opt.tblen_data);
 
   if (opt.printVars_decodedBits)
 	  all_chunks = ...
@@ -344,7 +345,7 @@ function [stats parsed_data frame_type crcValid] = wifi_rx_chain(data, opt, stat
     end
   end
 
-  rx_data_bytes = reshape(rx_data_bits_descr, 8, length(rx_data_bits_descr)/8);
+  %rx_data_bytes = reshape(rx_data_bits_descr, 8, length(rx_data_bits_descr)/8);
 
   %retain only upto the data portion, including service field but discarding tail and pad
   rx_data_bits_descr = rx_data_bits_descr(1:(16+data.sig_payload_length * 8));
