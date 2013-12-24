@@ -38,8 +38,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
 
 
-  [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correction(opt, stats, pkt_samples, data.corrvec, data.pkt_start_point)
-  [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(opt, stats, pkt_samples)
+  [stats, pkt_samples, coarse_cfo_freq_off_khz] = ...
+  	wifi_coarse_cfo_correction(opt, stats, pkt_samples, data.corrvec, data.pkt_start_point);
+  [stats, pkt_samples, fine_cfo_freq_off_khz] = ...
+  	wifi_fine_cfo_correction(opt, stats, pkt_samples);
 
   net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
 
@@ -59,7 +61,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
 
   [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] ...
-  		= wifi_preamble_channel_estimation(opt, stats, pkt_samples)
+  		= wifi_preamble_channel_estimation(opt, stats, pkt_samples);
 
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
@@ -92,7 +94,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats data ofdm_syms_f]  		= wifi_ofdm_demod(sig_samples, nsyms, data, opt, stats);
 
   %++++++++++++++++++++++++++++++++++++++++++++++
-  [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+  [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
   %%%%%%%%%%%%%%%%%%%%%%%
   if (opt.printVars_ofdmDemodPlcp)
     display('plcp signal field in frequency domain before equalization');
@@ -127,12 +129,12 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   if (opt.dumpVars_plcpOfdmEq)
     util_dumpData('plcpOfdmEq.eqPnts', confStr, fix(ofdm_syms_f(dsubc_idx, 1)))
     util_dumpData('plcpOfdmEq.channeli', confStr, chi)
-    [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+    [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
 
-    ch_dsubc = ch(dsubc_idx)
+    ch_dsubc = ch(dsubc_idx);
     util_dumpData('plcpOfdmEq.channel_dsubc', confStr, ch_dsubc)
 
-    ch_psubc = ch(psubc_idx)
+    ch_psubc = ch(psubc_idx);
     util_dumpData('plcpOfdmEq.channel_psubc', confStr, ch_psubc)
   else
     display('not dumping')
@@ -156,7 +158,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     					%contain the soft estimates in [-128, 128]
 
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
-    dumped_soft_bits = rx_data_bits(:,1) - scale
+    dumped_soft_bits = rx_data_bits(:,1) - scale;
     util_dumpData('plcpDemap', confStr, dumped_soft_bits)
   else
     display('not dumping')
@@ -223,7 +225,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     %util_dumpData('dataOfdmEq.eqPnts', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, :)))
     util_dumpData('dataOfdmEq.eqPnts', confStr, ofdm_syms_f(dsubc_idx, :))
     %util_dumpData('dataOfdmEq.channeli', chi)
-    %[ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+    %[ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
 
     %ch_dsubc = ch(dsubc_idx)
     %util_dumpData('dataOfdmEq.channel_dsubc', ch_dsubc)
@@ -250,7 +252,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     					%contain the soft estimates in [-128, 128]
 
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
-    dumped_soft_bits = rx_data_bits(:,:) - scale
+    dumped_soft_bits = rx_data_bits(:,:) - scale;
     util_dumpData('dataDemap', confStr, dumped_soft_bits)
   else
     display('not dumping')
@@ -282,7 +284,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     					%contain the soft estimates in [-128, 128]
 
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
-    dumped_soft_bits_depunct = rx_data_bits_depunct(:,1) - scale
+    dumped_soft_bits_depunct = rx_data_bits_depunct(:,1) - scale;
     util_dumpData('dataDepunct', confStr, dumped_soft_bits_depunct)
   else
     display('not dumping')

@@ -3,7 +3,7 @@ function [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase
   
   if (opt.PILOT_PHASE_TRACKING)
     display('pilot based phase tracking and compensation');
-    [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+    [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
     tx_pilot_syms = data.sig_and_data_tx_pilot_syms(:,1:nsyms);
     %size(uu_pilot_syms)
     uu_pilot_syms_avg = sum(uu_pilot_syms)/4;

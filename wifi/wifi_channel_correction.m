@@ -1,6 +1,6 @@
 
 function [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f, chi)
-  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
   %chi = data.chi;
   tx_pilot_syms = data.sig_and_data_tx_pilot_syms(:,1:nsyms);
 

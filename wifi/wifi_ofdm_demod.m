@@ -43,7 +43,7 @@ function [stats data ofdm_syms_f] = wifi_ofdm_demod(samples, nsyms, data, opt, s
   %%%%%tx_data1_syms = data.tx_data_syms(d1subc_idx, :);
 
 
-  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
 
 
   rx_pilot_syms_before_chi = ofdm_syms_f(psubc_idx, :);

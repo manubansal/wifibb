@@ -86,8 +86,8 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   ch_abs_db = 10*log10(abs(ch));
 
 
-  display('channel gains, channel gain magnitudes (dB):');
-  [ch ch_abs_db]
+  %display('channel gains, channel gain magnitudes (dB):');
+  %[ch ch_abs_db]
 
   if (opt.GENERATE_PER_PACKET_PLOTS)
     figure

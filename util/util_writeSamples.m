@@ -1,6 +1,6 @@
 function util_writeSamples(td_pkt_samples_16bit, confStr)
     %%%%%%%%%%%%%%%%%%%
-    [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
+    [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths();
     dt = datestr(now, 'yyyymmdd_HHMMSS')
 
     pktTxtFile = strcat(BDATA_DIR, '/', confStr, '.txpkt.txt');

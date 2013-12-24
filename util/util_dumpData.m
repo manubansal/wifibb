@@ -1,8 +1,8 @@
 %Dump data into a binary file for scripted comparison/test case generation
 %
 function util_dumpData(id, confStr, data)
-  [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
-  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+  [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths();
+  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
 
   if strcmp(id, '')
 
@@ -195,7 +195,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.dataCfoCorrected.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -205,7 +205,6 @@ function util_dumpData(id, confStr, data)
 
   elseif strcmp(id, 'dataOfdmDemod')
     fprintf(1, 'Dumping ofdmDemodPlcp\n');
-    size_data = size(data)
     data = data(:);
     len = length(data);
     dr = real(data); dr = dr(:);
@@ -222,10 +221,9 @@ function util_dumpData(id, confStr, data)
 
   elseif strcmp(id, 'dataOfdmEq.eqPnts')
     fprintf(1, 'Dumping dataOfdmEq.eqPnts\n');
-    size_data = size(data)
     data_m = data;
     for jj = 1:size(data_m, 2)
-      data = data_m(:,jj)
+      data = data_m(:,jj);
       if (sum(size(data(:)) == [48,1]) ~= 2)
 	fprintf(1, 'Bad size, skipping\n');
 	return;
@@ -234,7 +232,7 @@ function util_dumpData(id, confStr, data)
       di = imag(data); di = di(:);
       data = [dr di].';
       fn = strcat(BDATA_DIR, '/', confStr, '.dataOfdmEq.eqPnts.mdat');
-      fprintf(1, ['Writing to ',fn]);
+      fprintf(1, ['Writing to ',fn,'\n']);
       f = fopen(fn, 'a+');
       %count = fwrite(f, data, 'int16', 'ieee-be');
       count = fwrite(f, data, 'double', 'ieee-be');

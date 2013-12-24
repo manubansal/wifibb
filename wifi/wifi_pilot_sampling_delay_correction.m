@@ -5,7 +5,7 @@ wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_sym
   if (opt.PILOT_SAMPLING_DELAY_CORRECTION)
     display('pilot based sampling delay (due to sampling freq offset) correction');
 
-    [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0)
+    [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
 
     tx_pilot_syms = data.sig_and_data_tx_pilot_syms(:,1:nsyms);
     % Algorithm:

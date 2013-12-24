@@ -8,7 +8,7 @@ function util_binToTxt(DATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter)
   if (nargin < 2)
 
   %DATA_DIR = '../wifibb-traces/data1'
-  [DATA_DIR, TRACE_DIR] = setup_paths()
+  [DATA_DIR, TRACE_DIR] = setup_paths();
 
   INP_FILE = 'trace.dat'
 

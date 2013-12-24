@@ -1,6 +1,6 @@
 
 function util_writeVarToCFile(var, varname, nbitsToRightShift, Qval, datatype, forgetbitshift, autosize)
-  [DATA_DIR, TRACE_DIR, CDATA_DIR] = setup_paths()
+  [DATA_DIR, TRACE_DIR, CDATA_DIR] = setup_paths();
 
   %parameters for filename
   ns_to_skip  = 400000;
