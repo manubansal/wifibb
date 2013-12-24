@@ -2,13 +2,13 @@
 %----------------------------------------------------------------------------------------------------------------------------
 %function stats = analyzeSinglePacket(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
-function stats = wifi_rx_chain(data, opt, stats, confStr)
+function [stats parsed_data frame_type crcValid] = wifi_rx_chain(data, opt, stats, confStr)
 %----------------------------------------------------------------------------------------------------------------------------
+
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   sig_len = opt.sig_len;
 
-  %n_p_d = stats.n_packets_processed
   [stats data pkt_samples] 			= wifi_get_packet(data, opt, stats);
 
 
@@ -42,7 +42,6 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(opt, stats, pkt_samples)
 
   net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
-  %pause
 
   %signal field samples after cfo correction
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
@@ -81,9 +80,7 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
     display('wifi cleanup of packet failed');
     return;
   end
-  %n_p_d = stats.n_packets_processed
   stats.n_packets_processed = stats.n_packets_processed + 1;
-  %n_p_d = stats.n_packets_processed
 
   %%********************************
   %%%%%%%%% process signal field
@@ -152,10 +149,6 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
 
   util_print_demapPacket_plcp(rx_data_bits, opt);
 
-  %display('after demapping:');
-  %rx_data_bits
-  %pause
-
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_plcpDemap)
     nbits = opt.soft_slice_nbits;
@@ -176,17 +169,9 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   [stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]       = deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
-  %display('after deinterleave:');
-  %rx_data_bits_deint
-  %pause
-
   [stats data rx_data_bits_dec]         = decode(data, opt, stats, rx_data_bits_deint, opt.tblen_signal);
 
-  %display('signal field after decode:');
-  %rx_data_bits_dec
-  %pause
-
-  [stats data]				= parse_signal(data, opt, stats, rx_data_bits_dec);
+  [stats data]				= wifi_parse_signal_top(data, opt, stats, rx_data_bits_dec);
 
   if (~data.sig_valid)
     return
@@ -224,11 +209,7 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   rx_data_syms(:,1)=[];
   rx_data_syms = rx_data_syms(:,1:nsyms);
 
-  %size_ofdm_syms_f = size(ofdm_syms_f)
-  %nsyms = nsyms
   ofdm_syms_f = ofdm_syms_f(:,2:end);
-  %size_ofdm_syms_f = size(ofdm_syms_f)
-  %pause
 
   if (opt.printVars_equalize)
     util_print_equalize(rx_data_syms);
@@ -258,10 +239,6 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   %++++++++++++++++++++++++++++++++++++++++++++++
 
 
-  %display('size of rx_data_syms before demapping:');
-  %size(rx_data_syms)
-
-  %rx_data_syms = reshape(rx_data_syms, prod(size(rx_data_syms)), 1);
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, data.sig_nsyms, data.sig_modu, data, opt, stats);
 
   util_print_demapPacket_data(rx_data_bits, opt);
@@ -294,16 +271,9 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
 	  end
   end
 
-  %display('after deinterleave:');
-  %rx_data_bits_deint
-  %pause
-
   rx_data_bits_deint = reshape(rx_data_bits_deint, prod(size(rx_data_bits_deint)), 1);
   [stats data rx_data_bits_depunct]     = depuncture(data, opt, stats, rx_data_bits_deint, coderate);
 
-  %display('after depuncture');
-  %rx_data_bits_depunct
-  %pause
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataDemap)
@@ -327,10 +297,6 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   actual_data_portion_with_tail = rx_data_bits_depunct(1:(data_and_tail_length_bits * 2));	%since it's a half rate code
 
   [stats data rx_data_bits_dec]         = decode(data, opt, stats, rx_data_bits_depunct, opt.tblen_data);
-
-  %display('data field after decode (including service field):');
-  %rx_data_bits_dec
-  %pause
 
   if (opt.printVars_decodedBits)
 	  all_chunks = ...
@@ -367,23 +333,17 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   %++++++++++++++++++++++++++++++++++++++++++++++
 
 
-  %display('scrambled service field:');
-  %rx_data_bits_dec(1:16)
-  %pause
-
-  %remove tail
-  %rx_data_bits_dec = rx_data_bits_dec(1:end-6);
-
-  [rx_data_bits_descr]			= descramble(rx_data_bits_dec);
+  %----------------------------------------------------------------------------------------------------------------------------
+  rx_data_bits_descr = wifi_descramble(rx_data_bits_dec);
+  %----------------------------------------------------------------------------------------------------------------------------
 
   if (opt.printVars_descrambledBits)
-	  util_print_descramble(rx_data_bits_descr, data.sig_ndbps);
-	  if (opt.PAUSE_AFTER_EVERY_PACKET)
-		  pause
-	  end
+    util_print_descramble(rx_data_bits_descr, data.sig_ndbps);
+    if (opt.PAUSE_AFTER_EVERY_PACKET)
+      pause
+    end
   end
 
-  %display('data field after decode and descramble (including service field) arranged as bytes:');
   rx_data_bytes = reshape(rx_data_bits_descr, 8, length(rx_data_bits_descr)/8);
 
   %retain only upto the data portion, including service field but discarding tail and pad
@@ -391,36 +351,28 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   rx_data_bytes = reshape(rx_data_bits_descr, 8, data.sig_payload_length + 2);
   size_rx_data_bytes = size(rx_data_bytes);
 
-  %pause
 
-  %[parsed_data data]			= parse_payload(rx_data_bytes, data);
-  [data.parsed_data data.frame_type data.ber data.crcValid] = parse_payload(rx_data_bytes);
+  [parsed_data frame_type ber crcValid] = wifi_parse_payload(rx_data_bytes);
+  data.parsed_data = parsed_data;
+  data.frame_type = frame_type;
+  data.ber = ber;
+  data.crcValid = crcValid;
 
-  %display('data bits arranged as bytes (excluding service)');
-  %rx_data_bytes(:,3:end)
-
-  %size_parsed_data = size(parsed_data)
-  %display('hex data bytes');
-  %[(1:data.sig_payload_length)' parsed_data]
-  %parsed_data
-  util_printHexOctets(data.parsed_data);
+  util_printHexOctets(parsed_data);
 
   %%***************************************
   %% display plcp intermediaries/results
   %%***************************************
-
-
   display('------------------------------------------------------------');
   display('parse data results: ');
-  display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(data.frame_type), ...
-    ' ber:', num2str(data.ber), ' crcValid:', num2str(data.crcValid)));
+  display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(frame_type), ...
+    ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
   display('------------------------------------------------------------');
 
 
   %%***************************************
   %% display data intermediaries/results
   %%***************************************
-
   if (opt.printVars_data_syms)
 	  util_print_data_syms(...
 	    opt, ...
@@ -433,11 +385,9 @@ function stats = wifi_rx_chain(data, opt, stats, confStr)
   end
 
   %%***************************************
+  %% update statistics
   %%***************************************
-  %function stats = updateStats(data, stats)
   stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch);
-
-
 end
 
 
@@ -534,66 +484,11 @@ function [stats data rx_data_bits_dec] = decode(data, opt, stats, rx_data_bits_d
   end
 end
 
-%----------------------------------------------------------------------------------------------------------------------------
-function [rx_data_bits_descr] = descramble(rx_data_bits_dec)
-%----------------------------------------------------------------------------------------------------------------------------
-  rx_data_bits_descr = wifi_descramble(rx_data_bits_dec);
-end
 
 
 
-%----------------------------------------------------------------------------------------------------------------------------
-function [stats data rx_data_bits_dec ndbps nsyms] = parse_signal(data, opt, stats, rx_data_bits_dec)
-%----------------------------------------------------------------------------------------------------------------------------
-  [rate length modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(rx_data_bits_dec);
-  display('------------------------------------------------------------');
-  display('parse signal results: ');
-  display('data bits:');
-  rx_data_bits_dec = rx_data_bits_dec
-  display(strcat('rate: ', num2str(rate), ' length: ', num2str(length), ' code: ', num2str(code), ...
-  	' parityCheck: ', num2str(parityCheck), ' valid: ', num2str(valid), ...
-	' ndbps: ', num2str(ndbps), ' nsyms:', num2str(nsyms)));
-  display('------------------------------------------------------------');
-  data.sig_rate = rate;
-  data.sig_payload_length = length;
-  data.sig_modu = modu;
-  data.sig_code = code;
-  data.sig_parityCheck = parityCheck;
-  data.sig_valid = valid;
-  data.sig_ndbps = ndbps;
-  data.sig_nsyms = nsyms;
-end
 
 
-%----------------------------------------------------------------------------------------------------------------------------
-function [parsed_data frame_type ber crcValid] = parse_payload(databytes)	%each column is a byte, top of a byte being the earliest bit
-  %display('service field:');
-  service_field = databytes(:,1:2)
-
-  databytes = databytes(:,3:end);
-
-  %function [parsed_data frame_type ber crcValid] = wifi_parse_phy_payload(databytes)
-  %[data.parsed_data data.frame_type data.ber data.crcValid] = wifi_parse_phy_payload(databytes);
-  %%%%[parsed_data frame_type ber crcValid] = wifi_parse_phy_payload(databytes);
-
-
-  %databytes = databytes
-
-  m = 2.^(0:7)';	%oldest is lsb
-  b = (diag(m) * databytes);
-  databytes_dec = sum(b);
-  databytes_hex = dec2hex(databytes_dec, 2);
-
-  databytes_hex_with_crc32 = databytes_hex;
-  %pause
-
-  [crc_val crcValid] = wifi_crc32(databytes_hex_with_crc32);
-  frame_type = 2; ber = -1;
-  parsed_data = databytes_hex;
-  %pause
-
-end
-%----------------------------------------------------------------------------------------------------------------------------
 
 
 

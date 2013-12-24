@@ -58,7 +58,14 @@ function test2(rate, snr)
   %%%%%%%%%%%%%%%%%%%%%%
   %% decode messages
   %%%%%%%%%%%%%%%%%%%%%%
-  wifi_rx_pkt_train(td_pkt_samples_16bit, confStr)
+  rx_pkts = wifi_rx_pkt_train(td_pkt_samples_16bit, confStr)
+
+  %%%%%%%%%%%%%%%%%%%%%%
+  %% detailed comparison
+  %%%%%%%%%%%%%%%%%%%%%%
+  display('Comparing messages byte-by-byte, press any key to continue...')
+  pause
+  util_compare_tx_rx_pkts(msgs_hex, rx_pkts)
 end
 
 function test1(rate, snr)

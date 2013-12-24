@@ -34,6 +34,9 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   msg = [service; msg; tail];
 
   npad = ceil(length(msg)/ndbps) * ndbps - length(msg);
+
+  npad = npad
+
   pad = zeros(npad,1);
   msg = [msg; pad];
 
@@ -43,7 +46,9 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %% scramble the message
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   src_initstate = [1 0 1 1 1 0 1];
+  %--------------------------------------------------------------------------------------
   [msg_scr scr_seq] = wifi_scramble(msg, src_initstate);
+  %--------------------------------------------------------------------------------------
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% zero-out tail portion after scrambling
@@ -51,7 +56,9 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   msg_scr(16 + base_msg_len_bits + 1:16 + base_msg_len_bits + 6) = 0;
 
 
+  %--------------------------------------------------------------------------------------
   [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate);
+  %--------------------------------------------------------------------------------------
 
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);
 

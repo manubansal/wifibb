@@ -1,28 +1,18 @@
-function wifi_rx_pkt_train(samples, confStr)
+function rx_pkts = wifi_rx_pkt_train(samples, confStr)
+  rx_pkts = {}
+
   %scale = sqrt(2);
   scale = 'kk';
   %mod = 'jj';
 
-  %[opt, stats] = wifi_rx_parameters(scale, mod, opt);
-  %[opt, stats] = wifi_rx_parameters(scale, mod);
-  %[opt, stats] = wifi_rx_parameters(scale);
   [opt, stats] = wifi_rx_parameters();
 
-
   if length(samples) == 0
-  %  samples = util_loadBinaryFile(opt.traceFile);
-  %  if (opt.ns_to_process == 0)
-  %    last_sample = length(samples);
-  %  else
-  %    last_sample = (opt.ns_to_process+opt.ns_to_skip);
-  %  end
-  %  samples = samples((1+opt.ns_to_skip):last_sample);
     samples = util_loadBinaryFilePart(opt.traceFile, opt.ns_to_process, opt.ns_to_skip);
   end
 
   samples = samples.';
   n_rx_samples = length(samples)
-  %pause
 
   if (opt.tx_known)
     load(opt.iBitsFile);		%tx data for BER computation
@@ -30,41 +20,14 @@ function wifi_rx_pkt_train(samples, confStr)
     data.tx_data_bits_i = databits_i; 
     data.tx_data_bits_q = databits_q;
   end
-  %data.mod = opt.mod;
 
   data.samples = samples;
 
-  %%%%%%%%%%%%pilot_syms = wifi_generate_pilot_syms(opt.nsyms_data);
   pilot_syms = wifi_generate_pilot_syms();
 
-  %size(pilot_syms)
-  %%%%data.sig_and_data_tx_pilot_syms = [pilot_syms(:,1) pilot_syms];	%NO! signal and data symbols draw from the same seq
   data.sig_and_data_tx_pilot_syms = [pilot_syms];
-  %size(data.sig_and_data_tx_pilot_syms)
-  %pause
-  %data.pkt_start_point = -opt.pkt_length_samples;
   data.pkt_start_point = -1;
 
-  %%% THIS 1
-  %%%%display('------------------- begin detectPackets -------------------');
-  %%%%tic;
-  %%%%[stats data] = detectPackets(data, opt, stats);
-  %%%%display('------------------- done detectPackets -------------------');
-  %%%%toc
-
-  %%%t = 0;
-  %%%for i = 1:data.n_packets_detected
-  %%%  display(strcat('-------------- packet #',int2str(i),' of #',num2str(data.n_packets_detected),' ---- '));
-  %%%  display(strcat('-------------- last pkt took #',num2str(t),'s to process ----'));
-  %%%  tic;
-  %%%  data.pkt_start_point = stats.pkt_start_points(i);
-  %%%  stats = analyzeSinglePacket(data, opt, stats);
-  %%%  toc
-  %%%  t = toc;
-  %%%end
-  %%% THIS 1
-
-  %%% OR THIS 2
   display('------------------- begin find_stream_correlation -------------------');
   tic;
   [stats data] = wifi_find_stream_correlation(data, opt, stats);
@@ -76,10 +39,10 @@ function wifi_rx_pkt_train(samples, confStr)
   t = 0;
   ber = 0;
   i = 0;
-  %while (ber ~= -1) 
+
   while (data.pkt_start_point > -Inf)
     i = i + 1;
-    display(strcat('-------------- scale: ',scale,', packet #',int2str(i),'-----------'));%,' of #',num2str(data.n_packets_detected),' ---- '));
+    display(strcat('-------------- scale: ',scale,', packet #',int2str(i),'-----------'));
     display(strcat('-------------- last pkt took #',num2str(t),'s to process ----'));
 
     tic;
@@ -90,24 +53,15 @@ function wifi_rx_pkt_train(samples, confStr)
       break;
     end
 
-    %if (data.pkt_start_point == -2)	%pkt_start_point was too early for us to find noise
-    %  continue;			%don't analyze, since we couldn't get the right stats out
-    %end
-
     if (data.pkt_start_point == -Inf)
       break;
     end
 
 
     %analyze next packet
-    %stats = analyzeSinglePacket(data, opt, stats);
-    stats = wifi_rx_chain(data, opt, stats, confStr);
+    [stats parsed_data frame_type crcValid] = wifi_rx_chain(data, opt, stats, confStr)
+    rx_pkts{end+1} = {parsed_data frame_type crcValid}
     ber = stats.ber(end);
-
-    %remove the analyzed packet from sample stream and associated data structures
-    %%%data.samples(1:min(data.pkt_start_point+opt.pkt_length_samples-1,end)) = [];
-    %%%data.corrvec(1:min(data.pkt_start_point+opt.pkt_length_samples-1,end)) = [];
-    %%%data.abscorrvec(1:min(data.pkt_start_point+opt.pkt_length_samples-1,end)) = [];
 
     last_pkt_start_point = stats.pkt_start_points(end)
     max_corr_val = stats.max_corr_val
@@ -118,7 +72,6 @@ function wifi_rx_pkt_train(samples, confStr)
       pause
     end
   end
-  %%% THIS 2
 
   %display and summarize stats
   stats = summarizeStats(stats, data, opt);
@@ -210,13 +163,6 @@ function stats = summarizeStats(stats, data, opt)
 
 
 
-
-
-
-  %size(stats.uu_ltf1_data)
-  %size(stats.uu_ltf2_data)
-  %size(stats.ch_data)
-
   [avg_snr_data snr_v_data] = wifi_find_snr_from_uultfs(stats.uu_ltf1_data, stats.uu_ltf2_data, stats.ch_data);
   [avg_snr_ack snr_v_ack] = wifi_find_snr_from_uultfs(stats.uu_ltf1_ack, stats.uu_ltf2_ack, stats.ch_ack);
   avg_snr_data = avg_snr_data
@@ -231,6 +177,9 @@ function stats = summarizeStats(stats, data, opt)
   display(strcat('n_unknown_packets: ', num2str(n_unknown_packets)));
   display(strcat('n_crc_unknown/n_unknown_packets: ', num2str(n_crc_unknown),'/',num2str(n_unknown_packets),...
      ' ber_unknown_avg/ber_unknown_std: ', num2str(ber_unknown_avg),'/',num2str(ber_unknown_std)));
+  crc_vec_data = stats.crc_vec_data
+  crc_vec_ack = stats.crc_vec_ack
+  crc_vec_unknown = stats.crc_vec_unknown
   display('=============================================================================================');
 
   %opt.GENERATE_ONE_TIME_PLOTS = true;
