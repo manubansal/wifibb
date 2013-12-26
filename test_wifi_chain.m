@@ -1,4 +1,4 @@
-function test_wifi_chain()
+function test_wifi_chain(snr)
 
   rate = 54;
   %rate = 36;
@@ -7,9 +7,11 @@ function test_wifi_chain()
 
   %snr = 30;
   %snr = 35;
-  snr = Inf;
   %snr = 30;
   %snr = 17; 	
+  if nargin < 1
+    snr = Inf;
+  end
 
 
   %test1(rate, snr)
