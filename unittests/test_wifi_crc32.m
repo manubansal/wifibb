@@ -1,10 +1,19 @@
-function test_wifi_crc32()
+function crc_val = test_wifi_crc32()
 	%test1();
 	%test2();
 	%test3();
 	%test4();
-	test5();
+	%test5();
+	crc_val = test6();
 end
+
+function crc_val = test6()
+  msg_no_crc = ['FF'];
+  [msg_bin_lin msg_len] = util_hexToBinLin(msg_no_crc);
+  crc_val = wifi_bit_crc32_v2(msg_bin_lin)
+  %crc_hex = crc_val
+end
+
 
 %tests for TI implementation debugging for a real wifi packet
 function test5()

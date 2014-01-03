@@ -306,6 +306,24 @@ function util_dumpData(id, confStr, data)
     if (count ~= size(data,1))
       error('something went wrong')
     end
+
+  elseif strcmp(id, 'dataDescr')
+    fprintf(1, 'Dumping dataDescr\n');
+    if (size(data,2) ~= 1)
+      data = data
+      size_data = size(data)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataDescr.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'uint8', 'ieee-be');
+    fclose(f);
+    if (count ~= size(data,1))
+      error('something went wrong')
+    end
+
   else
     error('bad dump option')
   end

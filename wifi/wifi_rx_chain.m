@@ -354,6 +354,18 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   rx_data_bytes = reshape(rx_data_bits_descr, 8, data.sig_payload_length + 2);
   size_rx_data_bytes = size(rx_data_bytes);
 
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_dataDescr)
+    util_dumpData('dataDescr', confStr, rx_data_bits_descr)
+  else
+    display('not dumping')
+  end
+  if (opt.PAUSE_AFTER_EVERY_PACKET)
+    pause
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
+
+
 
   [parsed_data frame_type ber crcValid] = wifi_parse_payload(rx_data_bytes);
   data.parsed_data = parsed_data;

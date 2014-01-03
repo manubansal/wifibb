@@ -126,6 +126,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.dumpVars_dataDepunct = true;
     opt.dumpVars_dataVitdecChunks = true;
     opt.dumpVars_dataVitdec = true;
+    opt.dumpVars_dataDescr = true;
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
