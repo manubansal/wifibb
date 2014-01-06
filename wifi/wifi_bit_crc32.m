@@ -7,10 +7,10 @@ function ret = wifi_bit_crc32(bits)
   %display('crc32');
   poly = [1 de2bi(hex2dec('EDB88320'), 32)]';
   bits = bits(:);
-  %pause
 
   % Flip first 32 bits
   bits(1:32) = 1 - bits(1:32);
+
   % Add 32 zeros at the back
   bits = [bits; zeros(32,1)];
 
@@ -27,8 +27,6 @@ function ret = wifi_bit_crc32(bits)
       rem = rem(2:33);
       remarray = [remarray rem];
   end
-
-  %remarray = remarray
 
   % Flip the remainder before returning it
   ret = 1 - rem;

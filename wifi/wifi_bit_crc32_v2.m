@@ -1,14 +1,12 @@
 
 
-% THIS ONE WORKS %
+% THIS ONE WORKS %Adapted from:
 % src: http://www.cs.washington.edu/homes/dhalperi/useful.html
 %-------------------------------------------------------------------------------
 function ret = wifi_bit_crc32_v2(bits)
 %-------------------------------------------------------------------------------
   %display('crc32');
-
-  poly = [1 de2bi(hex2dec('EDB88320'), 32)]';	%doesn't work on R2010b
-
+  poly = [1 de2bi(hex2dec('EDB88320'), 32)]';
   bits = bits(:);
 
   % Add 32 zeros at the back
