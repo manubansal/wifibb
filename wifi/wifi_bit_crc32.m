@@ -1,5 +1,6 @@
 
-% THIS ONE WORKS %
+
+% THIS ONE WORKS %Adapted from:
 % src: http://www.cs.washington.edu/homes/dhalperi/useful.html
 %-------------------------------------------------------------------------------
 function ret = wifi_bit_crc32(bits)
@@ -8,11 +9,11 @@ function ret = wifi_bit_crc32(bits)
   poly = [1 de2bi(hex2dec('EDB88320'), 32)]';
   bits = bits(:);
 
-  % Flip first 32 bits
-  bits(1:32) = 1 - bits(1:32);
-
   % Add 32 zeros at the back
   bits = [bits; zeros(32,1)];
+
+  % Flip first 32 bits
+  bits(1:32) = 1 - bits(1:32);
 
   remarray = [];
 
