@@ -1,4 +1,4 @@
-function test_wifi_chain(snr)
+function test_wifi_chain(snr, msglen)
 
   %rate = 54;
   %rate = 36;
@@ -13,25 +13,30 @@ function test_wifi_chain(snr)
     snr = Inf;
   end
 
+  if nargin < 2
+    msglen = 200;	%bytes
+  end
+
 
   %test1(rate, snr)
-  test2(rate, snr)
+  test2(rate, snr, msglen)
 end
 
-function test2(rate, snr)
+function test2(rate, snr, msglen)
   scale = sqrt(2);
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% pick the message(s)
   %%%%%%%%%%%%%%%%%%%%%%
-  msgs_hex = util_msg_hex()
+  msgs_hex = util_msg_hex(msglen)
   n_msgs = length(msgs_hex)
+
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% conf string
   %%%%%%%%%%%%%%%%%%%%%%
-  %pktparams = strcat('nmsgs',int2str(n_msgs),'_rate_',int2str(rate),'_snr_',num2str(snr),'_scale_',num2str(scale));
-  confStr = sprintf('rate%d.snr%d.nmsgs%d.scale%04.2f', rate, snr, n_msgs, scale)
+  %confStr = sprintf('rate%d.snr%d.nmsgs%d.scale%04.2f', rate, snr, n_msgs, scale)
+  confStr = sprintf('rate%d.snr%d.nmsgs%d.msglen%d.scale%04.2f', rate, snr, n_msgs, msglen, scale)
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% remove old files

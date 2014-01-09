@@ -30,7 +30,7 @@ for i = 1:nbytes
   mb = [mb bb];
 end
 
-cc = wifi_bit_crc32_v2(mb);	%higher order bit is first in the output
+cc = wifi_bit_crc32(mb);	%higher order bit is first in the output
 ccx = 1 - cc;			%cc without ones complement
 ccbin = cc;
 

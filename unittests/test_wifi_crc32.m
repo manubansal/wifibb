@@ -10,7 +10,7 @@ end
 function crc_val = test6()
   msg_no_crc = ['FF'];
   [msg_bin_lin msg_len] = util_hexToBinLin(msg_no_crc);
-  crc_val = wifi_bit_crc32_v2(msg_bin_lin)
+  crc_val = wifi_bit_crc32(msg_bin_lin)
   %crc_hex = crc_val
 end
 
@@ -39,7 +39,7 @@ function test5()
   for lcrc=1:3:nbytes
 	  lcrc = lcrc
 	  d = b(1:(lcrc*8),:);
-	  crcVal = wifi_bit_crc32_v2(d);
+	  crcVal = wifi_bit_crc32(d);
 	  crcVal = dec2hex(bin2dec(num2str(crcVal)'),8)
   end
 
@@ -52,9 +52,9 @@ function test4()
 	dec_msg = randint(nbytes, 1, [0,255]);
 	hex_msg = dec2hex(dec_msg, 2)
 	bin_msg_tx = util_hexToBinLin(hex_msg);
-	crc_val_tx = wifi_bit_crc32_v2(bin_msg_tx);
+	crc_val_tx = wifi_bit_crc32(bin_msg_tx);
 	bin_msg_tx_w_crc = [bin_msg_tx; crc_val_tx];
-	crc_val_rx = wifi_bit_crc32_v2(bin_msg_tx_w_crc);
+	crc_val_rx = wifi_bit_crc32(bin_msg_tx_w_crc);
 	crc_val_rx_c = 1 - crc_val_rx;
 
 
@@ -98,7 +98,7 @@ function test3()
 	ref_rx_rem(ref_rx_rem_idx) = 1;
 
 	%compute crc treating the appended crc value as part of data
-	crc_val_rx = wifi_bit_crc32_v2(util_hexToBinLin(hex_msg))
+	crc_val_rx = wifi_bit_crc32(util_hexToBinLin(hex_msg))
 	crc_val_rx_c = 1 - crc_val_rx;
 
 	display('verifying unique remainder technique to verify rx crc validity');
@@ -108,11 +108,11 @@ function test3()
 
 end
 
-%wifi_bit_crc32_v2 can compute crc of any number of input bytes/bits, and takes input as a bit vector without crc at the end
+%wifi_bit_crc32 can compute crc of any number of input bytes/bits, and takes input as a bit vector without crc at the end
 function test2()
   msg_no_crc = ['FF'];
   [msg_bin_lin msg_len] = util_hexToBinLin(msg_no_crc);
-  crc_val = wifi_bit_crc32_v2(msg_bin_lin)
+  crc_val = wifi_bit_crc32(msg_bin_lin)
 end
 
 %wifi_crc32 requires at least 32 bits in the input message and expect last four bytes to be the crc value itself
