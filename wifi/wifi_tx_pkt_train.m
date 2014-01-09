@@ -1,4 +1,4 @@
-function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale)
+function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale, confStr)
   if (nargin < 3)
     snr = Inf
   end
@@ -44,7 +44,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
 
     % generate data samples
     %--------------------------------------------------------------------------
-    [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate);
+    [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr);
     %--------------------------------------------------------------------------
 
     msgs_scr{end + 1} = msg_scr;

@@ -1,5 +1,5 @@
 
-function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr)
   %%%%%%%%%%%%%%
   %% add the crc 
   %%%%%%%%%%%%%%
@@ -68,9 +68,14 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %pause
   datasyms = [sigsym mapped_syms];
 
+  datasyms_dump = datasyms * (2^12); % because Q12 expected in orsys
+  util_dumpData('allMappedSymbols', confStr, datasyms_dump)
+
   %--------------------------------------------------------------------------------------
   [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms);
   %--------------------------------------------------------------------------------------
+
+  util_dumpData('ofdmMod', confStr, tdsyms_w_cp)
 
   %--------------------------------------------------------------------------------------
   td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms);

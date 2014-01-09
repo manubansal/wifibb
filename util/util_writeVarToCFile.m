@@ -37,6 +37,7 @@ function writeToFile(outfilename, fullvarname, data, ns, datatype)
   lengthline = ['Uint32 ',fullvarname,'_length = ',num2str(ns),';\n\n'];
   line2 = ['#pragma DATA_SECTION(',fullvarname,', ".ddr2");\n\n'];
   line3 = ['#pragma DATA_ALIGN(',fullvarname,', 8);\n\n'];
+  outfilename
   fprintf(outfd, [line1,lengthline,line2,line3,datatype,' ',fullvarname,'[] = {\n']);
 
   for (j = 1:ns)

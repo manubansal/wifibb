@@ -1,9 +1,9 @@
 function test_wifi_chain(snr)
 
-  rate = 54;
+  %rate = 54;
   %rate = 36;
   %rate = 24;
-  %rate = 6;
+  rate = 6;
 
   %snr = 30;
   %snr = 35;
@@ -46,7 +46,7 @@ function test2(rate, snr)
   %%%%%%%%%%%%%%%%%%%%%%
   %% modulate messages
   %%%%%%%%%%%%%%%%%%%%%%
-  [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale);
+  [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale, confStr);
   n_tx_samples = length(td_pkt_samples_16bit)
 
   %pause

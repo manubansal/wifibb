@@ -6,6 +6,39 @@ function util_dumpData(id, confStr, data)
 
   if strcmp(id, '')
 
+	elseif strcmp(id, 'allMappedSymbols')
+    fprintf(1, 'Dumping allMappedSymbols\n');
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.allMappedSymbols.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+      error('something went wrong')
+    end
+
+	elseif strcmp(id, 'ofdmMod')
+    fprintf(1, 'Dumping ofdmMod\n');
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataOfdmMod.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+      error('something went wrong')
+    end
+
+
   elseif strcmp(id, 'ltfRxSamples')
     fprintf(1, 'Dumping ltfRxSamples\n');
     if (sum(size(data(:)) == [160,1]) ~= 2)
