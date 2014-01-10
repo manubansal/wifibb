@@ -1,4 +1,4 @@
-function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate)
+function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate, plcp_or_data, confStr)
   [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate);
   n_ofdm_syms = length(msg_scr)/ndbps;
   %pause
@@ -27,7 +27,10 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% map bits onto constellation symbols
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  msg_int_syms_dump = msg_int_syms * 255;
+  util_dumpData(strcat(plcp_or_data, 'Bits'), confStr, msg_int_syms_dump);
+  
   mapped_syms = [];
   databits_i_all = [];
   databits_q_all = [];
@@ -40,4 +43,5 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
 
   %s0 = size(mapped_syms)
   %pause
+
 end

@@ -5,8 +5,37 @@ function util_dumpData(id, confStr, data)
   [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
 
   if strcmp(id, '')
+      
+  elseif strcmp(id, 'plcpBits')
+    fprintf(1, 'Dumping plcpBits\n');
+    data = data(:);
+    len = length(data);
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpBits.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len)
+      error('something went wrong')
+    end
+      
+  elseif strcmp(id, 'dataBits')
+    fprintf(1, 'Dumping dataBits\n');
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataBits.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+      error('something went wrong')
+    end
 
-	elseif strcmp(id, 'allMappedSymbols')
+  elseif strcmp(id, 'allMappedSymbols')
     fprintf(1, 'Dumping allMappedSymbols\n');
     data = data(:);
     len = length(data);
@@ -21,15 +50,15 @@ function util_dumpData(id, confStr, data)
     if (count ~= len * 2)
       error('something went wrong')
     end
-
-	elseif strcmp(id, 'ofdmMod')
-    fprintf(1, 'Dumping ofdmMod\n');
+    
+  elseif strcmp(id, 'allOfdmMod')
+    fprintf(1, 'Dumping allOfdmMod\n');
     data = data(:);
     len = length(data);
     dr = real(data); dr = dr(:);
     di = imag(data); di = di(:);
     data = [dr di].';
-    fn = strcat(BDATA_DIR, '/', confStr, '.dataOfdmMod.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.allOfdmMod.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');

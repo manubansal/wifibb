@@ -19,7 +19,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %n_ofdm_syms_sig = 1;
   tx_sig_field = tx_sig_field
   %pause
-  [sigsym, ig1, ig2] = wifi_tx_chain_inner(tx_sig_field, rate_sig);
+  [sigsym, ig1, ig2] = wifi_tx_chain_inner(tx_sig_field, rate_sig, 'plcp', confStr);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% create the data field
@@ -57,7 +57,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
 
   %--------------------------------------------------------------------------------------
-  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate);
+  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate, 'data', confStr);
   %--------------------------------------------------------------------------------------
 
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);
@@ -75,7 +75,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms);
   %--------------------------------------------------------------------------------------
 
-  util_dumpData('ofdmMod', confStr, tdsyms_w_cp)
+  util_dumpData('allOfdmMod', confStr, tdsyms_w_cp)
 
   %--------------------------------------------------------------------------------------
   td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms);
