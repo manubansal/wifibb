@@ -23,15 +23,12 @@ function util_dumpData(id, confStr, data)
     fprintf(1, 'Dumping dataBits\n');
     data = data(:);
     len = length(data);
-    dr = real(data); dr = dr(:);
-    di = imag(data); di = di(:);
-    data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.dataBits.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
-    if (count ~= len * 2)
+    if (count ~= len)
       error('something went wrong')
     end
 
