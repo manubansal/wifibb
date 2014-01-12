@@ -1,10 +1,19 @@
 -- current --
+
+-----------------------------
+Standalone wifi tx/rx chains
+-----------------------------
 MATLAB version:
 R2010b or higher, need Communication Toolbox
 
 >> setup_paths
 >> test_wifi_chain
 
+-----------------------------
+Decoding a sample wifi stream
+-----------------------------
+>> [samples, n_samples] = load_samples('../wifibb-traces/traces54/usrp-1s.dat','cplx');
+>> rx_sample_stream(samples)
 
 
 -- old --
