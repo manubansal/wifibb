@@ -2,15 +2,72 @@
 %
 function util_dumpData(id, confStr, data)
   [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths();
-  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
+  num_strs = regexp(confStr, '\d+', 'match');
+  rate = str2double(num_strs(1));
+  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(rate);
 
   if strcmp(id, '')
       
-  elseif strcmp(id, 'plcpBits')
-    fprintf(1, 'Dumping plcpBits\n');
+  elseif strcmp(id, 'plcpPreConvBits')
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpPreConvBits.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    fprintf(1, 'Dumping plcpPreConvBits\n');
+    j = 1;
+    dump_64 = [0 0 0 0 0 0 0 0];
+    for i=0:8:length(data)-1,
+      dump_64(j) = bi2de(data(1+i: 8+i), 'left-msb');
+      j = j + 1;
+      if (j > 8)
+        j = 1;
+        fwrite(f, dump_64, 'double', 'ieee-be');
+        dump_64 = [0 0 0 0 0 0 0 0];
+      end
+    end
+    if (j > 1)
+      fwrite(f, dump_64, 'double', 'ieee-be');
+    end
+    fclose(f);
+    
+  elseif strcmp(id, 'dataPreConvBits')
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataPreConvBits.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    fprintf(1, 'Dumping dataPreConvBits\n');
+    j = 1;
+    dump_64 = [0 0 0 0 0 0 0 0];
+    for i=0:8:length(data)-1,
+      dump_64(j) = bi2de(data(1+i:8+i)', 'left-msb');
+      j = j + 1;
+      if (j > ndbps/8)
+        j = 1;
+        fwrite(f, dump_64, 'double', 'ieee-be');
+        dump_64 = [0 0 0 0 0 0 0 0];
+      end
+    end
+    if (j > 1)
+      fwrite(f, dump_64, 'double', 'ieee-be');
+    end
+    fclose(f);
+    
+  elseif strcmp(id, 'plcpConvBits')
+    fprintf(1, 'Dumping plcpConvBits\n');
     data = data(:);
     len = length(data);
-    fn = strcat(BDATA_DIR, '/', confStr, '.plcpBits.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpConvBits.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len)
+      error('something went wrong')
+    end
+    
+  elseif strcmp(id, 'dataConvBits')
+    fprintf(1, 'Dumping dataConvBits\n');
+    data = data(:);
+    len = length(data);
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataConvBits.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
@@ -19,11 +76,24 @@ function util_dumpData(id, confStr, data)
       error('something went wrong')
     end
       
-  elseif strcmp(id, 'dataBits')
-    fprintf(1, 'Dumping dataBits\n');
+  elseif strcmp(id, 'plcpInterleavedBits')
+    fprintf(1, 'Dumping plcpInterleavedBits\n');
     data = data(:);
     len = length(data);
-    fn = strcat(BDATA_DIR, '/', confStr, '.dataBits.mdat');
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpInterleavedBits.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len)
+      error('something went wrong')
+    end
+      
+  elseif strcmp(id, 'dataInterleavedBits')
+    fprintf(1, 'Dumping dataInterleavedBits\n');
+    data = data(:);
+    len = length(data);
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataInterleavedBits.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
