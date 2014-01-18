@@ -77,9 +77,9 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
 							  %introduced due to sampling frequency offset
     opt.GENERATE_ONE_TIME_PLOTS_PRE = false;
     opt.GENERATE_ONE_TIME_PLOTS_POST = false;
-    opt.GENERATE_PER_PACKET_PLOTS = false;
-    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = false;
-    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = false;
+    opt.GENERATE_PER_PACKET_PLOTS = true;
+    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = true;
+    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = true;
 
     opt.PAUSE_AFTER_EVERY_PACKET = false;
 
@@ -131,6 +131,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.dumpVars_dataVitdecChunks = false;
     opt.dumpVars_dataVitdec = false;
     opt.dumpVars_dataDescr = false;
+    opt.dumpVars_dataParsed = true;
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

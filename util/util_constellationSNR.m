@@ -24,7 +24,7 @@ function [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(poi
 		  +1-1j
 		  +1+3j
 		  +1+1j]./sqrt(10);
-      map = QAM16;
+      map = QAM16.';
   elseif (nbpsc == 6) %64qam
       iq_pattern = [-7,-5,-1,-3,+7,+5,+1,+3];
       QAM64=zeros(8,8);
@@ -45,13 +45,13 @@ function [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(poi
   map_rep = repmat(map, npoints, 1);
 
   diff = points_rep - map_rep;
-  diff_power = abs(diff);
+  diff_power = abs(diff).^2;
   [noise_power_vector, colidx] = min(diff_power, [], 2);
   rowidx = 1:size(diff_power,1);
   rowidx = rowidx.';
   ind = sub2ind(size(diff_power),rowidx,colidx);
   nearest_star = map_rep(ind);
-  nearest_map_power = abs(nearest_star);
+  nearest_map_power = abs(nearest_star).^2;
   snr_vector = nearest_map_power./noise_power_vector;
   snr_vector_dB = 10 * log10(snr_vector);
   %[diff_power noise_power_vector nearest_star nearest_map_power snr_vector snr_vector_dB]

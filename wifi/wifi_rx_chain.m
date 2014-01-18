@@ -368,6 +368,13 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   util_printHexOctets(parsed_data);
 
+  %++++++++++++++++++++++++++++++++++++++++++++++
+  if (opt.dumpVars_dataParsed)
+    util_dumpData('dataParsed', confStr, parsed_data)
+  end
+  %++++++++++++++++++++++++++++++++++++++++++++++
+
+
 
   %%***************************************
   %% display data intermediaries/results
