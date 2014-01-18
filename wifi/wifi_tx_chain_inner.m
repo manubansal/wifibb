@@ -18,7 +18,9 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% interleave the bits
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  %util_dumpData('interleaver48_in', confStr, msg_code_syms);
   msg_int_syms = wifi_interleave(msg_code_syms, ncbps);
+  %util_dumpData('interleaver48_out', confStr, msg_int_syms);
 
   %msg_int_syms = msg_int_syms
   %n_ofdm_syms = n_ofdm_syms
