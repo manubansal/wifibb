@@ -48,17 +48,21 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr)
     tic;
 
     %detect next packet
+    display('-------------- detecting next packet --------------')
     [stats data] = wifi_detect_next_packet(data, opt, stats);
     if (data.pkt_start_point == -1)
+      display('pkt_start_point is -1, breaking')
       break;
     end
 
     if (data.pkt_start_point == -Inf)
+      display('pkt_start_point is -Inf, breaking')
       break;
     end
 
 
     %analyze next packet
+    display('-------------- analyzing next packet --------------')
     [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chain(data, opt, stats, confStr);
     display(['frame_type: ',num2str(frame_type),' crcValid: ',num2str(crcValid)])
     rx_pkts{end+1} = {parsed_data frame_type crcValid rx_data_bits_dec};

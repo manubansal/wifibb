@@ -1,4 +1,4 @@
-function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate)
+function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate, plcp_or_data, confStr)
   [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate);
   n_ofdm_syms = length(msg_scr)/ndbps;
   %pause
@@ -6,8 +6,13 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% code the entire message (with service, tail and pad) and also
   %% puncture it according to the coding rate
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  util_dumpData(strcat(plcp_or_data, 'PreConvBits'), confStr, msg_scr);
+  
   msg_code = wifi_cenc(msg_scr, rt120);
+  
+  msg_code_dump = msg_code * 255;
+  util_dumpData(strcat(plcp_or_data, 'ConvBits'), confStr, msg_code_dump);
   %coded_message_soft_bits = coded_message * scale;
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -29,7 +34,10 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% map bits onto constellation symbols
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  msg_int_syms_dump = msg_int_syms * 255;
+  util_dumpData(strcat(plcp_or_data, 'InterleavedBits'), confStr, msg_int_syms_dump);
+  
   mapped_syms = [];
   databits_i_all = [];
   databits_q_all = [];
@@ -42,4 +50,5 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
 
   %s0 = size(mapped_syms)
   %pause
+
 end
