@@ -1,7 +1,7 @@
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   data.cleanupDone = 0;
 
   noise_win_len = opt.noise_win_len;
@@ -37,7 +37,6 @@ function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
     return
   end
 
-  %verify we have the whole packet in sample stream
   %if (length(data.samples) < data.pkt_start_point + opt.pkt_length_samples - 1)
   if (length(data.samples) < data.pkt_start_point + opt.ns_ofdm_phy_preamble_signal - 1)
     %display('sample stream does not contain the entire packet');
@@ -53,11 +52,18 @@ function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
   %This is so that we don't need to know the packet length for this module.
   pkt_length_samples = min(opt.max_pkt_length_samples, length(data.samples) - data.pkt_start_point + 1);
 
-  if (length(data.samples) < data.pkt_start_point + pkt_length_samples - 1)
-    %display('sample stream does not contain the entire packet');
-    display('sample stream does not contain enough samples for processing');
-    return
+  %verify we have the whole packet in sample stream
+  %if (length(data.samples) < data.pkt_start_point + pkt_length_samples - 1)
+  %if (length(data.samples) < data.pkt_start_point + pkt_length_samples - 1)
+  %  %display('sample stream does not contain the entire packet');
+  %  display('ERROR: sample stream does not contain enough samples for processing');
+  %  pause
+  %  return
+  %end
+  if (length(data.samples) < data.pkt_start_point + 480)
+    display('WARNING: sample stream does not contain enough samples for data part to have at least one ofdm symbol');
   end
+
 
   %pkt_samples = data.samples(data.pkt_start_point:data.pkt_start_point+opt.pkt_length_samples-1);
   pkt_samples = data.samples(data.pkt_start_point:data.pkt_start_point+pkt_length_samples-1);
@@ -84,7 +90,8 @@ function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
   ltf_power = util_power(ltf_samples);
   sig_power = util_power(sig_samples);
   %%%%data_power = util_power(data_samples);			%estimate from the whole data part
-  data_power = util_power(data_samples(1:80));		%estimate only from the first data symbol
+  %%%%data_power = util_power(data_samples(1:80));		%estimate only from the first data symbol
+  data_power = util_power(data_samples(1:min(length(data_samples),80)));%estimate only from the first data symbol
   pkt_power = util_power(pkt_samples);
 
   snr_lin = stf_power/idle_noise_power;

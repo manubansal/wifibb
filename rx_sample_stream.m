@@ -6,15 +6,15 @@ function rx_sample_stream(samples)
   [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   %path = sprintf('%s/%s*', BDATA_DIR, confStr)
 
-  samples(1:1000,:)
+  %samples(1:1000,:)
   n_samples = length(samples)
 
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% decode messages
   %%%%%%%%%%%%%%%%%%%%%%
-  td_pkt_samples_16bit = samples(1:800000);
-  confStr = 'fromair'
+  td_pkt_samples_16bit = samples(1:10000000);
+  confStr = 'fromair.rate54'
   rx_pkts = wifi_rx_pkt_train(td_pkt_samples_16bit, confStr);
 
 end

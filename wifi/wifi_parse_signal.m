@@ -32,6 +32,10 @@ function [rate len modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(
   length_field = reshape(length_field, 1, length(length_field));
   len = sum(pow_2 .* length_field);
 
+  if (len > 1600)
+    valid = false
+  end
+  
   parity_field = rx_sig_field(1:18);
   parityCheck = false;
   if (mod(sum(parity_field), 2) == 0)

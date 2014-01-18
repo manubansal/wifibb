@@ -1,9 +1,10 @@
-%function stats = wifi_rx_chain(samples, scale, mod, opt)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 %function stats = analyzeSinglePacket(data, opt, stats)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chain(data, opt, stats, confStr)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
+
+
 
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
@@ -13,11 +14,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
 
   %base ltf samples, before any rx processing
-  ltf_samples = pkt_samples(stf_len++1:stf_len+ltf_len);
+  ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
   if (opt.dumpVars_ltfRxSamples)
     util_dumpData('ltfRxSamples', confStr, ltf_samples)
-  else
-    display('not dumping')
   end
 
 
@@ -27,14 +26,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   if (opt.dumpVars_plcpBaseSamples)
     util_dumpData('plcpBaseSamples', confStr, sig_samples)
-  else
-    display('not dumping')
   end
 
   if (opt.dumpVars_dataBaseSamples)
     util_dumpData('dataBaseSamples', confStr, data_samples)
-  else
-    display('not dumping')
   end
 
 
@@ -50,13 +45,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
   if (opt.dumpVars_plcpCfoCorrected)
     util_dumpData('plcpCfoCorrected', confStr, sig_samples)
-  else
-    display('not dumping')
   end
   if (opt.dumpVars_dataCfoCorrected)
     util_dumpData('dataCfoCorrected', confStr, data_samples)
-  else
-    display('not dumping')
   end
 
 
@@ -65,10 +56,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
-  %data.ch = ch;
-  %data.sig_samples = sig_samples;
-  %data.data_samples = data_samples;
-  %data.chi = chi;
 
   data.cleanupDone = 1;
 
@@ -79,7 +66,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
 
   if (~data.cleanupDone)
-    display('wifi cleanup of packet failed');
+    display('ERROR: wifi cleanup of packet failed');
     return;
   end
   stats.n_packets_processed = stats.n_packets_processed + 1;
@@ -108,8 +95,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   if (opt.dumpVars_plcpOfdmDemod)
     util_dumpData('plcpOfdmDemod', confStr, fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -117,13 +102,13 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] ...
-  					= wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f, chi);
+		    = wifi_channel_correction(nsyms, opt, data, stats, ofdm_syms_f, chi);
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] ...
-  					= wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
+		    = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
 
   [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] ...
-  					= wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
+		    = wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms);
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_plcpOfdmEq)
@@ -136,8 +121,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
     ch_psubc = ch(psubc_idx);
     util_dumpData('plcpOfdmEq.channel_psubc', confStr, ch_psubc)
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -160,8 +143,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
     dumped_soft_bits = rx_data_bits(:,1) - scale;
     util_dumpData('plcpDemap', confStr, dumped_soft_bits)
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -175,7 +156,48 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   [stats data]				= wifi_parse_signal_top(data, opt, stats, rx_data_bits_dec);
 
-  if (~data.sig_valid)
+  %%*********************************
+  %%%%%% decide whether to process data field
+  %%*********************************
+
+
+  nbpsc = data.sig_modu;
+  nsyms = data.sig_nsyms;
+  coderate = data.sig_code;
+
+  not_enough_samples = false;
+  if (length(data_samples) < nsyms * opt.sym_len_s)
+    not_enough_samples = true;
+  end
+
+
+  if (~(data.sig_valid && data.sig_parityCheck) || not_enough_samples)
+    parsed_data = [];
+    frame_type = -1;
+    ber = -1;
+    crcValid = -1;
+    data.frame_type = frame_type;
+
+    %%***************************************
+    %% display plcp intermediaries/results
+    %%***************************************
+    display('------------------------------------------------------------');
+    display('parse data results: ');
+    display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(frame_type), ...
+      ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
+    display('------------------------------------------------------------');
+
+    %%***************************************
+    %% update statistics
+    %%***************************************
+    stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch);
+
+    if (not_enough_samples)
+      display('ERROR: not enough data samples in the trace, continuing without data decode...')
+    else
+      display('signal field not valid, continuing without data decode...')
+    end
+
     return
   end
 
@@ -184,20 +206,16 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %%%%%% process data field
   %%*********************************
 
-  nbpsc = data.sig_modu;
-  nsyms = data.sig_nsyms;
-  coderate = data.sig_code;
-
   [stats data ofdm_syms_f]  		= wifi_ofdm_demod([sig_samples data_samples], nsyms+ 1, data, opt, stats);
 
+  %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataOfdmDemod)
     util_dumpData('dataOfdmDemod', confStr, ofdm_syms_f(dsubc_idx, 2:end))
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
   end
+  %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms + 1, opt, data, stats, ofdm_syms_f, chi);
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
@@ -213,12 +231,14 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   ofdm_syms_f = ofdm_syms_f(:,2:end);
 
+  %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.printVars_equalize)
     util_print_equalize(rx_data_syms);
     if (opt.PAUSE_AFTER_EVERY_PACKET)
 	    pause
     end
   end
+  %++++++++++++++++++++++++++++++++++++++++++++++
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataOfdmEq)
@@ -232,8 +252,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
     %ch_psubc = ch(psubc_idx)
     %util_dumpData('dataOfdmEq.channel_psubc', ch_psubc)
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -254,8 +272,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
     dumped_soft_bits = rx_data_bits(:,:) - scale;
     util_dumpData('dataDemap', confStr, dumped_soft_bits)
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -286,8 +302,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
     dumped_soft_bits_depunct = rx_data_bits_depunct(:,1) - scale;
     util_dumpData('dataDepunct', confStr, dumped_soft_bits_depunct)
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -316,8 +330,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     else
       fprint(1, 'Need opt.printVars_decodedBits for opt.dumpVars_dataVitdecChunks\n');
     end
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -327,8 +339,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataVitdec)
     util_dumpData('dataVitdec', confStr, rx_data_bits_dec)
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -336,9 +346,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
 
 
-  %----------------------------------------------------------------------------------------------------------------------------
+  %------------------------------------------------------------------------------------
   rx_data_bits_descr = wifi_descramble(rx_data_bits_dec);
-  %----------------------------------------------------------------------------------------------------------------------------
+  %------------------------------------------------------------------------------------
 
   if (opt.printVars_descrambledBits)
     util_print_descramble(rx_data_bits_descr, data.sig_ndbps);
@@ -357,8 +367,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataDescr)
     util_dumpData('dataDescr', confStr, rx_data_bits_descr)
-  else
-    display('not dumping')
   end
   if (opt.PAUSE_AFTER_EVERY_PACKET)
     pause
@@ -374,15 +382,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   data.crcValid = crcValid;
 
   util_printHexOctets(parsed_data);
-
-  %%***************************************
-  %% display plcp intermediaries/results
-  %%***************************************
-  display('------------------------------------------------------------');
-  display('parse data results: ');
-  display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(frame_type), ...
-    ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
-  display('------------------------------------------------------------');
 
 
   %%***************************************
@@ -400,6 +399,15 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
 
   %%***************************************
+  %% display plcp intermediaries/results
+  %%***************************************
+  display('------------------------------------------------------------');
+  display('parse data results: ');
+  display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(frame_type), ...
+    ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
+  display('------------------------------------------------------------');
+
+  %%***************************************
   %% update statistics
   %%***************************************
   stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch);
@@ -407,9 +415,9 @@ end
 
 
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function [stats data rx_data_bits] = demapPacket_old(rx_data_syms, data, opt, stats)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 
   %rx_data_syms = data.rx_data_syms;
 
@@ -437,9 +445,9 @@ function [stats data rx_data_bits] = demapPacket_old(rx_data_syms, data, opt, st
   rx_data_bits = rx_data_bits * 255;	%making bits soft
 end
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function [stats data rx_data_bits] = demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   if (prod(size(rx_data_syms)) == 0)
     return;
   end
@@ -451,16 +459,16 @@ function [stats data rx_data_bits] = demapPacket(rx_data_syms, nsyms, nbpsc, dat
   rx_data_bits = wifi_softSlice(rx_data_syms, nbpsc, opt.soft_slice_nbits);
 end
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function [stats data rx_data_bits_deint] = deinterleave(data, opt, stats, rx_data_bits, nbpsc)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   t = data.deinterleave_tables;
   %size(rx_data_bits)
   rx_data_bits_deint = wifi_deinterleave(t, rx_data_bits, nbpsc);
   %size(rx_data_bits_deint)
 
   if (opt.writeVars_deinterleave)
-  writeVars_deinterleave(rx_data_bits, rx_data_bits_deint);
+    writeVars_deinterleave(rx_data_bits, rx_data_bits_deint);
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%
@@ -481,18 +489,18 @@ function [stats data rx_data_bits_deint] = deinterleave(data, opt, stats, rx_dat
 end
 
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function [stats data rx_data_bits_depunct] = depuncture(data, opt, stats, rx_data_bits_deint, coderate)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   rx_data_bits_depunct = wifi_softDepuncture(rx_data_bits_deint, opt.soft_slice_nbits, coderate);
   if (opt.writeVars_depuncture)
   writeVars_depuncture(rx_data_bits_deint, opt.soft_slice_nbits, coderate, rx_data_bits_depunct);
   end
 end
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function [stats data rx_data_bits_dec] = decode(data, opt, stats, rx_data_bits_depunct, tblen)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   rx_data_bits_dec = wifi_vdec(rx_data_bits_depunct, opt.soft_slice_nbits, tblen);
   if (opt.writeVars_decode)
   writeVars_decode(rx_data_bits_depunct, opt.soft_slice_nbits, tblen, rx_data_bits_dec);
@@ -507,9 +515,9 @@ end
 
 
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   if (data.frame_type == opt.ftype.data)
     stats.ber_vec_data(end+1) = data.ber;
     stats.crc_vec_data(end+1) = data.crcValid;
