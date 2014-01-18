@@ -91,6 +91,22 @@ function util_dumpData(id, confStr, data)
     if (count ~= 80 * 2)
       error('something went wrong')
     end
+    
+  elseif strcmp(id, 'interleaver48_in')
+    fprintf(1, 'Dumping interleaver48_in\n');
+    if (sum(size(data(:)) == [48,1]) ~= 2)
+      fprintf(1, 'Bad size, skipping\n');
+      return;
+    end
+    data = data(:);
+    fn = strcat(BDATA_DIR, '/', confStr, '.interleaver48_in.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'int16', 'ieee-be');
+    fclose(f);
+    if (count ~= 48)
+      error('something went wrong')
+    end
 
   elseif strcmp(id, 'plcpOfdmDemod')
     fprintf(1, 'Dumping ofdmDemodPlcp\n');
