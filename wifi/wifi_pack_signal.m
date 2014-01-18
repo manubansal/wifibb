@@ -23,10 +23,11 @@ function tx_sig_field = wifi_pack_signal(rate, len)
 
   length_field = fliplr(de2bi(len, 12, 'left-msb'));
 
-  parity_field = mod(sum(tx_sig_field(1:17)), 2);
-
   tx_sig_field(1:4) = rate_field;
   tx_sig_field(6:17) = length_field;
+  
+  parity_field = mod(sum(tx_sig_field(1:17)), 2);
+  
   tx_sig_field(18) = parity_field;
 
 
