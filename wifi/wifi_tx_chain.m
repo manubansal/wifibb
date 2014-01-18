@@ -40,7 +40,9 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   pad = zeros(npad,1);
   msg = [msg; pad];
 
-  n_ofdm_syms = length(msg)/ndbps
+  n_ofdm_syms = length(msg)/ndbps;
+  
+  util_dumpData('dataBits', confStr, msg);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% scramble the message
@@ -69,13 +71,14 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   datasyms = [sigsym mapped_syms];
 
   datasyms_dump = datasyms * (2^12); % because Q12 expected in orsys
-  util_dumpData('allMappedSymbols', confStr, datasyms_dump)
+  util_dumpData('allMappedSymbols', confStr, datasyms_dump);
 
   %--------------------------------------------------------------------------------------
   [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms);
   %--------------------------------------------------------------------------------------
 
-  util_dumpData('allOfdmMod', confStr, tdsyms_w_cp)
+  tdsyms_w_cp_dump = tdsyms_w_cp * (2^14);
+  util_dumpData('allOfdmMod', confStr, tdsyms_w_cp_dump);
 
   %--------------------------------------------------------------------------------------
   td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms);
@@ -83,6 +86,6 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
   % add preamble
   %--------------------------------------------------------------------------
-  td_pkt_samples = util_prepend_preamble(td_data_samples);
+  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr);
   %--------------------------------------------------------------------------
 end

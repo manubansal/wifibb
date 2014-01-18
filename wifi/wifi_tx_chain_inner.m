@@ -47,6 +47,9 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
     databits_i_all = [databits_i_all databits_i];
     databits_q_all = [databits_q_all databits_q];
   end
+  
+  mapped_syms_dump = mapped_syms * (2^12); % because Q12 expected in orsys
+  util_dumpData(strcat(plcp_or_data, 'MappedSymbols'), confStr, mapped_syms_dump);
 
   %s0 = size(mapped_syms)
   %pause

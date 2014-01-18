@@ -8,6 +8,75 @@ function util_dumpData(id, confStr, data)
 
   if strcmp(id, '')
       
+  elseif strcmp(id, 'plcpMappedSymbols')
+    fprintf(1, 'Dumping plcpMappedSymbols\n');
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpMappedSymbols.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+      error('something went wrong')
+    end    
+      
+ elseif strcmp(id, 'dataMappedSymbols')
+    fprintf(1, 'Dumping dataMappedSymbols\n');
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataMappedSymbols.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+      error('something went wrong')
+    end    
+      
+  elseif strcmp(id, 'stfLtfSyncTotal')
+    fprintf(1, 'Dumping stfLtfSyncTotal\n');
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.stfLtfSyncTotal.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'double', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+      error('something went wrong')
+    end
+      
+  elseif strcmp(id, 'dataBits')
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataBits.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    fprintf(1, 'Dumping dataBits\n');
+    j = 1;
+    dump_64 = [0 0 0 0 0 0 0 0];
+    for i=0:8:length(data)-1,
+      dump_64(j) = bi2de(data(1+i: 8+i)', 'left-msb');
+      j = j + 1;
+      if (j > ndbps/8)
+        j = 1;
+        fwrite(f, dump_64, 'double', 'ieee-be');
+        dump_64 = [0 0 0 0 0 0 0 0];
+      end
+    end
+    if (j > 1)
+      fwrite(f, dump_64, 'double', 'ieee-be');
+    end
+    fclose(f);
+      
   elseif strcmp(id, 'plcpPreConvBits')
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpPreConvBits.mdat');
     fprintf(1, ['Writing to ',fn]);
