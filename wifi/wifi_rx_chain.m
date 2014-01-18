@@ -57,8 +57,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   data.cleanupDone = 1;
 
 
-  if (opt.GENERATE_PER_PACKET_PLOTS)
-  util_plot_channel_estimates(ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db)
+  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CHANNEL)
+    util_plot_channel_estimates(ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, uu_ltf1, uu_ltf2, ...
+    	opt.figure_handle_perpkt, opt.subplot_handles_channel)
   end
 
 
@@ -118,7 +119,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
-  [stats data] 				= util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
+  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+    [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
+    	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
+  end
 
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
@@ -206,7 +210,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
   [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
 	wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
-  [stats data] = util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
+  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+    [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
+    	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
+  end
 
 
 
@@ -237,6 +244,13 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
+
+  % plot the constellation for data part
+
+  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+    util_plotConstellation(rx_data_syms, ...
+    	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
+  end
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, data.sig_nsyms, data.sig_modu, data, opt, stats);
 
@@ -410,8 +424,6 @@ function [stats data rx_data_bits] = demapPacket(rx_data_syms, nsyms, nbpsc, dat
     return;
   end
   %stats.n_packets_processed = stats.n_packets_processed + 1;
-
-  util_plotConstellation(rx_data_syms, opt);
 
   %rx_data_syms = reshape(rx_data_syms, prod(size(rx_data_syms)), 1);
   rx_data_bits = wifi_softSlice(rx_data_syms, nbpsc, opt.soft_slice_nbits);

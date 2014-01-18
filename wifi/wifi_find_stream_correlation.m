@@ -35,36 +35,6 @@ function [stats data]= wifi_find_stream_correlation(data, opt, stats)
 	  format short
   end
 
-
-  %figure
-  %plot(abs(corrvec))
-  x = 1:length(abs(samples));
-
-  if (opt.GENERATE_ONE_TIME_PLOTS)
-    figure
-    %plotyy(x, abs(samples), x, abscorrvec);
-    title('Sample magnitudes and correlation magnitudes');
-    plotyy(x, 10*log10(abs(samples)), x, abscorrvec);
-    grid on
-
-    figure
-    %plotyy(x, abs(samples), x, abscorrvec);
-    title('Sample magnitudes and correlation magnitude squares');
-    plotyy(x, 10*log10(abs(samples)), x, abscorrvecsq);
-    grid on
-
-    figure
-    subplot(2,2,1);
-    plot(x, abs(samples), 'o-');
-    subplot(2,2,3);
-    plot(x, abscorrvec, 'g.-');
-    subplot(2,2,[2 4]);
-    %plotyy(x, abs(samples), x, abscorrvec);
-    plotyy(x, 10*log10(abs(samples)), x, abscorrvec);
-    grid on
-
-  end
-
   data.corrvec = corrvec;
   data.abscorrvec = abscorrvec;
   data.abscorrvecsq = abscorrvecsq;

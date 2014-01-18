@@ -89,13 +89,6 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   %display('channel gains, channel gain magnitudes (dB):');
   %[ch ch_abs_db]
 
-  if (opt.GENERATE_PER_PACKET_PLOTS)
-    figure
-    hold on
-    plot(1:64, angle(uu_ltf1),'b-.');
-    plot(1:64, angle(uu_ltf2),'r-.');
-  end
-  %pause
 
 end
 

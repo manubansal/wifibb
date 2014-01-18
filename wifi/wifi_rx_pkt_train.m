@@ -34,12 +34,19 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr)
   display('------------------- done find_stream_correlation -------------------');
   toc
 
+  if (opt.GENERATE_ONE_TIME_PLOTS)
+    util_plotStreamCorrelation(data.samples, data.abscorrvec, data.abscorrvecsq, ...
+    	opt.fig_handle_onetime, opt.subplot_handles_streamcorr)
+  end
+
+
   data.deinterleave_tables = wifi_deinterleaveTables();
 
   t = 0;
   ber = 0;
   i = 0;
 
+  pause
   while (data.pkt_start_point > -Inf)
     i = i + 1;
     display(strcat('-------------- scale: ',scale,', packet #',int2str(i),'-----------'));
@@ -87,9 +94,9 @@ end
 
 
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function stats = summarizeStats(stats, data, opt)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 %stats = 
 %
 %           idle_noise_power: [3x1 double]
@@ -187,16 +194,8 @@ function stats = summarizeStats(stats, data, opt)
   crc_vec_unknown = stats.crc_vec_unknown
   display('=============================================================================================');
 
-  %opt.GENERATE_ONE_TIME_PLOTS = true;
-
   if (opt.GENERATE_ONE_TIME_PLOTS)
-    figure
-    plot(1:length(snr_v_data), snr_v_data, 'b')
-    hold on
-    plot(1:length(snr_v_ack), snr_v_ack, 'r')
-    ylim([0 50]);
-    grid on
-    title('avg snr of data (b) and ack (r) pkts (dB), dc in the middle');
+    util_plotRxSNRs(snr_v_data, snr_v_ack);
   end
 
   if (opt.writeVars_cfos)
@@ -212,17 +211,17 @@ end
 
 
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function plotSamples(samples)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   plot(abs(samples))
 end
 
 
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function writeVars_startPnts(pkt_start_points)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   whos
   pkt_start_points(1:10)
   pkt_start_points(end)=[];	%removes the -Inf at the end
@@ -230,9 +229,9 @@ function writeVars_startPnts(pkt_start_points)
 end
 
 
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
 function writeVars_cfos(coarse_cfo_freq_off_khz, fine_cfo_freq_off_khz)
-%----------------------------------------------------------------------------------------------------------------------------
+%------------------------------------------------------------------------------------
   fprintf(1,'\nbegin writeVars_cfos\n');
   cfo_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz;	%since on TI, we do a single estimate
   util_writeVarToCFile(cfo_khz, 'cfo_khz', 0, 0, 'float', 1, 1);
