@@ -4,7 +4,8 @@ function [parsed_data frame_type ber crcValid] = wifi_parse_payload(databytes)
 %databytes format: each column is a byte, top of a byte being the earliest bit
 
   %display('service field:');
-  service_field = databytes(:,1:2)
+  service_field = databytes(:,1:2);
+  service_field = service_field(:).'
 
   databytes = databytes(:,3:end);
 

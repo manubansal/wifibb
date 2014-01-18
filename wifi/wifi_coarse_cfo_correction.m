@@ -28,8 +28,8 @@ function [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correct
 
     if (abs(angle_corr_pred_from_short - angle_corr) > pi) 
       display('CFO detection algorithm maybe be missing multiples of pi.');
-      display('Inspect the values above and press any key to proceed.');
-      pause
+      %display('Inspect the values above and press any key to proceed.');
+      %pause
     end
 
     stats.coarse_cfo_angle_corr(end+1,:) = angle_corr;

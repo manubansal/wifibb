@@ -3,15 +3,12 @@
 %------------------------------------------------------------------------------------
 function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chain(data, opt, stats, confStr)
 %------------------------------------------------------------------------------------
-
-
-
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   sig_len = opt.sig_len;
 
   [stats data pkt_samples] 			= wifi_get_packet(data, opt, stats);
-
+  display(['Got pkt at power-ratio estimated dB SNR = ' num2str(stats.snr_db(end))])
 
   %base ltf samples, before any rx processing
   ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
@@ -96,9 +93,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   if (opt.dumpVars_plcpOfdmDemod)
     util_dumpData('plcpOfdmDemod', confStr, fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1)))
   end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
-  end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] ...
@@ -122,9 +116,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     ch_psubc = ch(psubc_idx);
     util_dumpData('plcpOfdmEq.channel_psubc', confStr, ch_psubc)
   end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
-  end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats data] 				= util_generate_constellation_plots(stats, data, opt, uu_pilot_syms);
@@ -143,9 +134,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     %(rx_data_bits(:,1) - scale)	%representing in [-scale, scale], instead of [0, 2*scale]
     dumped_soft_bits = rx_data_bits(:,1) - scale;
     util_dumpData('plcpDemap', confStr, dumped_soft_bits)
-  end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -212,9 +200,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   if (opt.dumpVars_dataOfdmDemod)
     util_dumpData('dataOfdmDemod', confStr, ofdm_syms_f(dsubc_idx, 2:end))
   end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
-  end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_channel_correction(nsyms + 1, opt, data, stats, ofdm_syms_f, chi);
@@ -234,9 +219,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.printVars_equalize)
     util_print_equalize(rx_data_syms);
-    if (opt.PAUSE_AFTER_EVERY_PACKET)
-	    pause
-    end
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -252,9 +234,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
     %ch_psubc = ch(psubc_idx)
     %util_dumpData('dataOfdmEq.channel_psubc', ch_psubc)
-  end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -273,9 +252,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     dumped_soft_bits = rx_data_bits(:,:) - scale;
     util_dumpData('dataDemap', confStr, dumped_soft_bits)
   end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
-  end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
 
@@ -283,10 +259,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats data rx_data_bits_deint]  	= deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
   if (opt.printVars_deinterleave)
-	  util_print_deinterleave(rx_data_bits_deint);
-	  if (opt.PAUSE_AFTER_EVERY_PACKET)
-		  pause
-	  end
+    util_print_deinterleave(rx_data_bits_deint);
   end
 
   rx_data_bits_deint = reshape(rx_data_bits_deint, prod(size(rx_data_bits_deint)), 1);
@@ -303,9 +276,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     dumped_soft_bits_depunct = rx_data_bits_depunct(:,1) - scale;
     util_dumpData('dataDepunct', confStr, dumped_soft_bits_depunct)
   end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
-  end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   %decode the actual data length portion
@@ -316,11 +286,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats data rx_data_bits_dec]         = decode(data, opt, stats, actual_data_portion_with_tail, opt.tblen_data);
 
   if (opt.printVars_decodedBits)
-	  all_chunks = ...
-	   util_print_decode(rx_data_bits_dec, data.sig_ndbps, opt.n_decoded_symbols_per_ofdm_symbol);
-	  if (opt.PAUSE_AFTER_EVERY_PACKET)
-		  pause
-	  end
+    all_chunks = ...
+     util_print_decode(rx_data_bits_dec, data.sig_ndbps, opt.n_decoded_symbols_per_ofdm_symbol);
   end
 
   %++++++++++++++++++++++++++++++++++++++++++++++
@@ -331,17 +298,11 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
       fprint(1, 'Need opt.printVars_decodedBits for opt.dumpVars_dataVitdecChunks\n');
     end
   end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
-  end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataVitdec)
     util_dumpData('dataVitdec', confStr, rx_data_bits_dec)
-  end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -352,9 +313,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   if (opt.printVars_descrambledBits)
     util_print_descramble(rx_data_bits_descr, data.sig_ndbps);
-    if (opt.PAUSE_AFTER_EVERY_PACKET)
-      pause
-    end
   end
 
   %rx_data_bytes = reshape(rx_data_bits_descr, 8, length(rx_data_bits_descr)/8);
@@ -367,9 +325,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataDescr)
     util_dumpData('dataDescr', confStr, rx_data_bits_descr)
-  end
-  if (opt.PAUSE_AFTER_EVERY_PACKET)
-    pause
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -411,6 +366,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %% update statistics
   %%***************************************
   stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch);
+
+  display('Press any key to continue...')
+  pause
 end
 
 
@@ -472,18 +430,20 @@ function [stats data rx_data_bits_deint] = deinterleave(data, opt, stats, rx_dat
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%
-    if (opt.printVars_softBits_deint)
-	  display('plcp signal field soft bits after deinterleaving');
-	  nbits = opt.soft_slice_nbits;
-	  scale = 2^(nbits - 1);		%for 8 bits, this is 128, so that we can contain the soft estimates in [-128, 128]
-	  size(rx_data_bits_deint)
-	  size(scale)
-	  %[[1:length(rx_data_bits)]' (rx_data_bits - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
-	  [[1:size(rx_data_bits_deint,1)]' (rx_data_bits_deint(:,1) - scale)]	%representing in [-scale, scale], instead of [0, 2*scale]
-	  if (opt.PAUSE_AFTER_EVERY_PACKET)
-	    pause
-	  end
-    end
+  if (opt.printVars_softBits_deint)
+	display('plcp signal field soft bits after deinterleaving');
+	nbits = opt.soft_slice_nbits;
+	scale = 2^(nbits - 1);		
+	      %for 8 bits, this is 128, so that we can contain the soft estimates in [-128, 128]
+
+	size(rx_data_bits_deint)
+	size(scale)
+	%[[1:length(rx_data_bits)]' (rx_data_bits - scale)]	
+	      %representing in [-scale, scale], instead of [0, 2*scale]
+
+	[[1:size(rx_data_bits_deint,1)]' (rx_data_bits_deint(:,1) - scale)]	
+	      %representing in [-scale, scale], instead of [0, 2*scale]
+  end
   %%%%%%%%%%%%%%%%%%%%%%%
 
 end
