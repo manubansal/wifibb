@@ -34,7 +34,7 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr)
   display('------------------- done find_stream_correlation -------------------');
   toc
 
-  if (opt.GENERATE_ONE_TIME_PLOTS)
+  if (opt.GENERATE_ONE_TIME_PLOTS_PRE)
     util_plotStreamCorrelation(data.samples, data.abscorrvec, data.abscorrvecsq, ...
     	opt.fig_handle_onetime, opt.subplot_handles_streamcorr)
   end
@@ -194,7 +194,7 @@ function stats = summarizeStats(stats, data, opt)
   crc_vec_unknown = stats.crc_vec_unknown
   display('=============================================================================================');
 
-  if (opt.GENERATE_ONE_TIME_PLOTS)
+  if (opt.GENERATE_ONE_TIME_PLOTS_PRE)
     util_plotRxSNRs(snr_v_data, snr_v_ack);
   end
 

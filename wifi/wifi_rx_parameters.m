@@ -75,7 +75,8 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.PILOT_PHASE_TRACKING = true;
     opt.PILOT_SAMPLING_DELAY_CORRECTION = true;	%this is really referring to sampling delay 
 							  %introduced due to sampling frequency offset
-    opt.GENERATE_ONE_TIME_PLOTS = true;
+    opt.GENERATE_ONE_TIME_PLOTS_PRE = false;
+    opt.GENERATE_ONE_TIME_PLOTS_POST = true;
     opt.GENERATE_PER_PACKET_PLOTS = true;
     opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = true;
     opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = true;
@@ -273,7 +274,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
   data.frame_type	= opt.ftype.unknown;
 
 
-  if (opt.GENERATE_ONE_TIME_PLOTS)
+  if (opt.GENERATE_ONE_TIME_PLOTS_PRE)
     display('creating handle for one-time figure')
     opt.fig_handle_onetime = figure();
     opt.subplot_handles_streamcorr = {};
@@ -282,6 +283,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.subplot_handles_streamcorr{3} = subplot(4,2,5);
     opt.subplot_handles_streamcorr{4} = subplot(4,2,7);
     opt.subplot_handles_streamcorr{5} = subplot(4,2,[6 8]);
+  end
 
   if (opt.GENERATE_PER_PACKET_PLOTS || ...
   	opt.GENERATE_PER_PACKET_PLOTS_CHANNEL || ...

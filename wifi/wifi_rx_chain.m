@@ -119,10 +119,18 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
+  % plot the constellation for plcp part
+  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+    util_plotConstellation(rx_data_syms, ...
+    	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
+  end
+
   if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
     [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
   end
+  display('plotted plcp constellation, continue?')
+  pause
 
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
@@ -210,12 +218,11 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase_tracking(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
   [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
 	wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
+
   if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
     [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
   end
-
-
 
 
   rx_data_syms(:,1)=[];
@@ -246,7 +253,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
 
   % plot the constellation for data part
-
   if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
     util_plotConstellation(rx_data_syms, ...
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
