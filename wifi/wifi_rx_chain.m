@@ -125,13 +125,16 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
   end
 
+  [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
+  plcp_constellation_avgsnr_dB = avgsnr_dB
+
   if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
     [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
   end
+
   display('plotted plcp constellation, continue?')
   pause
-
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
 
@@ -252,11 +255,18 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
 
 
+  [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
+  data_constellation_avgsnr_dB = avgsnr_dB
+
   % plot the constellation for data part
   if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
     util_plotConstellation(rx_data_syms, ...
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
   end
+
+  display('plotted data constellation, continue?')
+  pause
+
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, data.sig_nsyms, data.sig_modu, data, opt, stats);
 

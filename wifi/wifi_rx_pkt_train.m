@@ -46,6 +46,7 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr)
   ber = 0;
   i = 0;
 
+  display('start pkt processing?')
   pause
   while (data.pkt_start_point > -Inf)
     i = i + 1;

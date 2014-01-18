@@ -76,10 +76,11 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.PILOT_SAMPLING_DELAY_CORRECTION = true;	%this is really referring to sampling delay 
 							  %introduced due to sampling frequency offset
     opt.GENERATE_ONE_TIME_PLOTS_PRE = false;
-    opt.GENERATE_ONE_TIME_PLOTS_POST = true;
-    opt.GENERATE_PER_PACKET_PLOTS = true;
-    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = true;
-    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = true;
+    opt.GENERATE_ONE_TIME_PLOTS_POST = false;
+    opt.GENERATE_PER_PACKET_PLOTS = false;
+    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = false;
+    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = false;
+
     opt.PAUSE_AFTER_EVERY_PACKET = false;
 
     %---- these are written to c files ready to be imported for debugging ------%

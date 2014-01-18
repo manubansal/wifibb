@@ -88,4 +88,6 @@ function softbits = wifi_softSlice(points, nbpsc, nbits, range)
   %pause
 
   softbits = b;
+
+
 end
