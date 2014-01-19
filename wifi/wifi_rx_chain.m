@@ -53,7 +53,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_ltfSNR(uu_ltf1, uu_ltf2, chi);
   ltf_avgsnr_dB = avgsnr_dB
-  pause
 
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
@@ -138,8 +137,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
   end
 
-  display('plotted plcp constellation, continue?')
-  pause
+  ltf_avgsnr_dB = ltf_avgsnr_dB
+
+  %display('plotted plcp constellation, continue?')
+  %pause
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
 
@@ -210,6 +211,13 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
 
 
+  filter_match = data.sig_rate == 54 && data.sig_payload_length > 1400;
+  if (filter_match)
+    display('found a filter-matching plcp. plotted plcp constellation, continue?')
+    pause
+  end
+
+
   %%*********************************
   %%%%%% process data field
   %%*********************************
@@ -270,8 +278,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
   end
 
-  display('plotted data constellation, continue?')
-  pause
+  %display('plotted data constellation, continue?')
+  %pause
 
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, data.sig_nsyms, data.sig_modu, data, opt, stats);
@@ -410,8 +418,12 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %%***************************************
   stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch);
 
-  display('Press any key to continue...')
-  pause
+  %display('Press any key to continue...')
+  %pause
+  if (filter_match)
+    display('data processed for filter-matching pkt. continue?')
+    pause
+  end
 end
 
 
