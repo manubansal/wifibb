@@ -51,6 +51,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] ...
   		= wifi_preamble_channel_estimation(opt, stats, pkt_samples);
 
+  [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_ltfSNR(uu_ltf1, uu_ltf2, chi);
+  ltf_avgsnr_dB = avgsnr_dB
+  pause
+
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
 
@@ -125,8 +129,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
     	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
   end
 
-  [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  plcp_constellation_avgsnr_dB = avgsnr_dB
+  %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
+  %[avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
+  %plcp_constellation_avgsnr_dB = avgsnr_dB
 
   if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
     [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
@@ -255,8 +260,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
 
 
-  [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  data_constellation_avgsnr_dB = avgsnr_dB
+  %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
+  %[avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
+  %data_constellation_avgsnr_dB = avgsnr_dB
 
   % plot the constellation for data part
   if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)

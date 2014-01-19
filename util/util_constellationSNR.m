@@ -1,3 +1,8 @@
+%WARNING: This function compute SNR relative to the nearest constellation point. This is 
+%going to be correct when nearest constellation point was indeed the transmitted constellation
+%point, an assumption which would hold true at high SNRs for that constellation. However, at
+%low SNR, this would result in an overstatement of SNR. A more robust blind estimate is one 
+%from equalized LTF sequences (preamble), since that is always a known sequence.
 function [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(points, nbpsc)
   points = points(:);
   npoints = length(points);
