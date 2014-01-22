@@ -13,7 +13,8 @@ function rx_sample_stream(samples)
   %%%%%%%%%%%%%%%%%%%%%%
   %% decode messages
   %%%%%%%%%%%%%%%%%%%%%%
-  td_pkt_samples_16bit = samples(1:20000000);
+  %td_pkt_samples_16bit = samples(1:20000000);
+  td_pkt_samples_16bit = samples;
   confStr = 'fromair.rate54'
   rx_pkts = wifi_rx_pkt_train(td_pkt_samples_16bit, confStr);
 

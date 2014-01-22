@@ -75,8 +75,10 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.PILOT_PHASE_TRACKING = true;
     opt.PILOT_SAMPLING_DELAY_CORRECTION = true;	%this is really referring to sampling delay 
 							  %introduced due to sampling frequency offset
-    opt.GENERATE_ONE_TIME_PLOTS_PRE = false;
+    opt.GENERATE_ONE_TIME_PLOTS_PRE = true;
     opt.GENERATE_ONE_TIME_PLOTS_POST = false;
+
+    opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH = false;
     opt.GENERATE_PER_PACKET_PLOTS = true;
     opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = true;
     opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = true;
@@ -114,23 +116,23 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.printVars_data_syms = false;
 
     %----- variable binary dumps ---------%
-    opt.dumpVars_ltfRxSamples = false;
-    opt.dumpVars_plcpBaseSamples = false;
+    opt.dumpVars_ltfRxSamples = true;
+    opt.dumpVars_plcpBaseSamples = true;
 
-    opt.dumpVars_plcpCfoCorrected = false;
-    opt.dumpVars_plcpOfdmDemod = false;
-    opt.dumpVars_plcpOfdmEq = false;
-    opt.dumpVars_plcpDemap = false;
+    opt.dumpVars_plcpCfoCorrected = true;
+    opt.dumpVars_plcpOfdmDemod = true;
+    opt.dumpVars_plcpOfdmEq = true;
+    opt.dumpVars_plcpDemap = true;
 
-    opt.dumpVars_dataBaseSamples = false;
-    opt.dumpVars_dataCfoCorrected = false;
-    opt.dumpVars_dataOfdmDemod = false;
-    opt.dumpVars_dataOfdmEq = false;
-    opt.dumpVars_dataDemap = false;
-    opt.dumpVars_dataDepunct = false;
+    opt.dumpVars_dataBaseSamples = true;
+    opt.dumpVars_dataCfoCorrected = true;
+    opt.dumpVars_dataOfdmDemod = true;
+    opt.dumpVars_dataOfdmEq = true;
+    opt.dumpVars_dataDemap = true;
+    opt.dumpVars_dataDepunct = true;
     opt.dumpVars_dataVitdecChunks = false;
-    opt.dumpVars_dataVitdec = false;
-    opt.dumpVars_dataDescr = false;
+    opt.dumpVars_dataVitdec = true;
+    opt.dumpVars_dataDescr = true;
     opt.dumpVars_dataParsed = true;
   end
 

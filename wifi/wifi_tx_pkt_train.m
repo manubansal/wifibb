@@ -12,7 +12,8 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   n_msgs = length(msgs_hex)
 
   %zero_prepad_dur_us = 100;		%zero samples of this duration (us) will be prefixed to every packet
-  zero_prepad_dur_us = 10;		%zero samples of this duration (us) will be prefixed to every packet
+  %zero_prepad_dur_us = 10;		%zero samples of this duration (us) will be prefixed to every packet
+  zero_prepad_dur_us = 9;		%zero samples of this duration (us) will be prefixed to every packet
   zero_postpad_dur_us = 5;
   
   %54mbps

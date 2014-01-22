@@ -9,6 +9,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   [stats data pkt_samples] 			= wifi_get_packet(data, opt, stats);
   display(['Got pkt at power-ratio estimated dB SNR = ' num2str(stats.snr_db(end))])
+  power_ratio_SNR_dB = (stats.snr_db(end));
 
   %base ltf samples, before any rx processing
   ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
@@ -51,8 +52,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] ...
   		= wifi_preamble_channel_estimation(opt, stats, pkt_samples);
 
-  [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_ltfSNR(uu_ltf1, uu_ltf2, chi);
+  [avgsnr avgsnr_dB snr_vector snr_vector_dB avgsnr_cross_dB] = util_ltfSNR(uu_ltf1, uu_ltf2, chi);
   ltf_avgsnr_dB = avgsnr_dB
+  ltf_avgsnr_dB_cross = avgsnr_cross_dB
 
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
@@ -60,9 +62,11 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   data.cleanupDone = 1;
 
 
-  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CHANNEL)
-    util_plot_channel_estimates(ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, uu_ltf1, uu_ltf2, ...
-    	opt.figure_handle_perpkt, opt.subplot_handles_channel)
+  if (~opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH)
+    if (opt.GENERATE_PER_PACKET_PLOTS && opt.GENERATE_PER_PACKET_PLOTS_CHANNEL)
+      util_plot_channel_estimates(ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, uu_ltf1, uu_ltf2, ...
+	  opt.figure_handle_perpkt, opt.subplot_handles_channel)
+    end
   end
 
 
@@ -110,7 +114,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_plcpOfdmEq)
-    util_dumpData('plcpOfdmEq.eqPnts', confStr, fix(ofdm_syms_f(dsubc_idx, 1)))
+    %util_dumpData('plcpOfdmEq.eqPnts', confStr, fix(ofdm_syms_f(dsubc_idx, 1)))
+    util_dumpData('plcpOfdmEq.eqPnts', confStr, ofdm_syms_f(dsubc_idx, 1))
     util_dumpData('plcpOfdmEq.channeli', confStr, chi)
     [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
 
@@ -122,25 +127,30 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
-  % plot the constellation for plcp part
-  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
-    util_plotConstellation(rx_data_syms, ...
-    	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
-  end
+  plcp_rx_data_syms = rx_data_syms;
 
-  %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
-  %[avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  %plcp_constellation_avgsnr_dB = avgsnr_dB
+  if (~opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH)
+      % plot the constellation for plcp part
+      if (opt.GENERATE_PER_PACKET_PLOTS && opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+	util_plotConstellation(rx_data_syms, ...
+	    opt.figure_handle_perpkt, opt.subplot_handles_constellation);
+      end
 
-  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
-    [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
-    	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
+      %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
+      %[avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
+      %plcp_constellation_avgsnr_dB = avgsnr_dB
+
+      if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+	[stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
+	    opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
+      end
   end
 
   ltf_avgsnr_dB = ltf_avgsnr_dB
+  ltf_avgsnr_dB_cross = ltf_avgsnr_dB_cross
 
-  %display('plotted plcp constellation, continue?')
-  %pause
+  display('plotted plcp constellation, continue?')
+  pause
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
 
@@ -211,8 +221,36 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   end
 
 
-  filter_match = data.sig_rate == 54 && data.sig_payload_length > 1400;
+  %filter_match = data.sig_rate == 54 && data.sig_payload_length == 1475;
+  filter_match = data.sig_rate == 54 && data.sig_payload_length == 1514;
+  %filter_match = true;
+
+
+
   if (filter_match)
+    if (opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH)
+	% plot channel stuff
+	if (opt.GENERATE_PER_PACKET_PLOTS && opt.GENERATE_PER_PACKET_PLOTS_CHANNEL)
+	  util_plot_channel_estimates(ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, uu_ltf1, uu_ltf2, ...
+	      opt.figure_handle_perpkt, opt.subplot_handles_channel)
+	end
+
+	% plot the constellation for plcp part
+	if (opt.GENERATE_PER_PACKET_PLOTS && opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+	  util_plotConstellation(rx_data_syms, ...
+	      opt.figure_handle_perpkt, opt.subplot_handles_constellation);
+	end
+
+	%NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
+	%[avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
+	%plcp_constellation_avgsnr_dB = avgsnr_dB
+
+	if (opt.GENERATE_PER_PACKET_PLOTS && opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+	  [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
+	      opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
+	end
+    end
+
     display('found a filter-matching plcp. plotted plcp constellation, continue?')
     pause
   end
@@ -235,9 +273,11 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
 	wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
 
-  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
-    [stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
-    	opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
+  if (~opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH || filter_match)
+      if (opt.GENERATE_PER_PACKET_PLOTS && opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+	[stats data] = util_plotConstellation2(stats, data, uu_pilot_syms, ...
+	    opt.figure_handle_perpkt, opt.subplot_handles_constellation2);
+      end
   end
 
 
@@ -269,13 +309,15 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
 
   %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
-  %[avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  %data_constellation_avgsnr_dB = avgsnr_dB
+  [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
+  data_constellation_avgsnr_dB_overestimate = avgsnr_dB
 
   % plot the constellation for data part
-  if (opt.GENERATE_PER_PACKET_PLOTS || opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
-    util_plotConstellation(rx_data_syms, ...
-    	opt.figure_handle_perpkt, opt.subplot_handles_constellation);
+  if (~opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH || filter_match)
+    if (opt.GENERATE_PER_PACKET_PLOTS && opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION)
+      util_plotConstellation(rx_data_syms, ...
+	  opt.figure_handle_perpkt, opt.subplot_handles_constellation);
+    end
   end
 
   %display('plotted data constellation, continue?')
@@ -384,7 +426,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataParsed)
-    util_dumpData('dataParsed', confStr, parsed_data)
+    if (filter_match)
+      util_dumpData('dataParsed', confStr, parsed_data)
+    end
   end
   %++++++++++++++++++++++++++++++++++++++++++++++
 
@@ -412,6 +456,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(frame_type), ...
     ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
   display('------------------------------------------------------------');
+
+  power_ratio_SNR_dB = (stats.snr_db(end))
+  ltf_avgsnr_dB = ltf_avgsnr_dB
+  data_constellation_avgsnr_dB_overestimate = data_constellation_avgsnr_dB_overestimate
 
   %%***************************************
   %% update statistics

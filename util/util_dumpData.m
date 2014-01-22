@@ -251,7 +251,8 @@ function util_dumpData(id, confStr, data)
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpCfoCorrected.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'int16', 'ieee-be');
+    %count = fwrite(f, data, 'int16', 'ieee-be');
+    count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
     if (count ~= 80 * 2)
       error('something went wrong')
@@ -285,7 +286,8 @@ function util_dumpData(id, confStr, data)
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmDemod.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'int16', 'ieee-be');
+    %count = fwrite(f, data, 'int16', 'ieee-be');
+    count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
     if (count ~= 48 * 2)
       error('something went wrong')
@@ -302,7 +304,8 @@ function util_dumpData(id, confStr, data)
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.eqPnts.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'int16', 'ieee-be');
+    %count = fwrite(f, data, 'int16', 'ieee-be');
+    count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
     if (count ~= 48 * 2)
       error('something went wrong')
@@ -320,7 +323,8 @@ function util_dumpData(id, confStr, data)
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channeli.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'int16', 'ieee-be');
+    %count = fwrite(f, data, 'int16', 'ieee-be');
+    count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
     if (count ~= 64 * 2)
       error('something went wrong')
@@ -338,7 +342,8 @@ function util_dumpData(id, confStr, data)
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channel_dsubc.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'int16', 'ieee-be');
+    %count = fwrite(f, data, 'int16', 'ieee-be');
+    count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
     if (count ~= 48 * 2)
       error('something went wrong')
@@ -356,7 +361,8 @@ function util_dumpData(id, confStr, data)
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channel_psubc.mdat');
     fprintf(1, ['Writing to ',fn]);
     f = fopen(fn, 'a+');
-    count = fwrite(f, data, 'int16', 'ieee-be');
+    %count = fwrite(f, data, 'int16', 'ieee-be');
+    count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
     if (count ~= 4 * 2)
       error('something went wrong')
@@ -540,22 +546,16 @@ function util_dumpData(id, confStr, data)
 
   elseif strcmp(id, 'dataParsed')
     fprintf(1, 'Dumping dataParsed\n');
-    size_data = size(data)
-    %pause
-    %if (size(data,2) ~= 1)
-    %  data = data
-    %  size_data = size(data)
-    %  fprintf(1, 'Bad size, skipping\n');
-    %  return;
-    %end
-    %fn = strcat(BDATA_DIR, '/', confStr, '.dataDescr.mdat');
-    %fprintf(1, ['Writing to ',fn]);
-    %f = fopen(fn, 'a+');
-    %count = fwrite(f, data, 'uint8', 'ieee-be');
-    %fclose(f);
-    %if (count ~= size(data,1))
-    %  error('something went wrong')
-    %end
+    data = hex2dec(data);
+    nbytes = length(data)
+    fn = strcat(BDATA_DIR, '/', confStr, '.dataParsed.mdat');
+    fprintf(1, ['Writing to ',fn]);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'uint8', 'ieee-be');
+    fclose(f);
+    if (count ~= nbytes)
+      error('something went wrong')
+    end
   else
     error('bad dump option')
   end

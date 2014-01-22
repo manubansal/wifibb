@@ -1,28 +1,35 @@
-function test_wifi_chain(snr, msglen)
+function test_wifi_chain(tag, snr, msglen, rate)
 
-  %rate = 54;
-  %rate = 36;
-  %rate = 24;
-  rate = 6;
-
-  %snr = 30;
-  %snr = 35;
-  %snr = 30;
-  %snr = 17; 	
   if nargin < 1
-    snr = Inf;
+    tag = 'mytag';
   end
 
   if nargin < 2
+    snr = Inf;
+  end
+
+  if nargin < 3
     msglen = 200;	%bytes
+  end
+
+  if nargin < 4
+    rate = 54;
+    %rate = 36;
+    %rate = 24;
+    %rate = 6;
+
+    %snr = 30;
+    %snr = 35;
+    %snr = 30;
+    %snr = 17; 	
   end
 
 
   %test1(rate, snr)
-  test2(rate, snr, msglen)
+  test2(tag, rate, snr, msglen)
 end
 
-function test2(rate, snr, msglen)
+function test2(tag, rate, snr, msglen)
   scale = sqrt(2);
 
   %%%%%%%%%%%%%%%%%%%%%%
@@ -36,7 +43,7 @@ function test2(rate, snr, msglen)
   %% conf string
   %%%%%%%%%%%%%%%%%%%%%%
   %confStr = sprintf('rate%d.snr%d.nmsgs%d.scale%04.2f', rate, snr, n_msgs, scale)
-  confStr = sprintf('rate%d.snr%d.nmsgs%d.msglen%d.scale%04.2f', rate, snr, n_msgs, msglen, scale)
+  confStr = sprintf('%s.rate%d.snr%d.nmsgs%d.msglen%d.scale%04.2f', tag, rate, snr, n_msgs, msglen, scale)
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% remove old files
