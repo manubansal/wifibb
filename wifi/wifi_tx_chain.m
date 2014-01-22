@@ -77,7 +77,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms);
   %--------------------------------------------------------------------------------------
 
-  tdsyms_w_cp_dump = tdsyms_w_cp * (2^14);
+  tdsyms_w_cp_dump = tdsyms_w_cp * (2^12);
   util_dumpData('allOfdmMod', confStr, tdsyms_w_cp_dump);
 
   %--------------------------------------------------------------------------------------
