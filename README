@@ -23,3 +23,33 @@ Code to generate ofdm-modulated WiFi-like data. It picks random constellation po
 gen_wifi_stf.m : generates the stf portion and stores to a binary file (and text)
 
 gen_wifi_pkt_random.m  : generates a packet as described above and stored to binary file (and text)
+
+
+-------------------------
+SNR-PER characterization
+-------------------------
+For spec testing, follow these steps:
+
+== Get traces ==
+
+Check out wifibb (the folder is pretty big - 14GB when last measured):
+
+$ svn checkout svn+ssh://<username>@snsg.stanford.edu/home/svn/repos/vbase/wifibb-traces
+
+== Run wifibb receiver ==
+
+Start MATLAB in wifibb folder or start MATLAB and cd to wifibb folder, then:
+
+1. Set up paths:
+
+>> setup_paths
+
+2. Load in samples from trace:
+
+>> [samples, n_samples] = load_samples('<directory containing wifibb-traces>/wifibb-traces/traces54/spectesting-siggen-rhs/54Mbps_1000b_600frames_-30dBm_seq.complex.1ch.float32','float32');
+
+3. Run wifibb receiver on the samples just loaded:
+
+>> rx_sample_stream(samples)
+
+4. Repeat steps 2 and 3 for all traces
