@@ -150,7 +150,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   ltf_avgsnr_dB_cross = ltf_avgsnr_dB_cross
 
   display('plotted plcp constellation, continue?')
-  pause
+  %pause
 
   [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
 
@@ -222,7 +222,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
 
   %filter_match = data.sig_rate == 54 && data.sig_payload_length == 1475;
-  filter_match = data.sig_rate == 54 && data.sig_payload_length == 1514;
+  %filter_match = data.sig_rate == 54 && data.sig_payload_length == 1514;
+  filter_match = data.sig_rate == 54 && data.sig_payload_length == 15;
   %filter_match = true;
 
 

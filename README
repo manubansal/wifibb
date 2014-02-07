@@ -53,3 +53,20 @@ Start MATLAB in wifibb folder or start MATLAB and cd to wifibb folder, then:
 >> rx_sample_stream(samples)
 
 4. Repeat steps 2 and 3 for all traces
+
+
+---------------------------
+To run the regression test
+---------------------------
+
+Check out the trace repository:
+
+$ svn checkout svn+ssh://<username>@snsg.stanford.edu/home/svn/repos/vbase/wifibb-traces
+
+Start MATLAB in wifibb folder or start MATLAB and cd to wifibb folder, then:
+
+>> setup_paths
+>> [samples, n_samples] = load_samples('../wifibb-traces/traces54/regression/regression_trace','float32');
+>> rx_sample_stream(samples)
+
+
