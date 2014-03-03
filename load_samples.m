@@ -6,7 +6,7 @@ function [samples, n_samples] = load_samples(samplefilepath, format)
 
   if nargin > 1 && strcmp(format,'cplx')
     fid = fopen(samplefilepath, 'r');
-    [s, n] = fread(fid, inf, 'int16');
+    [s, n] = fread(fid, inf, 'int16', 0, 'ieee-be');
     fclose(fid);
     s = reshape(s, 2, []).';
     s = s(:,1) + i * s(:,2);
