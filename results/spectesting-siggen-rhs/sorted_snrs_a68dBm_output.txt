@@ -1,0 +1,5 @@
+avg_snr_db =    0.8012
+ltf_avgsnr_dB =    4.5889
+ltf_avgsnr_dB =    4.5889
+ltf_avgsnr_dB_cross =     0
+ltf_avgsnr_dB_cross =     0

@@ -1,0 +1,1 @@
+a77dBm_output n_crc_unknown/n_unknown_packets:0/600 ber_unknown_avg/ber_unknown_std:-1/0
