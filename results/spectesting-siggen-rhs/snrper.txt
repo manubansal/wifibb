@@ -1,0 +1,16 @@
+a30dBm_output avg_snr_db = 33.2048 pwrsnr = 32.1479,33.2599 evmsnr = 28.5983,46.1060 n_crc_correct/n_crc:295/600
+a32dBm_output avg_snr_db = 47.6768 pwrsnr = 46.2653,47.8320 evmsnr = 43.3237,63.0143 n_crc_correct/n_crc:600/600
+a35dBm_output avg_snr_db = 38.4338 pwrsnr = 37.2798,38.5786 evmsnr = 33.8406,56.8495 n_crc_correct/n_crc:597/600
+a38dBm_output avg_snr_db = 1.1358 pwrsnr = 0.4245,33.7580 evmsnr = -3.6072,52.3303 n_crc_correct/n_crc:364/602
+a41dBm_output avg_snr_db = 0.0116 pwrsnr = 42.7127,43.6491 evmsnr = 44.7164,68.2338 n_crc_correct/n_crc:600/600
+a47dBm_output avg_snr_db = 32.9098 pwrsnr = 32.0164,33.1022 evmsnr = 28.2273,57.8279 n_crc_correct/n_crc:263/600
+a50dBm_output avg_snr_db = 34.2383 pwrsnr = 33.0593,34.4276 evmsnr = 30.8718,49.5423 n_crc_correct/n_crc:495/600
+a53dBm_output avg_snr_db = 39.1558 pwrsnr = 38.1949,39.6760 evmsnr = 36.3856,61.2848 n_crc_correct/n_crc:600/600
+a56dBm_output avg_snr_db = 34.0641 pwrsnr = 33.5146,34.9317 evmsnr = 32.1292,58.1707 n_crc_correct/n_crc:584/600
+a59dBm_output avg_snr_db = 33.9426 pwrsnr = 33.3535,34.5676 evmsnr = 34.3256,54.8514 n_crc_correct/n_crc:599/600
+a62dBm_output avg_snr_db = 32.3950 pwrsnr = 31.9592,33.5508 evmsnr = 37.4234,75.5509 n_crc_correct/n_crc:600/600
+a65dBm_output avg_snr_db = 31.0545 pwrsnr = 28.9811,32.4716 evmsnr = 27.5053,49.3792 n_crc_correct/n_crc:261/600
+a68dBm_output avg_snr_db = 0.8012 pwrsnr = , evmsnr = , n_crc_correct/n_crc:0/0
+a71dBm_output avg_snr_db = 24.4268 pwrsnr = 23.3412,25.0369 evmsnr = 29.7855,59.9955 n_crc_correct/n_crc:599/600
+a74dBm_output avg_snr_db = 21.3265 pwrsnr = 20.5517,22.0630 evmsnr = 26.9649,57.3848 n_crc_correct/n_crc:438/600
+a77dBm_output avg_snr_db = 17.6434 pwrsnr = 17.3028,19.0562 evmsnr = 24.1056,54.5312 n_crc_correct/n_crc:0/600
