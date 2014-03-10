@@ -16,7 +16,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpMappedSymbols.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -32,7 +32,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.dataMappedSymbols.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -48,7 +48,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.stfLtfSyncTotal.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -58,7 +58,7 @@ function util_dumpData(id, confStr, data)
       
   elseif strcmp(id, 'dataBits')
     fn = strcat(BDATA_DIR, '/', confStr, '.dataBits.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     fprintf(1, 'Dumping dataBits\n');
     j = 1;
@@ -79,7 +79,7 @@ function util_dumpData(id, confStr, data)
       
   elseif strcmp(id, 'plcpPreConvBits')
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpPreConvBits.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     fprintf(1, 'Dumping plcpPreConvBits\n');
     j = 1;
@@ -100,7 +100,7 @@ function util_dumpData(id, confStr, data)
     
   elseif strcmp(id, 'dataPreConvBits')
     fn = strcat(BDATA_DIR, '/', confStr, '.dataPreConvBits.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     fprintf(1, 'Dumping dataPreConvBits\n');
     j = 1;
@@ -124,7 +124,7 @@ function util_dumpData(id, confStr, data)
     data = data(:);
     len = length(data);
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpConvBits.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -137,7 +137,7 @@ function util_dumpData(id, confStr, data)
     data = data(:);
     len = length(data);
     fn = strcat(BDATA_DIR, '/', confStr, '.dataConvBits.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -150,7 +150,7 @@ function util_dumpData(id, confStr, data)
     data = data(:);
     len = length(data);
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpInterleavedBits.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -163,7 +163,7 @@ function util_dumpData(id, confStr, data)
     data = data(:);
     len = length(data);
     fn = strcat(BDATA_DIR, '/', confStr, '.dataInterleavedBits.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -179,7 +179,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.allMappedSymbols.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -195,7 +195,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.allOfdmMod.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -214,7 +214,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.ltfRxSamples.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
     fclose(f);
@@ -232,7 +232,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpBaseSamples.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
     fclose(f);
@@ -249,7 +249,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpCfoCorrected.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %count = fwrite(f, data, 'int16', 'ieee-be');
     count = fwrite(f, data, 'double', 'ieee-be');
@@ -266,7 +266,7 @@ function util_dumpData(id, confStr, data)
     end
     data = data(:);
     fn = strcat(BDATA_DIR, '/', confStr, '.interleaver48_in.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
     fclose(f);
@@ -284,7 +284,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmDemod.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %count = fwrite(f, data, 'int16', 'ieee-be');
     count = fwrite(f, data, 'double', 'ieee-be');
@@ -302,7 +302,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.eqPnts.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %count = fwrite(f, data, 'int16', 'ieee-be');
     count = fwrite(f, data, 'double', 'ieee-be');
@@ -321,7 +321,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channeli.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %count = fwrite(f, data, 'int16', 'ieee-be');
     count = fwrite(f, data, 'double', 'ieee-be');
@@ -340,7 +340,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channel_dsubc.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %count = fwrite(f, data, 'int16', 'ieee-be');
     count = fwrite(f, data, 'double', 'ieee-be');
@@ -359,7 +359,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpOfdmEq.channel_psubc.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %count = fwrite(f, data, 'int16', 'ieee-be');
     count = fwrite(f, data, 'double', 'ieee-be');
@@ -375,7 +375,7 @@ function util_dumpData(id, confStr, data)
       return;
     end
     fn = strcat(BDATA_DIR, '/', confStr, '.plcpDemap.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %data = data
     %pause
@@ -396,7 +396,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.dataBaseSamples.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -431,7 +431,7 @@ function util_dumpData(id, confStr, data)
     di = imag(data); di = di(:);
     data = [dr di].';
     fn = strcat(BDATA_DIR, '/', confStr, '.dataOfdmDemod.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'double', 'ieee-be');
     fclose(f);
@@ -467,7 +467,7 @@ function util_dumpData(id, confStr, data)
     data = data(:);
     len = length(data);
     fn = strcat(BDATA_DIR, '/', confStr, '.dataDemap.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int8', 'ieee-be');
     fclose(f);
@@ -480,7 +480,7 @@ function util_dumpData(id, confStr, data)
     data = data(:);
     len = length(data);
     fn = strcat(BDATA_DIR, '/', confStr, '.dataDepunct.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int8', 'ieee-be');
     fclose(f);
@@ -498,7 +498,7 @@ function util_dumpData(id, confStr, data)
       return;
     end
     fn = strcat(BDATA_DIR, '/', confStr, '.dataVitdecChunks.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %data = data
     %pause
@@ -517,7 +517,7 @@ function util_dumpData(id, confStr, data)
       return;
     end
     fn = strcat(BDATA_DIR, '/', confStr, '.dataVitdec.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     %data = data
     %pause
@@ -536,7 +536,7 @@ function util_dumpData(id, confStr, data)
       return;
     end
     fn = strcat(BDATA_DIR, '/', confStr, '.dataDescr.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'uint8', 'ieee-be');
     fclose(f);
@@ -549,7 +549,7 @@ function util_dumpData(id, confStr, data)
     data = hex2dec(data);
     nbytes = length(data)
     fn = strcat(BDATA_DIR, '/', confStr, '.dataParsed.mdat');
-    fprintf(1, ['Writing to ',fn]);
+    fprintf(1, ['Writing to ',fn,'\n']);
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'uint8', 'ieee-be');
     fclose(f);

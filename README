@@ -70,3 +70,10 @@ Start MATLAB in wifibb folder or start MATLAB and cd to wifibb folder, then:
 >> rx_sample_stream(samples)
 
 
+---------------------------
+To decode a constellation
+---------------------------
+
+>> [constpoints, n_constpoints] = load_samples('/home/manub/workspace/orsys/app/wifi54/trace/debug/d54mOfdmEq.bho0.bufOutEqualizedPnts.ORILIB_t_Cplx16Buf48.dat', 'cplx');
+>> constpoints_scaled = constpoints/95.7;	% example scaling factor
+>> rx_constellation_stream(constpoints_scaled, 1016)

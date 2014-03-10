@@ -1,4 +1,6 @@
 %>> [samples, n_samples] = load_samples('../wifibb-traces/traces54/usrp-1s.dat','cplx');
+%>> [constpoints, n_constpoints] = load_samples('/home/manub/workspace/orsys/app/wifi54/trace/debug/d54mOfdmEq.bho0.bufOutEqualizedPnts.ORILIB_t_Cplx16Buf48.dat', 'cplx');
+
 function [samples, n_samples] = load_samples(samplefilepath, format)
   %%%%%%%%%%%%%%%%%%%%%%
   %% read the samples

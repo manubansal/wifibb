@@ -152,7 +152,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   display('plotted plcp constellation, continue?')
   %pause
 
-  [stats data rx_data_bits]  		= demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats);
+  [rx_data_bits]  		= wifi_wrapper_demap_packet(rx_data_syms, nsyms, nbpsc, opt.soft_slice_nbits);
 
   util_print_demapPacket_plcp(rx_data_bits, opt);
 
@@ -169,9 +169,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   [stats ber]   	     		= util_computeModulationBER(data, opt, stats);
-  [stats data rx_data_bits_deint]       = deinterleave(data, opt, stats, rx_data_bits, nbpsc);
+  [stats data rx_data_bits_deint]       = wifi_wrapper_deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
-  [stats data rx_data_bits_dec]         = decode(data, opt, stats, rx_data_bits_deint, opt.tblen_signal);
+  [stats data rx_data_bits_dec]         = wifi_wrapper_decode(data, opt, stats, rx_data_bits_deint, opt.tblen_signal);
 
   [stats data]				= wifi_parse_signal_top(data, opt, stats, rx_data_bits_dec);
 
@@ -325,7 +325,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   %pause
 
 
-  [stats data rx_data_bits]  		= demapPacket(rx_data_syms, data.sig_nsyms, data.sig_modu, data, opt, stats);
+  [rx_data_bits]  		= wifi_wrapper_demap_packet(rx_data_syms, data.sig_nsyms, data.sig_modu, opt.soft_slice_nbits);
 
   util_print_demapPacket_data(rx_data_bits, opt);
 
@@ -343,14 +343,14 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
 
 
   %[stats ber]   	     		= util_computeModulationBER(data, opt, stats);
-  [stats data rx_data_bits_deint]  	= deinterleave(data, opt, stats, rx_data_bits, nbpsc);
+  [stats data rx_data_bits_deint]  	= wifi_wrapper_deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
   if (opt.printVars_deinterleave)
     util_print_deinterleave(rx_data_bits_deint);
   end
 
   rx_data_bits_deint = reshape(rx_data_bits_deint, prod(size(rx_data_bits_deint)), 1);
-  [stats data rx_data_bits_depunct]     = depuncture(data, opt, stats, rx_data_bits_deint, coderate);
+  [stats data rx_data_bits_depunct]     = wifi_wrapper_depuncture(data, opt, stats, rx_data_bits_deint, coderate);
 
 
   %++++++++++++++++++++++++++++++++++++++++++++++
@@ -369,8 +369,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   data_and_tail_length_bits = 16 + data.sig_payload_length * 8 + 6;	%first 16 for service, last 6 for tail
   actual_data_portion_with_tail = rx_data_bits_depunct(1:(data_and_tail_length_bits * 2));	%since it's a half rate code
 
-  %[stats data rx_data_bits_dec]         = decode(data, opt, stats, rx_data_bits_depunct, opt.tblen_data);
-  [stats data rx_data_bits_dec]         = decode(data, opt, stats, actual_data_portion_with_tail, opt.tblen_data);
+  %[stats data rx_data_bits_dec]         = wifi_wrapper_decode(data, opt, stats, rx_data_bits_depunct, opt.tblen_data);
+  [stats data rx_data_bits_dec]         = wifi_wrapper_decode(data, opt, stats, actual_data_portion_with_tail, opt.tblen_data);
 
   if (opt.printVars_decodedBits)
     all_chunks = ...
@@ -506,75 +506,6 @@ function [stats data rx_data_bits] = demapPacket_old(rx_data_syms, data, opt, st
   rx_data_bits = rx_data_bits_i;
   rx_data_bits = rx_data_bits * 255;	%making bits soft
 end
-
-%------------------------------------------------------------------------------------
-function [stats data rx_data_bits] = demapPacket(rx_data_syms, nsyms, nbpsc, data, opt, stats)
-%------------------------------------------------------------------------------------
-  if (prod(size(rx_data_syms)) == 0)
-    return;
-  end
-  %stats.n_packets_processed = stats.n_packets_processed + 1;
-
-  %rx_data_syms = reshape(rx_data_syms, prod(size(rx_data_syms)), 1);
-  rx_data_bits = wifi_softSlice(rx_data_syms, nbpsc, opt.soft_slice_nbits);
-end
-
-%------------------------------------------------------------------------------------
-function [stats data rx_data_bits_deint] = deinterleave(data, opt, stats, rx_data_bits, nbpsc)
-%------------------------------------------------------------------------------------
-  t = data.deinterleave_tables;
-  %size(rx_data_bits)
-  rx_data_bits_deint = wifi_deinterleave(t, rx_data_bits, nbpsc);
-  %size(rx_data_bits_deint)
-
-  if (opt.writeVars_deinterleave)
-    writeVars_deinterleave(rx_data_bits, rx_data_bits_deint);
-  end
-
-  %%%%%%%%%%%%%%%%%%%%%%%
-  if (opt.printVars_softBits_deint)
-	display('plcp signal field soft bits after deinterleaving');
-	nbits = opt.soft_slice_nbits;
-	scale = 2^(nbits - 1);		
-	      %for 8 bits, this is 128, so that we can contain the soft estimates in [-128, 128]
-
-	size(rx_data_bits_deint)
-	size(scale)
-	%[[1:length(rx_data_bits)]' (rx_data_bits - scale)]	
-	      %representing in [-scale, scale], instead of [0, 2*scale]
-
-	[[1:size(rx_data_bits_deint,1)]' (rx_data_bits_deint(:,1) - scale)]	
-	      %representing in [-scale, scale], instead of [0, 2*scale]
-  end
-  %%%%%%%%%%%%%%%%%%%%%%%
-
-end
-
-
-%------------------------------------------------------------------------------------
-function [stats data rx_data_bits_depunct] = depuncture(data, opt, stats, rx_data_bits_deint, coderate)
-%------------------------------------------------------------------------------------
-  rx_data_bits_depunct = wifi_softDepuncture(rx_data_bits_deint, opt.soft_slice_nbits, coderate);
-  if (opt.writeVars_depuncture)
-  writeVars_depuncture(rx_data_bits_deint, opt.soft_slice_nbits, coderate, rx_data_bits_depunct);
-  end
-end
-
-%------------------------------------------------------------------------------------
-function [stats data rx_data_bits_dec] = decode(data, opt, stats, rx_data_bits_depunct, tblen)
-%------------------------------------------------------------------------------------
-  rx_data_bits_dec = wifi_vdec(rx_data_bits_depunct, opt.soft_slice_nbits, tblen);
-  if (opt.writeVars_decode)
-  writeVars_decode(rx_data_bits_depunct, opt.soft_slice_nbits, tblen, rx_data_bits_dec);
-  end
-end
-
-
-
-
-
-
-
 
 
 %------------------------------------------------------------------------------------
