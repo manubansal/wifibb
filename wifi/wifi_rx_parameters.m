@@ -109,7 +109,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.printVars_deinterleave = false;
     opt.printVars_softBits_deint = false;
 
-    opt.printVars_decodedBits = false;
+    opt.printVars_decodedBits = true;
     opt.printVars_descrambledBits = false;
 
     %----- all print after total data decode for the packet -----
@@ -130,7 +130,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.dumpVars_dataOfdmEq = true;
     opt.dumpVars_dataDemap = true;
     opt.dumpVars_dataDepunct = true;
-    opt.dumpVars_dataVitdecChunks = false;
+    opt.dumpVars_dataVitdecChunks = true;
     opt.dumpVars_dataVitdec = true;
     opt.dumpVars_dataDescr = true;
     opt.dumpVars_dataParsed = true;
