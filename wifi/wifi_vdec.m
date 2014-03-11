@@ -50,17 +50,16 @@ function [ dmsg ] = wifi_vdec(incode, nbits, tblen, mode, chunksize, msglen)
     if strcmp(mode, 'trunc')
       %truncated mode decode - asssumes head start state but non-terminated sequence
 
-      chunksize = chunksize
       if chunksize == 0
 	dmsg=vitdec(code,trellis,tblen,'trunc','soft',nbits);
       else
 	%if mod(length(code), chunksize) ~= 0
 	%  error('coded message length not a multiple of chunksize')
 	%end
-	chunksize_coded = chunksize * 2
-	tblen_coded = tblen * 2
+	chunksize_coded = chunksize * 2;
+	tblen_coded = tblen * 2;
 
-	chunksize_multiple = chunksize_coded * ceil((msglen + 6) * 2 / chunksize_coded)
+	chunksize_multiple = chunksize_coded * ceil((msglen + 6) * 2 / chunksize_coded);
 	nchzr = chunksize_multiple - (msglen + 6) * 2;
 
 	code = code(:);
@@ -79,7 +78,7 @@ function [ dmsg ] = wifi_vdec(incode, nbits, tblen, mode, chunksize, msglen)
 	post = [post postzr];
 
 	frames = [pre; chunks; post];
-	size_frames = size(frames)
+	%size_frames = size(frames)
 
 	nframes = size(frames, 2);
 
@@ -92,7 +91,7 @@ function [ dmsg ] = wifi_vdec(incode, nbits, tblen, mode, chunksize, msglen)
 
 	dframes(1:tblen,:) = [];
 	dframes(end-tblen+1:end,:) = [];
-	size_frames = size(dframes)
+	%size_frames = size(dframes)
 	dmsg = reshape(dframes, [], 1);
 	dmsg = dmsg(1:(msglen+6));
       end

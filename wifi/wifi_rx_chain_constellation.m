@@ -102,7 +102,7 @@ wifi_rx_chain_constellation(pkt_samples, rate, payload_len, data, opt, stats, co
   data_and_tail_length_bits = 16 + payload_len * 8 + 6;	%first 16 for service, last 6 for tail
   actual_data_portion_with_tail = rx_data_bits_depunct(1:(data_and_tail_length_bits * 2));	%since it's a half rate code
 
-  [rx_data_bits_dec]         = wifi_wrapper_decode(actual_data_portion_with_tail, opt);
+  [rx_data_bits_dec]         = wifi_wrapper_decode(actual_data_portion_with_tail, 16 + payload_len * 8, opt);
   if (opt.writeVars_decode)
     writeVars_decode(actual_data_portion_with_tail, opt.soft_slice_nbits, opt.tblen_data, rx_data_bits_dec);
   end
@@ -158,7 +158,9 @@ wifi_rx_chain_constellation(pkt_samples, rate, payload_len, data, opt, stats, co
   data.ber = ber;
   data.crcValid = crcValid;
 
-  util_printHexOctets(parsed_data);
+  if (opt.printVars_parsedData)
+    util_printHexOctets(parsed_data);
+  end
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataParsed)

@@ -3,6 +3,8 @@
 %------------------------------------------------------------------------------------
 function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr)
 %------------------------------------------------------------------------------------
+  rx_data_bytes = [];
+
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   sig_len = opt.sig_len;
@@ -428,7 +430,9 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   data.ber = ber;
   data.crcValid = crcValid;
 
-  util_printHexOctets(parsed_data);
+  if (opt.printVars_parsedData)
+    util_printHexOctets(parsed_data);
+  end
 
   %++++++++++++++++++++++++++++++++++++++++++++++
   if (opt.dumpVars_dataParsed)
