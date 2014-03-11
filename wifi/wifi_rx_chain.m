@@ -1,7 +1,7 @@
 %------------------------------------------------------------------------------------
 %function stats = analyzeSinglePacket(data, opt, stats)
 %------------------------------------------------------------------------------------
-function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chain(data, opt, stats, confStr)
+function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr)
 %------------------------------------------------------------------------------------
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
@@ -171,7 +171,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   [stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]       = wifi_wrapper_deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
-  [rx_data_bits_dec]         = wifi_wrapper_decode(opt.soft_slice_nbits, rx_data_bits_deint, opt.tblen_signal);
+  [rx_data_bits_dec]         = wifi_wrapper_decode(rx_data_bits_deint, 18, opt);
   if (opt.writeVars_decode)
     writeVars_decode(rx_data_bits_deint, opt.soft_slice_nbits, opt.tblen_signal, rx_data_bits_dec);
   end
@@ -372,7 +372,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec] = wifi_rx_chai
   data_and_tail_length_bits = 16 + data.sig_payload_length * 8 + 6;	%first 16 for service, last 6 for tail
   actual_data_portion_with_tail = rx_data_bits_depunct(1:(data_and_tail_length_bits * 2));	%since it's a half rate code
 
-  [rx_data_bits_dec]         = wifi_wrapper_decode(opt.soft_slice_nbits, actual_data_portion_with_tail, opt.tblen_data);
+  [rx_data_bits_dec]         = wifi_wrapper_decode(actual_data_portion_with_tail, 16 + data.sig_payload_length * 8, opt);
   if (opt.writeVars_decode)
     writeVars_decode(actual_data_portion_with_tail, opt.soft_slice_nbits, opt.tblen_data, rx_data_bits_dec);
   end

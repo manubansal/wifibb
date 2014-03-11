@@ -70,11 +70,23 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
 
     opt.n_decoded_symbols_per_ofdm_symbol = 4;	%a 216 bit symbol is decoded as 4 54-bit symbols with parallel viterbi
 
+    %------------ begin rx chain dsp options -----------------
     opt.COARSE_CFO_CORRECTION = true;
     opt.FINE_CFO_CORRECTION = true;
     opt.PILOT_PHASE_TRACKING = true;
-    opt.PILOT_SAMPLING_DELAY_CORRECTION = true;	%this is really referring to sampling delay 
-							  %introduced due to sampling frequency offset
+    opt.PILOT_SAMPLING_DELAY_CORRECTION = true;	%this is really referring to sampling delay introduced due to sampling frequency offset
+    %opt.VITDEC_MODEL = 'TERM';			%optimal viterbi decoding on a terminated sequence
+    opt.VITDEC_MODEL = 'CONVGT';		%convergent mode decoding with partial tracebacks
+    opt.VITDEC_chunksize = 54;
+    %opt.VITDEC_tblen = 18;
+    %opt.VITDEC_tblen = 24;
+    %opt.VITDEC_tblen = 36;
+    opt.VITDEC_tblen = 54;
+    %opt.VITDEC_tblen = 72;
+    %------------ end rx chain dsp options -----------------
+
+
+    %------------ begin UI options ---------------------
     opt.GENERATE_ONE_TIME_PLOTS_PRE = true;
     opt.GENERATE_ONE_TIME_PLOTS_POST = false;
 
@@ -84,6 +96,8 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
     opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = true;
 
     opt.PAUSE_AFTER_EVERY_PACKET = false;
+    %------------ end UI options ---------------------
+
 
     %---- these are written to c files ready to be imported for debugging ------%
     opt.writeVars_corr = false;
@@ -195,11 +209,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
   %opt.soft_slice_nbits = 6;
   opt.soft_slice_nbits = 7;
 
-  %opt.tblen_signal = 24;
-  %opt.tblen_data = 36;
 
-  opt.tblen_signal = 18;
-  opt.tblen_data = 18;
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
