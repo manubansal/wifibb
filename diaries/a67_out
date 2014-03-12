@@ -1,0 +1,15 @@
+setup_paths
+
+ans =
+
+../wifibb-traces/data
+
+[samples,n_samples]=load_samples('/tmp/or2/54Mbps_1000b_600frames_-67dBm_seq.complex.1ch.float32','float32');
+{Error using <a href="matlab:helpUtils.errorDocCallback('fread')" style="font-weight:bold">fread</a>
+Invalid file identifier.  Use fopen to generate a valid file
+identifier.
+
+Error in <a href="matlab:helpUtils.errorDocCallback('load_samples', '/afs/.ir.stanford.edu/users/a/r/aryano/wifibb_2/wifibb/load_samples.m', 20)" style="font-weight:bold">load_samples</a> (<a href="matlab: opentoline('/afs/.ir.stanford.edu/users/a/r/aryano/wifibb_2/wifibb/load_samples.m',20,0)">line 20</a>)
+    [s, n] = fread(fid, inf, 'float');
+} 
+diary off
