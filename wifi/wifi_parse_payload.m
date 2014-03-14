@@ -30,7 +30,11 @@ function [parsed_data frame_type ber crcValid service_field da seq] = wifi_parse
   da = da(:);
   da = da';
 
-  seq = databytes_hex(11, :);
+  seq = databytes_hex(11:12, :);
+  seq = flipud(seq);	%byte swap
+  seq = seq.';
+  seq= seq(:);
+  seq = seq';
 
   [crc_val crcValid] = wifi_crc32(databytes_hex_with_crc32);
   frame_type = 2; ber = -1;
