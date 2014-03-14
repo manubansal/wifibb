@@ -387,12 +387,15 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
 
   stats.ber_vec_data = [];
   stats.crc_vec_data = [];
+  stats.seq_vec_data = [];
 
   stats.ber_vec_ack = [];
   stats.crc_vec_ack = [];
+  stats.seq_vec_ack = [];
 
   stats.ber_vec_unknown = [];
   stats.crc_vec_unknown = [];
+  stats.seq_vec_unknown = [];
 
 
   stats.uu_ltf1_data = []; stats.uu_ltf2_data = []; stats.ch_data = [];

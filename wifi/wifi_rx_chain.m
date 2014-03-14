@@ -1,6 +1,4 @@
 %------------------------------------------------------------------------------------
-%function stats = analyzeSinglePacket(data, opt, stats)
-%------------------------------------------------------------------------------------
 function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr)
 %------------------------------------------------------------------------------------
   rx_data_bytes = [];
@@ -424,11 +422,14 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
 
 
 
-  [parsed_data frame_type ber crcValid] = wifi_parse_payload(rx_data_bytes);
+  [parsed_data frame_type ber crcValid service_field da seq] = wifi_parse_payload(rx_data_bytes);
   data.parsed_data = parsed_data;
   data.frame_type = frame_type;
   data.ber = ber;
   data.crcValid = crcValid;
+  data.service_field = service_field;
+  data.da = da;
+  data.seq = seq;
 
   if (opt.printVars_parsedData)
     util_printHexOctets(parsed_data);
@@ -461,11 +462,11 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %%***************************************
   %% display plcp intermediaries/results
   %%***************************************
-  display('------------------------------------------------------------');
+  display('---------------------------------------------------------------------');
   display('parse data results: ');
   display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(frame_type), ...
-    ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
-  display('------------------------------------------------------------');
+    ' ber:', num2str(ber), ' seq:', seq, ' crcValid:', num2str(crcValid)));
+  display('---------------------------------------------------------------------');
 
   power_ratio_SNR_dB = (stats.snr_db(end))
   ltf_avgsnr_dB = ltf_avgsnr_dB
@@ -485,44 +486,13 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
 end
 
 
-
-%------------------------------------------------------------------------------------
-function [stats data rx_data_bits] = demapPacket_old(rx_data_syms, data, opt, stats)
-%------------------------------------------------------------------------------------
-
-  %rx_data_syms = data.rx_data_syms;
-
-  if (prod(size(rx_data_syms)) == 0)
-    return;
-  end
-  %stats.n_packets_processed = stats.n_packets_processed + 1;
-
-  util_plotConstellation(rx_data_syms, opt);
-
-  %hard-demap symbols to bits according to bpsk
-  rx_data_syms_i = real(rx_data_syms);
-  rx_data_bits_i = sign(rx_data_syms_i);	%contains 1, -1 and 0
-  rx_data_bits_i = fix((rx_data_bits_i + 1)/2);	%contains 1 and 0 only
-
-  %data.rx_data_bits_i = rx_data_bits_i;
-  %data.rx_data_bits_q = rx_data_bits_q;
-  %data.rx_data_bits_q = rx_data_bits_i;
-
-  %[this_ndsubc this_nsyms] = size(rx_data_bits_i);
-  %this_ndsubc_2 = (1:this_ndsubc)*2;
-  %rx_data_bits(this_ndsubc_2 - 1, :) = data.rx_data_bits_i;
-  %rx_data_bits(this_ndsubc_2, :) = data.rx_data_bits_q;
-  rx_data_bits = rx_data_bits_i;
-  rx_data_bits = rx_data_bits * 255;	%making bits soft
-end
-
-
 %------------------------------------------------------------------------------------
 function stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch)
 %------------------------------------------------------------------------------------
   if (data.frame_type == opt.ftype.data)
     stats.ber_vec_data(end+1) = data.ber;
     stats.crc_vec_data(end+1) = data.crcValid;
+    stats.seq_vec_data(end+1,:) = data.seq;
 
     %stats.ltf_sync_freq_domain = ltf_sync_freq_domain;
     stats.uu_ltf1_data(:,end+1) = uu_ltf1;
@@ -531,6 +501,7 @@ function stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch)
   elseif (data.frame_type == opt.ftype.ack)
     stats.ber_vec_ack(end+1) = data.ber;
     stats.crc_vec_ack(end+1) = data.crcValid;
+    stats.seq_vec_ack(end+1,:) = data.seq;
 
     stats.uu_ltf1_ack(:,end+1) = uu_ltf1;
     stats.uu_ltf2_ack(:,end+1) = uu_ltf2;
@@ -538,6 +509,7 @@ function stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch)
   elseif (data.frame_type == opt.ftype.unknown)
     stats.ber_vec_unknown(end+1) = data.ber;
     stats.crc_vec_unknown(end+1) = data.crcValid;
+    stats.seq_vec_unknown(end+1,:) = data.seq;
 
     stats.uu_ltf1_unknown(:,end+1) = uu_ltf1;
     stats.uu_ltf2_unknown(:,end+1) = uu_ltf2;

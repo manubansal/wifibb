@@ -158,6 +158,10 @@ function stats = summarizeStats(stats, data, opt)
 
   pkt_start_points = stats.pkt_start_points
 
+  seqs_data = char(stats.seq_vec_data)
+  seqs_ack = char(stats.seq_vec_ack)
+  seqs_unknown = char(stats.seq_vec_unknown)
+
   if (opt.writeVars_startPnts)
     writeVars_startPnts(pkt_start_points);
   end
