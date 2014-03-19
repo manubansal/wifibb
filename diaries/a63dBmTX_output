@@ -1,0 +1,825 @@
+setup_paths
+
+ans =
+
+../wifibb-traces/data
+
+[samples,n_samples]=load_samples('../../traces/54Mbps_1000b_600frames_-63dBmTX_-72dBmRX_seq.complex.1ch.float32','float32');
+
+ans =
+
+   1.0e-04 *
+
+   0.0463 - 0.1771i
+  -0.0187 + 0.1154i
+   0.1950 + 0.0025i
+  -0.0216 - 0.4251i
+   0.0383 + 0.0269i
+  -0.0183 - 0.0490i
+  -0.1883 + 0.0355i
+   0.0723 - 0.3808i
+  -0.1479 - 0.1093i
+  -0.0939 + 0.2171i
+
+
+n_samples =
+
+     3000000
+
+rx_sample_stream(samples(1:5e5))
+
+DATA_DIR =
+
+../wifibb-traces/data
+
+
+TRACE_DIR =
+
+../wifibb-traces
+
+
+CDATA_DIR =
+
+../wifibb-traces/cdata
+
+
+BDATA_DIR =
+
+../wifibb-traces/bdata
+
+
+n_samples =
+
+      500000
+
+
+confStr =
+
+siggen.rate54.manny
+
+
+rx_pkts = 
+
+     {}
+
+
+opt = 
+
+    trace: [1x1 struct]
+
+trace folder:../wifibb-traces/traces-wifi-sbx-decim/
+
+opt = 
+
+                                             trace: [1x1 struct]
+                                          tx_known: [1x1 logical]
+                                         ti_factor: [1x1 double]
+                               ti_factor_after_cfo: [1x1 double]
+                 n_decoded_symbols_per_ofdm_symbol: [1x1 double]
+                             COARSE_CFO_CORRECTION: [1x1 logical]
+                               FINE_CFO_CORRECTION: [1x1 logical]
+                              PILOT_PHASE_TRACKING: [1x1 logical]
+                   PILOT_SAMPLING_DELAY_CORRECTION: [1x1 logical]
+                                      VITDEC_MODEL: [1x6 char]
+                                  VITDEC_chunksize: [1x1 double]
+                                      VITDEC_tblen: [1x1 double]
+                       GENERATE_ONE_TIME_PLOTS_PRE: [1x1 logical]
+                      GENERATE_ONE_TIME_PLOTS_POST: [1x1 logical]
+    GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH: [1x1 logical]
+                         GENERATE_PER_PACKET_PLOTS: [1x1 logical]
+           GENERATE_PER_PACKET_PLOTS_CONSTELLATION: [1x1 logical]
+                 GENERATE_PER_PACKET_PLOTS_CHANNEL: [1x1 logical]
+                          PAUSE_AFTER_EVERY_PACKET: [1x1 logical]
+                                    writeVars_corr: [1x1 logical]
+                               writeVars_startPnts: [1x1 logical]
+                                    writeVars_cfos: [1x1 logical]
+                            writeVars_deinterleave: [1x1 logical]
+                              writeVars_depuncture: [1x1 logical]
+                                  writeVars_decode: [1x1 logical]
+                                    printVars_corr: [1x1 logical]
+                                  printVars_chEsts: [1x1 logical]
+                        printVars_cfoCorrectedPlcp: [1x1 logical]
+                           printVars_ofdmDemodPlcp: [1x1 logical]
+                       printVars_ofdmEqualizedPlcp: [1x1 logical]
+                                printVars_equalize: [1x1 logical]
+                           printVars_softBits_plcp: [1x1 logical]
+                           printVars_softBits_data: [1x1 logical]
+                            printVars_deinterleave: [1x1 logical]
+                          printVars_softBits_deint: [1x1 logical]
+                             printVars_decodedBits: [1x1 logical]
+                         printVars_descrambledBits: [1x1 logical]
+                               printVars_data_syms: [1x1 logical]
+                              printVars_parsedData: [1x1 logical]
+                             dumpVars_ltfRxSamples: [1x1 logical]
+                          dumpVars_plcpBaseSamples: [1x1 logical]
+                         dumpVars_plcpCfoCorrected: [1x1 logical]
+                            dumpVars_plcpOfdmDemod: [1x1 logical]
+                               dumpVars_plcpOfdmEq: [1x1 logical]
+                                dumpVars_plcpDemap: [1x1 logical]
+                          dumpVars_dataBaseSamples: [1x1 logical]
+                         dumpVars_dataCfoCorrected: [1x1 logical]
+                            dumpVars_dataOfdmDemod: [1x1 logical]
+                               dumpVars_dataOfdmEq: [1x1 logical]
+                                dumpVars_dataDemap: [1x1 logical]
+                              dumpVars_dataDepunct: [1x1 logical]
+                         dumpVars_dataVitdecChunks: [1x1 logical]
+                               dumpVars_dataVitdec: [1x1 logical]
+                                dumpVars_dataDescr: [1x1 logical]
+                               dumpVars_dataParsed: [1x1 logical]
+                                    corr_threshold: [1x1 double]
+                                 sq_corr_threshold: [1x1 double]
+                       ns_ofdm_phy_preamble_signal: [1x1 double]
+                              peak_search_win_size: [1x1 double]
+                                    max_nsyms_data: [1x1 double]
+                            max_pkt_length_samples: [1x1 double]
+                                        ns_to_skip: [1x1 double]
+                                     ns_to_process: [1x1 double]
+                                           corrwin: [1x1 double]
+                                  soft_slice_nbits: [1x1 double]
+
+tx and rx parameters of the experiment:
+
+opt = 
+
+                                             trace: {}
+                                          tx_known: [1x1 logical]
+                                         ti_factor: [1x1 double]
+                               ti_factor_after_cfo: [1x1 double]
+                 n_decoded_symbols_per_ofdm_symbol: [1x1 double]
+                             COARSE_CFO_CORRECTION: [1x1 logical]
+                               FINE_CFO_CORRECTION: [1x1 logical]
+                              PILOT_PHASE_TRACKING: [1x1 logical]
+                   PILOT_SAMPLING_DELAY_CORRECTION: [1x1 logical]
+                                      VITDEC_MODEL: [1x6 char]
+                                  VITDEC_chunksize: [1x1 double]
+                                      VITDEC_tblen: [1x1 double]
+                       GENERATE_ONE_TIME_PLOTS_PRE: [1x1 logical]
+                      GENERATE_ONE_TIME_PLOTS_POST: [1x1 logical]
+    GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH: [1x1 logical]
+                         GENERATE_PER_PACKET_PLOTS: [1x1 logical]
+           GENERATE_PER_PACKET_PLOTS_CONSTELLATION: [1x1 logical]
+                 GENERATE_PER_PACKET_PLOTS_CHANNEL: [1x1 logical]
+                          PAUSE_AFTER_EVERY_PACKET: [1x1 logical]
+                                    writeVars_corr: [1x1 logical]
+                               writeVars_startPnts: [1x1 logical]
+                                    writeVars_cfos: [1x1 logical]
+                            writeVars_deinterleave: [1x1 logical]
+                              writeVars_depuncture: [1x1 logical]
+                                  writeVars_decode: [1x1 logical]
+                                    printVars_corr: [1x1 logical]
+                                  printVars_chEsts: [1x1 logical]
+                        printVars_cfoCorrectedPlcp: [1x1 logical]
+                           printVars_ofdmDemodPlcp: [1x1 logical]
+                       printVars_ofdmEqualizedPlcp: [1x1 logical]
+                                printVars_equalize: [1x1 logical]
+                           printVars_softBits_plcp: [1x1 logical]
+                           printVars_softBits_data: [1x1 logical]
+                            printVars_deinterleave: [1x1 logical]
+                          printVars_softBits_deint: [1x1 logical]
+                             printVars_decodedBits: [1x1 logical]
+                         printVars_descrambledBits: [1x1 logical]
+                               printVars_data_syms: [1x1 logical]
+                              printVars_parsedData: [1x1 logical]
+                             dumpVars_ltfRxSamples: [1x1 logical]
+                          dumpVars_plcpBaseSamples: [1x1 logical]
+                         dumpVars_plcpCfoCorrected: [1x1 logical]
+                            dumpVars_plcpOfdmDemod: [1x1 logical]
+                               dumpVars_plcpOfdmEq: [1x1 logical]
+                                dumpVars_plcpDemap: [1x1 logical]
+                          dumpVars_dataBaseSamples: [1x1 logical]
+                         dumpVars_dataCfoCorrected: [1x1 logical]
+                            dumpVars_dataOfdmDemod: [1x1 logical]
+                               dumpVars_dataOfdmEq: [1x1 logical]
+                                dumpVars_dataDemap: [1x1 logical]
+                              dumpVars_dataDepunct: [1x1 logical]
+                         dumpVars_dataVitdecChunks: [1x1 logical]
+                               dumpVars_dataVitdec: [1x1 logical]
+                                dumpVars_dataDescr: [1x1 logical]
+                               dumpVars_dataParsed: [1x1 logical]
+                                    corr_threshold: [1x1 double]
+                                 sq_corr_threshold: [1x1 double]
+                       ns_ofdm_phy_preamble_signal: [1x1 double]
+                              peak_search_win_size: [1x1 double]
+                                    max_nsyms_data: [1x1 double]
+                            max_pkt_length_samples: [1x1 double]
+                                        ns_to_skip: [1x1 double]
+                                     ns_to_process: [1x1 double]
+                                           corrwin: [1x1 double]
+                                  soft_slice_nbits: [1x1 double]
+                                     noise_win_len: [1x1 double]
+                                    noise_fft_size: [1x1 double]
+                                           stf_len: [1x1 double]
+                                           ltf_len: [1x1 double]
+                                           sig_len: [1x1 double]
+                                     stf_shift_len: [1x1 double]
+                                     ltf_shift_len: [1x1 double]
+                               sample_duration_sec: [1x1 double]
+                                         sym_len_s: [1x1 double]
+                                          cp_len_s: [1x1 double]
+                                          fft_size: [1x1 double]
+                                           cp_skip: [1x1 double]
+                                             ftype: [1x1 struct]
+
+
+opt = 
+
+                                             trace: {}
+                                          tx_known: [1x1 logical]
+                                         ti_factor: [1x1 double]
+                               ti_factor_after_cfo: [1x1 double]
+                 n_decoded_symbols_per_ofdm_symbol: [1x1 double]
+                             COARSE_CFO_CORRECTION: [1x1 logical]
+                               FINE_CFO_CORRECTION: [1x1 logical]
+                              PILOT_PHASE_TRACKING: [1x1 logical]
+                   PILOT_SAMPLING_DELAY_CORRECTION: [1x1 logical]
+                                      VITDEC_MODEL: [1x6 char]
+                                  VITDEC_chunksize: [1x1 double]
+                                      VITDEC_tblen: [1x1 double]
+                       GENERATE_ONE_TIME_PLOTS_PRE: [1x1 logical]
+                      GENERATE_ONE_TIME_PLOTS_POST: [1x1 logical]
+    GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH: [1x1 logical]
+                         GENERATE_PER_PACKET_PLOTS: [1x1 logical]
+           GENERATE_PER_PACKET_PLOTS_CONSTELLATION: [1x1 logical]
+                 GENERATE_PER_PACKET_PLOTS_CHANNEL: [1x1 logical]
+                          PAUSE_AFTER_EVERY_PACKET: [1x1 logical]
+                                    writeVars_corr: [1x1 logical]
+                               writeVars_startPnts: [1x1 logical]
+                                    writeVars_cfos: [1x1 logical]
+                            writeVars_deinterleave: [1x1 logical]
+                              writeVars_depuncture: [1x1 logical]
+                                  writeVars_decode: [1x1 logical]
+                                    printVars_corr: [1x1 logical]
+                                  printVars_chEsts: [1x1 logical]
+                        printVars_cfoCorrectedPlcp: [1x1 logical]
+                           printVars_ofdmDemodPlcp: [1x1 logical]
+                       printVars_ofdmEqualizedPlcp: [1x1 logical]
+                                printVars_equalize: [1x1 logical]
+                           printVars_softBits_plcp: [1x1 logical]
+                           printVars_softBits_data: [1x1 logical]
+                            printVars_deinterleave: [1x1 logical]
+                          printVars_softBits_deint: [1x1 logical]
+                             printVars_decodedBits: [1x1 logical]
+                         printVars_descrambledBits: [1x1 logical]
+                               printVars_data_syms: [1x1 logical]
+                              printVars_parsedData: [1x1 logical]
+                             dumpVars_ltfRxSamples: [1x1 logical]
+                          dumpVars_plcpBaseSamples: [1x1 logical]
+                         dumpVars_plcpCfoCorrected: [1x1 logical]
+                            dumpVars_plcpOfdmDemod: [1x1 logical]
+                               dumpVars_plcpOfdmEq: [1x1 logical]
+                                dumpVars_plcpDemap: [1x1 logical]
+                          dumpVars_dataBaseSamples: [1x1 logical]
+                         dumpVars_dataCfoCorrected: [1x1 logical]
+                            dumpVars_dataOfdmDemod: [1x1 logical]
+                               dumpVars_dataOfdmEq: [1x1 logical]
+                                dumpVars_dataDemap: [1x1 logical]
+                              dumpVars_dataDepunct: [1x1 logical]
+                         dumpVars_dataVitdecChunks: [1x1 logical]
+                               dumpVars_dataVitdec: [1x1 logical]
+                                dumpVars_dataDescr: [1x1 logical]
+                               dumpVars_dataParsed: [1x1 logical]
+                                    corr_threshold: [1x1 double]
+                                 sq_corr_threshold: [1x1 double]
+                       ns_ofdm_phy_preamble_signal: [1x1 double]
+                              peak_search_win_size: [1x1 double]
+                                    max_nsyms_data: [1x1 double]
+                            max_pkt_length_samples: [1x1 double]
+                                        ns_to_skip: [1x1 double]
+                                     ns_to_process: [1x1 double]
+                                           corrwin: [1x1 double]
+                                  soft_slice_nbits: [1x1 double]
+                                     noise_win_len: [1x1 double]
+                                    noise_fft_size: [1x1 double]
+                                           stf_len: [1x1 double]
+                                           ltf_len: [1x1 double]
+                                           sig_len: [1x1 double]
+                                     stf_shift_len: [1x1 double]
+                                     ltf_shift_len: [1x1 double]
+                               sample_duration_sec: [1x1 double]
+                                         sym_len_s: [1x1 double]
+                                          cp_len_s: [1x1 double]
+                                          fft_size: [1x1 double]
+                                           cp_skip: [1x1 double]
+                                             ftype: [1x1 struct]
+
+
+n_rx_samples =
+
+      500000
+
+------------------- begin find_stream_correlation -------------------
+------------------- done find_stream_correlation -------------------
+Elapsed time is 0.237958 seconds.
+start pkt processing?
+-------------- scale:kk, packet #1-----------
+-------------- last pkt took #0s to process ----
+-------------- detecting next packet --------------
+
+m =
+
+   Empty matrix: 1-by-0
+
+
+i =
+
+   Empty matrix: 1-by-0
+
+
+pkt_start_point =
+
+   Empty matrix: 1-by-0
+
+no more packets detected
+pkt_start_point is -Inf, breaking
+displaying statistics:
+
+inpl =
+
+     0
+
+
+mean_noise_power =
+
+   NaN
+
+
+std_noise_power =
+
+   NaN
+
+No packets detected/processed, no average statistics to display
+
+pkt_start_points =
+
+  -Inf
+
+
+min_chm_avg =
+
+   Empty matrix: 0-by-1
+
+
+max_chm_std =
+
+   Empty matrix: 0-by-1
+
+
+min_chm_avg =
+
+   Empty matrix: 0-by-1
+
+
+max_chm_std =
+
+   Empty matrix: 0-by-1
+
+
+avg_snr_data =
+
+   NaN
+
+
+avg_snr_ack =
+
+   NaN
+
+=============================================================================================
+Aggregate performance stats: data:
+n_crc_data/n_data_packets:0/0 ber_data_avg/ber_data_std:NaN/NaN
+n_crc_ack/n_ack_packets:0/0 ber_ack_avg/ber_ack_std:NaN/NaN
+n_unknown_packets:0
+n_crc_unknown/n_unknown_packets:0/0 ber_unknown_avg/ber_unknown_std:NaN/NaN
+
+crc_vec_data =
+
+     []
+
+
+crc_vec_ack =
+
+     []
+
+
+crc_vec_unknown =
+
+     []
+
+=============================================================================================
+
+ans = 
+
+     {}
+
+setup_paths
+
+ans =
+
+../wifibb-traces/data
+
+[samples,n_samples]=load_samples('../../traces/54Mbps_1000b_600frames_-63dBmTX_-72dBmRX_seq.complex.1ch.float32','float32');
+
+ans =
+
+   1.0e-04 *
+
+   0.0463 - 0.1771i
+  -0.0187 + 0.1154i
+   0.1950 + 0.0025i
+  -0.0216 - 0.4251i
+   0.0383 + 0.0269i
+  -0.0183 - 0.0490i
+  -0.1883 + 0.0355i
+   0.0723 - 0.3808i
+  -0.1479 - 0.1093i
+  -0.0939 + 0.2171i
+
+
+n_samples =
+
+     3000000
+
+rx_sample_stream(samples(1:5e5))
+
+DATA_DIR =
+
+../wifibb-traces/data
+
+
+TRACE_DIR =
+
+../wifibb-traces
+
+
+CDATA_DIR =
+
+../wifibb-traces/cdata
+
+
+BDATA_DIR =
+
+../wifibb-traces/bdata
+
+
+n_samples =
+
+      500000
+
+
+confStr =
+
+siggen.rate54.manny
+
+
+rx_pkts = 
+
+     {}
+
+
+opt = 
+
+    trace: [1x1 struct]
+
+trace folder:../wifibb-traces/traces-wifi-sbx-decim/
+
+opt = 
+
+                                             trace: [1x1 struct]
+                                          tx_known: [1x1 logical]
+                                         ti_factor: [1x1 double]
+                               ti_factor_after_cfo: [1x1 double]
+                 n_decoded_symbols_per_ofdm_symbol: [1x1 double]
+                             COARSE_CFO_CORRECTION: [1x1 logical]
+                               FINE_CFO_CORRECTION: [1x1 logical]
+                              PILOT_PHASE_TRACKING: [1x1 logical]
+                   PILOT_SAMPLING_DELAY_CORRECTION: [1x1 logical]
+                                      VITDEC_MODEL: [1x6 char]
+                                  VITDEC_chunksize: [1x1 double]
+                                      VITDEC_tblen: [1x1 double]
+                       GENERATE_ONE_TIME_PLOTS_PRE: [1x1 logical]
+                      GENERATE_ONE_TIME_PLOTS_POST: [1x1 logical]
+    GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH: [1x1 logical]
+                         GENERATE_PER_PACKET_PLOTS: [1x1 logical]
+           GENERATE_PER_PACKET_PLOTS_CONSTELLATION: [1x1 logical]
+                 GENERATE_PER_PACKET_PLOTS_CHANNEL: [1x1 logical]
+                          PAUSE_AFTER_EVERY_PACKET: [1x1 logical]
+                                    writeVars_corr: [1x1 logical]
+                               writeVars_startPnts: [1x1 logical]
+                                    writeVars_cfos: [1x1 logical]
+                            writeVars_deinterleave: [1x1 logical]
+                              writeVars_depuncture: [1x1 logical]
+                                  writeVars_decode: [1x1 logical]
+                                    printVars_corr: [1x1 logical]
+                                  printVars_chEsts: [1x1 logical]
+                        printVars_cfoCorrectedPlcp: [1x1 logical]
+                           printVars_ofdmDemodPlcp: [1x1 logical]
+                       printVars_ofdmEqualizedPlcp: [1x1 logical]
+                                printVars_equalize: [1x1 logical]
+                           printVars_softBits_plcp: [1x1 logical]
+                           printVars_softBits_data: [1x1 logical]
+                            printVars_deinterleave: [1x1 logical]
+                          printVars_softBits_deint: [1x1 logical]
+                             printVars_decodedBits: [1x1 logical]
+                         printVars_descrambledBits: [1x1 logical]
+                               printVars_data_syms: [1x1 logical]
+                              printVars_parsedData: [1x1 logical]
+                             dumpVars_ltfRxSamples: [1x1 logical]
+                          dumpVars_plcpBaseSamples: [1x1 logical]
+                         dumpVars_plcpCfoCorrected: [1x1 logical]
+                            dumpVars_plcpOfdmDemod: [1x1 logical]
+                               dumpVars_plcpOfdmEq: [1x1 logical]
+                                dumpVars_plcpDemap: [1x1 logical]
+                          dumpVars_dataBaseSamples: [1x1 logical]
+                         dumpVars_dataCfoCorrected: [1x1 logical]
+                            dumpVars_dataOfdmDemod: [1x1 logical]
+                               dumpVars_dataOfdmEq: [1x1 logical]
+                                dumpVars_dataDemap: [1x1 logical]
+                              dumpVars_dataDepunct: [1x1 logical]
+                         dumpVars_dataVitdecChunks: [1x1 logical]
+                               dumpVars_dataVitdec: [1x1 logical]
+                                dumpVars_dataDescr: [1x1 logical]
+                               dumpVars_dataParsed: [1x1 logical]
+                                    corr_threshold: [1x1 double]
+                                 sq_corr_threshold: [1x1 double]
+                       ns_ofdm_phy_preamble_signal: [1x1 double]
+                              peak_search_win_size: [1x1 double]
+                                    max_nsyms_data: [1x1 double]
+                            max_pkt_length_samples: [1x1 double]
+                                        ns_to_skip: [1x1 double]
+                                     ns_to_process: [1x1 double]
+                                           corrwin: [1x1 double]
+                                  soft_slice_nbits: [1x1 double]
+
+tx and rx parameters of the experiment:
+
+opt = 
+
+                                             trace: {}
+                                          tx_known: [1x1 logical]
+                                         ti_factor: [1x1 double]
+                               ti_factor_after_cfo: [1x1 double]
+                 n_decoded_symbols_per_ofdm_symbol: [1x1 double]
+                             COARSE_CFO_CORRECTION: [1x1 logical]
+                               FINE_CFO_CORRECTION: [1x1 logical]
+                              PILOT_PHASE_TRACKING: [1x1 logical]
+                   PILOT_SAMPLING_DELAY_CORRECTION: [1x1 logical]
+                                      VITDEC_MODEL: [1x6 char]
+                                  VITDEC_chunksize: [1x1 double]
+                                      VITDEC_tblen: [1x1 double]
+                       GENERATE_ONE_TIME_PLOTS_PRE: [1x1 logical]
+                      GENERATE_ONE_TIME_PLOTS_POST: [1x1 logical]
+    GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH: [1x1 logical]
+                         GENERATE_PER_PACKET_PLOTS: [1x1 logical]
+           GENERATE_PER_PACKET_PLOTS_CONSTELLATION: [1x1 logical]
+                 GENERATE_PER_PACKET_PLOTS_CHANNEL: [1x1 logical]
+                          PAUSE_AFTER_EVERY_PACKET: [1x1 logical]
+                                    writeVars_corr: [1x1 logical]
+                               writeVars_startPnts: [1x1 logical]
+                                    writeVars_cfos: [1x1 logical]
+                            writeVars_deinterleave: [1x1 logical]
+                              writeVars_depuncture: [1x1 logical]
+                                  writeVars_decode: [1x1 logical]
+                                    printVars_corr: [1x1 logical]
+                                  printVars_chEsts: [1x1 logical]
+                        printVars_cfoCorrectedPlcp: [1x1 logical]
+                           printVars_ofdmDemodPlcp: [1x1 logical]
+                       printVars_ofdmEqualizedPlcp: [1x1 logical]
+                                printVars_equalize: [1x1 logical]
+                           printVars_softBits_plcp: [1x1 logical]
+                           printVars_softBits_data: [1x1 logical]
+                            printVars_deinterleave: [1x1 logical]
+                          printVars_softBits_deint: [1x1 logical]
+                             printVars_decodedBits: [1x1 logical]
+                         printVars_descrambledBits: [1x1 logical]
+                               printVars_data_syms: [1x1 logical]
+                              printVars_parsedData: [1x1 logical]
+                             dumpVars_ltfRxSamples: [1x1 logical]
+                          dumpVars_plcpBaseSamples: [1x1 logical]
+                         dumpVars_plcpCfoCorrected: [1x1 logical]
+                            dumpVars_plcpOfdmDemod: [1x1 logical]
+                               dumpVars_plcpOfdmEq: [1x1 logical]
+                                dumpVars_plcpDemap: [1x1 logical]
+                          dumpVars_dataBaseSamples: [1x1 logical]
+                         dumpVars_dataCfoCorrected: [1x1 logical]
+                            dumpVars_dataOfdmDemod: [1x1 logical]
+                               dumpVars_dataOfdmEq: [1x1 logical]
+                                dumpVars_dataDemap: [1x1 logical]
+                              dumpVars_dataDepunct: [1x1 logical]
+                         dumpVars_dataVitdecChunks: [1x1 logical]
+                               dumpVars_dataVitdec: [1x1 logical]
+                                dumpVars_dataDescr: [1x1 logical]
+                               dumpVars_dataParsed: [1x1 logical]
+                                    corr_threshold: [1x1 double]
+                                 sq_corr_threshold: [1x1 double]
+                       ns_ofdm_phy_preamble_signal: [1x1 double]
+                              peak_search_win_size: [1x1 double]
+                                    max_nsyms_data: [1x1 double]
+                            max_pkt_length_samples: [1x1 double]
+                                        ns_to_skip: [1x1 double]
+                                     ns_to_process: [1x1 double]
+                                           corrwin: [1x1 double]
+                                  soft_slice_nbits: [1x1 double]
+                                     noise_win_len: [1x1 double]
+                                    noise_fft_size: [1x1 double]
+                                           stf_len: [1x1 double]
+                                           ltf_len: [1x1 double]
+                                           sig_len: [1x1 double]
+                                     stf_shift_len: [1x1 double]
+                                     ltf_shift_len: [1x1 double]
+                               sample_duration_sec: [1x1 double]
+                                         sym_len_s: [1x1 double]
+                                          cp_len_s: [1x1 double]
+                                          fft_size: [1x1 double]
+                                           cp_skip: [1x1 double]
+                                             ftype: [1x1 struct]
+
+
+opt = 
+
+                                             trace: {}
+                                          tx_known: [1x1 logical]
+                                         ti_factor: [1x1 double]
+                               ti_factor_after_cfo: [1x1 double]
+                 n_decoded_symbols_per_ofdm_symbol: [1x1 double]
+                             COARSE_CFO_CORRECTION: [1x1 logical]
+                               FINE_CFO_CORRECTION: [1x1 logical]
+                              PILOT_PHASE_TRACKING: [1x1 logical]
+                   PILOT_SAMPLING_DELAY_CORRECTION: [1x1 logical]
+                                      VITDEC_MODEL: [1x6 char]
+                                  VITDEC_chunksize: [1x1 double]
+                                      VITDEC_tblen: [1x1 double]
+                       GENERATE_ONE_TIME_PLOTS_PRE: [1x1 logical]
+                      GENERATE_ONE_TIME_PLOTS_POST: [1x1 logical]
+    GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH: [1x1 logical]
+                         GENERATE_PER_PACKET_PLOTS: [1x1 logical]
+           GENERATE_PER_PACKET_PLOTS_CONSTELLATION: [1x1 logical]
+                 GENERATE_PER_PACKET_PLOTS_CHANNEL: [1x1 logical]
+                          PAUSE_AFTER_EVERY_PACKET: [1x1 logical]
+                                    writeVars_corr: [1x1 logical]
+                               writeVars_startPnts: [1x1 logical]
+                                    writeVars_cfos: [1x1 logical]
+                            writeVars_deinterleave: [1x1 logical]
+                              writeVars_depuncture: [1x1 logical]
+                                  writeVars_decode: [1x1 logical]
+                                    printVars_corr: [1x1 logical]
+                                  printVars_chEsts: [1x1 logical]
+                        printVars_cfoCorrectedPlcp: [1x1 logical]
+                           printVars_ofdmDemodPlcp: [1x1 logical]
+                       printVars_ofdmEqualizedPlcp: [1x1 logical]
+                                printVars_equalize: [1x1 logical]
+                           printVars_softBits_plcp: [1x1 logical]
+                           printVars_softBits_data: [1x1 logical]
+                            printVars_deinterleave: [1x1 logical]
+                          printVars_softBits_deint: [1x1 logical]
+                             printVars_decodedBits: [1x1 logical]
+                         printVars_descrambledBits: [1x1 logical]
+                               printVars_data_syms: [1x1 logical]
+                              printVars_parsedData: [1x1 logical]
+                             dumpVars_ltfRxSamples: [1x1 logical]
+                          dumpVars_plcpBaseSamples: [1x1 logical]
+                         dumpVars_plcpCfoCorrected: [1x1 logical]
+                            dumpVars_plcpOfdmDemod: [1x1 logical]
+                               dumpVars_plcpOfdmEq: [1x1 logical]
+                                dumpVars_plcpDemap: [1x1 logical]
+                          dumpVars_dataBaseSamples: [1x1 logical]
+                         dumpVars_dataCfoCorrected: [1x1 logical]
+                            dumpVars_dataOfdmDemod: [1x1 logical]
+                               dumpVars_dataOfdmEq: [1x1 logical]
+                                dumpVars_dataDemap: [1x1 logical]
+                              dumpVars_dataDepunct: [1x1 logical]
+                         dumpVars_dataVitdecChunks: [1x1 logical]
+                               dumpVars_dataVitdec: [1x1 logical]
+                                dumpVars_dataDescr: [1x1 logical]
+                               dumpVars_dataParsed: [1x1 logical]
+                                    corr_threshold: [1x1 double]
+                                 sq_corr_threshold: [1x1 double]
+                       ns_ofdm_phy_preamble_signal: [1x1 double]
+                              peak_search_win_size: [1x1 double]
+                                    max_nsyms_data: [1x1 double]
+                            max_pkt_length_samples: [1x1 double]
+                                        ns_to_skip: [1x1 double]
+                                     ns_to_process: [1x1 double]
+                                           corrwin: [1x1 double]
+                                  soft_slice_nbits: [1x1 double]
+                                     noise_win_len: [1x1 double]
+                                    noise_fft_size: [1x1 double]
+                                           stf_len: [1x1 double]
+                                           ltf_len: [1x1 double]
+                                           sig_len: [1x1 double]
+                                     stf_shift_len: [1x1 double]
+                                     ltf_shift_len: [1x1 double]
+                               sample_duration_sec: [1x1 double]
+                                         sym_len_s: [1x1 double]
+                                          cp_len_s: [1x1 double]
+                                          fft_size: [1x1 double]
+                                           cp_skip: [1x1 double]
+                                             ftype: [1x1 struct]
+
+
+n_rx_samples =
+
+      500000
+
+------------------- begin find_stream_correlation -------------------
+------------------- done find_stream_correlation -------------------
+Elapsed time is 0.257147 seconds.
+start pkt processing?
+-------------- scale:kk, packet #1-----------
+-------------- last pkt took #0s to process ----
+-------------- detecting next packet --------------
+
+m =
+
+   Empty matrix: 1-by-0
+
+
+i =
+
+   Empty matrix: 1-by-0
+
+
+pkt_start_point =
+
+   Empty matrix: 1-by-0
+
+no more packets detected
+pkt_start_point is -Inf, breaking
+displaying statistics:
+
+inpl =
+
+     0
+
+
+mean_noise_power =
+
+   NaN
+
+
+std_noise_power =
+
+   NaN
+
+No packets detected/processed, no average statistics to display
+
+pkt_start_points =
+
+  -Inf
+
+
+min_chm_avg =
+
+   Empty matrix: 0-by-1
+
+
+max_chm_std =
+
+   Empty matrix: 0-by-1
+
+
+min_chm_avg =
+
+   Empty matrix: 0-by-1
+
+
+max_chm_std =
+
+   Empty matrix: 0-by-1
+
+
+avg_snr_data =
+
+   NaN
+
+
+avg_snr_ack =
+
+   NaN
+
+=============================================================================================
+Aggregate performance stats: data:
+n_crc_data/n_data_packets:0/0 ber_data_avg/ber_data_std:NaN/NaN
+n_crc_ack/n_ack_packets:0/0 ber_ack_avg/ber_ack_std:NaN/NaN
+n_unknown_packets:0
+n_crc_unknown/n_unknown_packets:0/0 ber_unknown_avg/ber_unknown_std:NaN/NaN
+
+crc_vec_data =
+
+     []
+
+
+crc_vec_ack =
+
+     []
+
+
+crc_vec_unknown =
+
+     []
+
+=============================================================================================
+
+ans = 
+
+     {}
+
+diary off
