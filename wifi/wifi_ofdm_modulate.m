@@ -60,7 +60,7 @@ function [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms)
     tdsyms = ifft(fsyms_data_and_pilot);
 
     %verify that the dc components are near-zero
-    dc_component = sum(tdsyms)
+    dc_component = sum(tdsyms);
 
     %add cyclic prefixes and additional sample for windowing
     prefixes = tdsyms([end-cplength+1:end], :);

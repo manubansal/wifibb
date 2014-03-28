@@ -1,5 +1,8 @@
 
 function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr)
+
+  tx_params = wifi_tx_parameters();
+
   %%%%%%%%%%%%%%
   %% add the crc 
   %%%%%%%%%%%%%%
@@ -17,9 +20,9 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %tx_sig_field = wifi_pack_signal(rate, orig_base_msg_len_bytes);
   [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate_sig);
   %n_ofdm_syms_sig = 1;
-  tx_sig_field = tx_sig_field
+  %tx_sig_field = tx_sig_field
   %pause
-  [sigsym, ig1, ig2] = wifi_tx_chain_inner(tx_sig_field, rate_sig, 'plcp', confStr);
+  [sigsym, ig1, ig2] = wifi_tx_chain_inner(tx_sig_field, rate_sig, 'plcp', confStr, tx_params);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% create the data field
@@ -42,7 +45,9 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
   n_ofdm_syms = length(msg)/ndbps;
   
-  util_dumpData('dataBits', confStr, msg);
+  if tx_params.dumpVars_dataBits
+    util_dumpData('dataBits', confStr, msg);
+  end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% scramble the message
@@ -59,7 +64,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
 
   %--------------------------------------------------------------------------------------
-  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate, 'data', confStr);
+  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate, 'data', confStr, tx_params);
   %--------------------------------------------------------------------------------------
 
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);
@@ -71,14 +76,18 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   datasyms = [sigsym mapped_syms];
 
   datasyms_dump = datasyms * (2^12); % because Q12 expected in orsys
-  util_dumpData('allMappedSymbols', confStr, datasyms_dump);
+  if tx_params.dumpVars_mappedSymbols
+    util_dumpData('allMappedSymbols', confStr, datasyms_dump);
+  end
 
   %--------------------------------------------------------------------------------------
   [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms);
   %--------------------------------------------------------------------------------------
 
   tdsyms_w_cp_dump = tdsyms_w_cp * (2^12);
-  util_dumpData('allOfdmMod', confStr, tdsyms_w_cp_dump);
+  if tx_params.dumpVars_ofdmMod
+    util_dumpData('allOfdmMod', confStr, tdsyms_w_cp_dump);
+  end
 
   %--------------------------------------------------------------------------------------
   td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms);
@@ -86,6 +95,6 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
   % add preamble
   %--------------------------------------------------------------------------
-  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr);
+  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params);
   %--------------------------------------------------------------------------
 end

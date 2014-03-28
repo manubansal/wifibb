@@ -18,12 +18,19 @@ function [QAM64_symbols_out, databits_i, databits_q] = wifi_mapper_map64qam(inpu
 
   QAM64_symbols_out = zeros(48,1);
   %loop through 2 bits at a time and generate output symbols
-  for i=1:6:length(input_bits)
-      bits_string = [num2str(input_bits(i)) num2str(input_bits(i+1)) num2str(input_bits(i+2)) ...
-	  num2str(input_bits(i+3)) num2str(input_bits(i+4)) num2str(input_bits(i+5))];
-      symbol_out = QAM64(bin2dec(bits_string) + 1); 
-      QAM64_symbols_out((i-1)/6 + 1) = symbol_out;
-  end
+  %%for i=1:6:length(input_bits)
+  %%    bits_string = [num2str(input_bits(i)) num2str(input_bits(i+1)) num2str(input_bits(i+2)) ...
+  %%        num2str(input_bits(i+3)) num2str(input_bits(i+4)) num2str(input_bits(i+5))];
+  %%    symbol_out = QAM64(bin2dec(bits_string) + 1); 
+  %%    QAM64_symbols_out((i-1)/6 + 1) = symbol_out;
+  %%end
+
+  a=input_bits;
+  b=reshape(a,6,[]);
+  c=b';
+  d=bi2de(c, 'left-msb');
+  e = QAM64(d + 1);
+  QAM64_symbols_out = e;
 
   %%hex_input_bits = convert_cell_array_to_cstyle(convert_bits_to_unpacked(input_bits))
 

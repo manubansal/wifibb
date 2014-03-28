@@ -1,4 +1,4 @@
-function td_pkt_samples = util_prepend_preamble(td_data_samples, confStr)
+function td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Generate preamble portions
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -17,7 +17,9 @@ function td_pkt_samples = util_prepend_preamble(td_data_samples, confStr)
   
   % scale floats to 16 bit fixed
   stf_ltf_sync_total_dump = round(stf_ltf_sync_total*(2^12));
-  util_dumpData('stfLtfSyncTotal', confStr, stf_ltf_sync_total_dump);
+  if tx_params.dumpVars_stfLtf
+    util_dumpData('stfLtfSyncTotal', confStr, stf_ltf_sync_total_dump);
+  end
   
 
   %size(stf_ltf_sync_total)
