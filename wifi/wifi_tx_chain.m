@@ -38,7 +38,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
   npad = ceil(length(msg)/ndbps) * ndbps - length(msg);
 
-  npad = npad
+  %npad = npad
 
   pad = zeros(npad,1);
   msg = [msg; pad];
