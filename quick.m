@@ -23,17 +23,26 @@ function quick_spectesting()
 end
 
 function quick_per_vs_msglen()
-  snr = 16;
+  %snr = 16;
   %snr = 18;
   %snr = 20;
   %snr = 22;
   %rate = 54;
-  NPKTS = 100;
-  for rate = [54 48 36]
-  %for rate = [54 48] 
-    for msglen = 1500:-50:50
-      display(['per_vs_msglen: snr = ' num2str(snr) ' rate = ' num2str(rate) ' msglen = ' num2str(msglen)])
-      test_wifi_chain('perlen', snr, msglen, rate, NPKTS)
+  %NPKTS = 100;
+
+  NRUNS = 5;
+  NPKTS = 10;
+
+  for snr = 16:22
+    for rate = [54 48 36]
+      for msglen = 1500:-50:50
+	for run = 1:NRUNS
+	  display(['per_vs_msglen: snr = ' num2str(snr) ' rate = ' ...
+		  num2str(rate) ' msglen = ' num2str(msglen)])
+	  test_wifi_chain('perlen', snr, msglen, rate, NPKTS)
+	end
+      end
     end
   end
+
 end

@@ -69,7 +69,12 @@ function convertFile(filename, outfilename, ns_to_skip, ns_to_write, ns_per_iter
   ns = ns_per_iter;
 
   %fprintf(outfd, '#include "swpform.h"\n\nUint16 traceData[] = {\n');
-  fprintf(outfd, '#include <osl/inc/swpform.h>\n\nInt16 %s[] = {\n',tracename);
+  fprintf(outfd, '#include <osl/inc/swpform.h>\n\n')
+  line2 = ['#pragma DATA_SECTION(',tracename,', ".trace");\n\n'];
+  line3 = ['#pragma DATA_ALIGN(',tracename,', 8);\n\n'];
+  fprintf(outfd, line2);
+  fprintf(outfd, line3);
+  fprintf(outfd, 'Int16 %s[] = {\n',tracename);
 
   for (i = 1:niter)
 	  display(strcat(num2str(i),'.of.',num2str(niter)));

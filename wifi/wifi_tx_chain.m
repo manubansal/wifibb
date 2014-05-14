@@ -43,7 +43,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   pad = zeros(npad,1);
   msg = [msg; pad];
 
-  n_ofdm_syms = length(msg)/ndbps;
+  n_ofdm_syms = length(msg)/ndbps
   
   if tx_params.dumpVars_dataBits
     util_dumpData('dataBits', confStr, msg);

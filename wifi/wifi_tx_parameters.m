@@ -9,5 +9,5 @@ function tx_params = wifi_tx_parameters()
     tx_params.dumpVars_stfLtf = false;
 
     tx_params.compare_tx_rx_pkts = false;
-    tx_params.writeSamples = false;
+    tx_params.writeSamples = true;
 end
