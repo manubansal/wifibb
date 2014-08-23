@@ -269,19 +269,11 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
 
   opt.noise_win_len=256;		%no. of samples to compute noise over (keep at least 10 and a multiple of noise_fft_size)
   opt.noise_fft_size=64;		
-  opt.stf_len=160;			%no. of samples
-  opt.ltf_len=160;			%no. of samples
-  opt.sig_len=80;			%no. of samples in signal field
   opt.stf_shift_len=80;
   opt.ltf_shift_len=64;
-  opt.sample_duration_sec=50e-9;	%sample duration
 
-  opt.sym_len_s = 80;
-  opt.cp_len_s = 16;
-  opt.fft_size = 64;
-  %opt.cp_skip = 8;
-  opt.cp_skip = 16;
-  %opt.cp_skip = 12;
+
+  opt = wifi_common_parameters(opt);
 
   opt.ftype.data 	= 0;
   opt.ftype.ack 	= 1;

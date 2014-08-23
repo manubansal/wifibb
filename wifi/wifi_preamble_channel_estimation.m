@@ -1,6 +1,9 @@
 
 function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] = wifi_preamble_channel_estimation(opt, stats, pkt_samples)
-  cp_skip  = opt.cp_skip ;
+  copt = wifi_common_parameters();
+  cp_len = copt.cp_len_s_ltf;
+  cp_skip  = copt.cp_skip_ltf;
+
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   %sig_len = opt.sig_len;
@@ -23,8 +26,8 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
 %				  ltf_sync_time_oneperiod; 
 %				  ltf_sync_time_oneperiod;
 %				  ltf_sync_time_oneperiod(1)]
-  ltf1_s = ltf_samples(16+1+cp_skip:16+cp_skip+fft_size);
-  ltf2_s = ltf_samples(16+1+cp_skip+fft_size:16+cp_skip+2*fft_size);
+  ltf1_s = ltf_samples(cp_len+1+cp_skip:cp_len+cp_skip+fft_size);
+  ltf2_s = ltf_samples(cp_len+1+cp_skip+fft_size:cp_len+cp_skip+2*fft_size);
   ltf1_f = fftshift(fft(ltf1_s));
   ltf2_f = fftshift(fft(ltf2_s));
 

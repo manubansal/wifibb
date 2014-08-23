@@ -1,11 +1,12 @@
 function td_data_samples = wifi_time_domain_windowing(tdsyms_w_cp, tdsyms)
   nsyms = size(tdsyms, 2);
+  nsamples_per_sym = size(tdsyms_w_cp,1);
 
   extra_for_windowing = tdsyms(1, :);
   tdsyms_w_cp = [tdsyms_w_cp; extra_for_windowing];
 
   %window the data
-  w = [0.5 ones(1,79) 0.5]';
+  w = [0.5 ones(1,nsamples_per_sym-1) 0.5]';
   tdsyms_w_cp = diag(w) * tdsyms_w_cp;
 
   row_to_add = [0 tdsyms_w_cp(end,:)];

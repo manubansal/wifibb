@@ -5,15 +5,19 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
   ltf_len = opt.ltf_len;
   sig_len = opt.sig_len;
   ltf_shift_len = opt.ltf_shift_len;
-  cp_skip  = opt.cp_skip ;
+
+  copt = wifi_common_parameters();
+  cp_len = copt.cp_len_s_ltf;
+  cp_skip  = copt.cp_skip_ltf;
+
   fft_size  = opt.fft_size ;
   pkt_length_samples = length(pkt_samples);
   ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
   %------ ltf based cfo estimation and correction -------
   if (opt.FINE_CFO_CORRECTION)
     display('ltf based cfo estimation and correction');
-    ltf1_s = ltf_samples(16+1+cp_skip:16+cp_skip+fft_size);
-    ltf2_s = ltf_samples(16+1+cp_skip+fft_size:16+cp_skip+2*fft_size);
+    ltf1_s = ltf_samples(cp_len+1+cp_skip:cp_len+cp_skip+fft_size);
+    ltf2_s = ltf_samples(cp_len+1+cp_skip+fft_size:cp_len+cp_skip+2*fft_size);
 
     angle_corr = angle(sum(conj(ltf1_s) .* ltf2_s));
     freq_off_khz = (angle_corr/(2*pi*ltf_shift_len*sample_duration_sec))/1000;
