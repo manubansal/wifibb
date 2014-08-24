@@ -7,6 +7,9 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
     %scale = 1;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 256;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     scale = sqrt(2)		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
+    %scale = 2;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
+    %scale = 4;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
+    %scale = 8;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
   end
   
   n_msgs = length(msgs_hex)
@@ -29,6 +32,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   cat_td_pkt_samples = [];
   msgs_scr = {};
   for ii = 1:n_msgs
+    fprintf(1, 'encoding msg #%d\n', ii);
     msg_hex = msgs_hex{ii};
     msg_dec = hex2dec(msg_hex);
     %msg_dec = msg_dec(1:15)
@@ -89,17 +93,32 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
 
   zero_postpad_samples = zeros(20 * zero_postpad_dur_us, 1);
 
-  td_pkt_samples = [];
+
+  %td_pkt_samples = [];
+  %for ii = 1:n_msgs
+  %  td_pkt_samples = [td_pkt_samples; zero_prepad_samples; ...
+  %  	all_td_pkt_samples{ii}; zero_postpad_samples];
+  %end
+  all_td_pkt_samples_with_zeropads = {};
   for ii = 1:n_msgs
-    td_pkt_samples = [td_pkt_samples; zero_prepad_samples; ...
-    	all_td_pkt_samples{ii}; zero_postpad_samples];
+    all_td_pkt_samples_with_zeropads{ii} = [zero_prepad_samples; all_td_pkt_samples{ii}; zero_postpad_samples];
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% apply a fading channel to the transmission
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  td_pkt_samples = wifi_fading_channel(td_pkt_samples);
+  %td_pkt_samples = wifi_fading_channel(td_pkt_samples);
+  all_td_pkt_samples_faded = wifi_fading_channel(all_td_pkt_samples_with_zeropads);
+
+
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% vectorize
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  td_pkt_samples = [];
+  for ii = 1:n_msgs
+    td_pkt_samples = [td_pkt_samples; all_td_pkt_samples_faded{ii}];
+  end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% add the AWGN noise vector
@@ -136,6 +155,6 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   max_imag=max(imag(td_pkt_samples_16bit))
 
   if (max_real > 32767 || max_imag > 32767)
-    error('max exceeded','maximum value of a sample exceed dynamic range');
+    error('max exceeded','maximum value of a sample exceeds dynamic range; try increasing the scale value.');
   end
 end

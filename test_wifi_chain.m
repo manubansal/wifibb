@@ -1,4 +1,8 @@
 function test_wifi_chain(tag, snr, msglen, rate, nmsgs)
+  %df = sprintf('diary.test_wifi_chain.%s.%d.%d.%d.%d', tag, snr, msglen, rate, nmsgs)
+  %diary(df);
+  %df = df
+
   tx_params = wifi_tx_parameters();
 
   if nargin < 1
@@ -35,7 +39,8 @@ function test_wifi_chain(tag, snr, msglen, rate, nmsgs)
 end
 
 function do_test(tag, rate, snr, msglen, nmsgs, tx_params)
-  scale = sqrt(2);
+  %scale = sqrt(2);
+  scale = 2;
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% pick the message(s)
@@ -62,7 +67,8 @@ function do_test(tag, rate, snr, msglen, nmsgs, tx_params)
   %%%%%%%%%%%%%%%%%%%%%%
   [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   path = sprintf('%s/%s*', BDATA_DIR, confStr);
-  fprintf(1, 'Deleting %s, press any key...\n', path)
+  %fprintf(1, 'Deleting %s, press any key...\n', path)
+  fprintf(1, 'Deleting %s...\n', path)
   delete(path)
   %pause
 

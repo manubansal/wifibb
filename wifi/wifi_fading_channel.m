@@ -1,14 +1,16 @@
-function y = wifi_fading_channel(x)
+
+%all_td_pkt_samples_with_zeropads{ii} = [zero_postpad_samples; all_td_pkt_samples{ii}; zero_postpad_samples];
+function ys = wifi_fading_channel(xs)
   %y = using_stdchan(x);
-  %y = using_rayleighchan(x);
-  y = using_passthrough(x);
+  ys = using_rayleighchan(xs);
+  %ys = using_passthrough(xs);
 end
 
-function y = using_passthrough(x)
-  y = x;
+function ys = using_passthrough(xs)
+  ys = xs;
 end
 
-function y = using_rayleighchan(x)
+function ys = using_rayleighchan(xs)
   %By convention, the first delay is typically set to zero. The first delay
   %corresponds to the first arriving path.
 
@@ -31,17 +33,20 @@ function y = using_rayleighchan(x)
   %h = rayleighchan(ts, maxfd, [0 1.5e-8 3.2e-8], [0, -3, -3]); %high delay spread, 15ns, 32ns
   %h = rayleighchan(ts, maxfd, [0 1.5e-9 3.2e-9], [0, -3, -3]); %high delay spread, 1.5ns, 3.2ns
 
-  k = 0;
+  %k = 0;
   %k = 1;
   %k = 5;
   %k = 10;
-  h = rayleighchan(ts, maxfd, [0 1.5e-9*k 3.2e-9*k], [0, -3, -3]); %high delay spread, 1.5ns, 3.2ns
+  k = 100;
+  h = rayleighchan(ts, maxfd, [0 1.5e-9*k 3.2e-9*k], [0, -3, -3]); %high delay spread, 1.5 * k ns, 3.2 * k ns
 
   h.NormalizePathGains = 1;
   h.StoreHistory = 1;
-  y = filter(h, x);
 
-
+  ys = {};
+  for ii = 1:length(xs)
+    ys{ii} = filter(h, xs{ii});
+  end
 end
 
 function y = using_stdchan(x)
