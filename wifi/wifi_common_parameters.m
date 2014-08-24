@@ -6,11 +6,14 @@ function [opt] = wifi_common_parameters(opt)
 
   opt.cp_len_s = 16;
   opt.cp_skip = 16;
-  %opt.cp_skip = 8;
-  %opt.cp_skip = 12;
+  %%opt.cp_skip = 8;
+  %%opt.cp_skip = 12;
 
   %opt.cp_len_s = 32;
   %opt.cp_skip = 32;
+
+  %opt.cp_len_s = 64;
+  %opt.cp_skip = 64;
 
   opt.cp_len_s_ltf = 16;
   opt.cp_skip_ltf = 16;

@@ -40,7 +40,8 @@ end
 
 function do_test(tag, rate, snr, msglen, nmsgs, tx_params)
   %scale = sqrt(2);
-  scale = 2;
+  %scale = 2;
+  scale = 4;
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% pick the message(s)
