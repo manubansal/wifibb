@@ -1,6 +1,17 @@
 function quick()
   %quick_spectesting()
-  quick_per_vs_msglen()
+  %quick_per_vs_msglen()
+  quick_cplentesting()
+end
+
+function quick_cplentesting()
+  snrs = 20:2:60;
+  cplens=[16,32,64];
+  ch = 't100';
+  for cplen = cplens
+    lb = sprintf('cp%d%s', cplen, ch)
+    for snr = snrs; test_wifi_chain(lb,snr, 1000, 54, 1000, ch, [cplen,cplen,cplen,cplen]); end
+  end
 end
 
 function quick_spectesting()
