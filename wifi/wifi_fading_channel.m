@@ -3,16 +3,12 @@
 function ys = wifi_fading_channel(xs, ch)
   if strcmp(ch, 'passthrough')
     ys = using_passthrough(xs);
-  elseif strcmp(ch, 'r0')
-    ys = using_rayleighchan(xs, 'r0');
-  elseif strcmp(ch, 'r10')
-    ys = using_rayleighchan(xs, 'r10');
-  elseif strcmp(ch, 'r100')
-    ys = using_rayleighchan(xs, 'r100');
+  else 
+    ys = using_rayleighchan(xs, ch);
   %elseif strcmp(ch, 'stdchan')
   %  y = using_stdchan(x);
-  else
-    error('bad channel selection')
+  %else
+  %  error('bad channel selection')
   end
 end
 
@@ -38,16 +34,53 @@ function ys = using_rayleighchan(xs, ch)
 
   if strcmp(ch, 'r0')
     k = 0;
-    h = rayleighchan(ts, maxfd, [0 1.5e-9*k 3.2e-9*k], [0, -3, -3]); %high delay spread, 1.5 * k ns, 3.2 * k ns
-  elseif strcmp(ch, 'r10')
+    tau = [0 1.5e-9*k 3.2e-9*k];
+    gains = [0, -3, -3];
+
+  elseif strcmp(ch, 'r10')  %Tu ~= 12ns, Trms ~= 13ns
     k = 10;
-    h = rayleighchan(ts, maxfd, [0 1.5e-9*k 3.2e-9*k], [0, -3, -3]); %high delay spread, 1.5 * k ns, 3.2 * k ns
-  elseif strcmp(ch, 'r100')
+    tau = [0 1.5e-9*k 3.2e-9*k];
+    gains = [0, -3, -3];
+
+  elseif strcmp(ch, 'r100')  %Tu ~= 118ns, Trms ~= 132ns
     k = 100;
-    h = rayleighchan(ts, maxfd, [0 1.5e-9*k 3.2e-9*k], [0, -3, -3]); %high delay spread, 1.5 * k ns, 3.2 * k ns
+    tau = [0 1.5e-9*k 3.2e-9*k];
+    gains = [0, -3, -3];
+
+  elseif strcmp(ch, 't0')  %Tu ~= 0ns, Trms ~= 0ns
+    k = 0;
+    tau = [0 1.0e-9*k];
+    gains = [0, -12];
+
+  elseif strcmp(ch, 't1')  %Tu ~= 0.06ns, Trms ~= 0.24ns
+    k = 1;
+    tau = [0 1.0e-9*k];
+    gains = [0, -12];
+
+  elseif strcmp(ch, 't10')  %Tu ~= 0.6ns, Trms ~= 2.4ns
+    k = 10;
+    tau = [0 1.0e-9*k];
+    gains = [0, -12];
+
+  elseif strcmp(ch, 't100')  %Tu ~= 6ns, Trms ~= 24.3ns
+    k = 100;
+    tau = [0 1.0e-9*k];
+    gains = [0, -12];
+
+  elseif strcmp(ch, 't1000')  %Tu ~= 64ns, Trms ~= 236ns
+    k = 1000;
+    tau = [0 1.0e-9*k];
+    gains = [0, -12];
+
   else
     error('bad channel selection')
   end
+
+  h = rayleighchan(ts, maxfd, tau, gains); 
+
+  pdp = 10.^(gains./10);
+  mean_delay = sum(tau .* pdp)/sum(pdp)
+  tau_rms = sqrt(sum((tau - mean_delay).^2 .* pdp)/sum(pdp))
 
   h.NormalizePathGains = 1;
   h.StoreHistory = 1;
