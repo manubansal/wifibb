@@ -1,11 +1,11 @@
-function rx_pkts = wifi_rx_pkt_train(samples, confStr)
+function rx_pkts = wifi_rx_pkt_train(samples, confStr, cplen)
   rx_pkts = {}
 
   %scale = sqrt(2);
   scale = 'kk';
   %mod = 'jj';
 
-  [opt, stats] = wifi_rx_parameters();
+  [opt, stats] = wifi_rx_parameters('1','54M','null',cplen);
 
   if length(samples) == 0
     samples = util_loadBinaryFilePart(opt.traceFile, opt.ns_to_process, opt.ns_to_skip);
@@ -71,7 +71,7 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr)
 
     %analyze next packet
     display('-------------- analyzing next packet --------------')
-    [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr);
+    [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr, cplen);
     display(['frame_type: ',num2str(frame_type),' crcValid: ',num2str(crcValid)])
     rx_pkts{end+1} = {parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes};
     ber = stats.ber(end);

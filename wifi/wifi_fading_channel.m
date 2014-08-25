@@ -1,10 +1,19 @@
 
 %all_td_pkt_samples_with_zeropads{ii} = [zero_postpad_samples; all_td_pkt_samples{ii}; zero_postpad_samples];
-function ys = wifi_fading_channel(xs)
-  %y = using_stdchan(x);
-  %ys = using_rayleighchan(xs, 'r100');
-  %ys = using_rayleighchan(xs, 'r10');
-  ys = using_passthrough(xs);
+function ys = wifi_fading_channel(xs, ch)
+  if strcmp(ch, 'passthrough')
+    ys = using_passthrough(xs);
+  elseif strcmp(ch, 'r0')
+    ys = using_rayleighchan(xs, 'r0');
+  elseif strcmp(ch, 'r10')
+    ys = using_rayleighchan(xs, 'r10');
+  elseif strcmp(ch, 'r100')
+    ys = using_rayleighchan(xs, 'r100');
+  %elseif strcmp(ch, 'stdchan')
+  %  y = using_stdchan(x);
+  else
+    error('bad channel selection')
+  end
 end
 
 function ys = using_passthrough(xs)
@@ -27,7 +36,10 @@ function ys = using_rayleighchan(xs, ch)
   sampling_rate = 20e6;
   ts = 1/sampling_rate;
 
-  if strcmp(ch, 'r10')
+  if strcmp(ch, 'r0')
+    k = 0;
+    h = rayleighchan(ts, maxfd, [0 1.5e-9*k 3.2e-9*k], [0, -3, -3]); %high delay spread, 1.5 * k ns, 3.2 * k ns
+  elseif strcmp(ch, 'r10')
     k = 10;
     h = rayleighchan(ts, maxfd, [0 1.5e-9*k 3.2e-9*k], [0, -3, -3]); %high delay spread, 1.5 * k ns, 3.2 * k ns
   elseif strcmp(ch, 'r100')

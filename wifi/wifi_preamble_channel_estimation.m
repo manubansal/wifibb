@@ -1,6 +1,6 @@
 
-function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] = wifi_preamble_channel_estimation(opt, stats, pkt_samples)
-  copt = wifi_common_parameters();
+function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] = wifi_preamble_channel_estimation(opt, stats, pkt_samples, cplen)
+  copt = wifi_common_parameters({}, cplen);
   cp_len = copt.cp_len_s_ltf;
   cp_skip  = copt.cp_skip_ltf;
 

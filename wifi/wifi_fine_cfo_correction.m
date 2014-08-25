@@ -1,14 +1,14 @@
 
-function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(opt, stats, pkt_samples)
+function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(opt, stats, pkt_samples, cplen)
   sample_duration_sec = opt.sample_duration_sec;
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   sig_len = opt.sig_len;
   ltf_shift_len = opt.ltf_shift_len;
 
-  copt = wifi_common_parameters();
-  cp_len = copt.cp_len_s_ltf;
-  cp_skip  = copt.cp_skip_ltf;
+  copt = wifi_common_parameters({},cplen);
+  cp_len_ltf = copt.cp_len_s_ltf;
+  cp_skip_ltf  = copt.cp_skip_ltf;
 
   fft_size  = opt.fft_size ;
   pkt_length_samples = length(pkt_samples);
@@ -16,8 +16,8 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
   %------ ltf based cfo estimation and correction -------
   if (opt.FINE_CFO_CORRECTION)
     display('ltf based cfo estimation and correction');
-    ltf1_s = ltf_samples(cp_len+1+cp_skip:cp_len+cp_skip+fft_size);
-    ltf2_s = ltf_samples(cp_len+1+cp_skip+fft_size:cp_len+cp_skip+2*fft_size);
+    ltf1_s = ltf_samples(cp_len_ltf+1+cp_skip_ltf:cp_len_ltf+cp_skip_ltf+fft_size);
+    ltf2_s = ltf_samples(cp_len_ltf+1+cp_skip_ltf+fft_size:cp_len_ltf+cp_skip_ltf+2*fft_size);
 
     angle_corr = angle(sum(conj(ltf1_s) .* ltf2_s));
     freq_off_khz = (angle_corr/(2*pi*ltf_shift_len*sample_duration_sec))/1000;
@@ -43,8 +43,12 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
     %version 3: where each data symbol is also modeled as starting at time t = 0; this matches how we do it on TI
     %ltf 160 samples are in series, as also on TI.
     freq_off_hz = freq_off_khz * 1000;
-    t_secs = [0:(stf_len+ltf_len-1)]*sample_duration_sec - 160 * sample_duration_sec;			%correction time-coeffs for stf, ltf parts
-    t_secs = [t_secs mod([0:((pkt_length_samples - stf_len - ltf_len)-1)],80)*sample_duration_sec];	%correction time-coeffs for data symbols appended
+
+    %t_secs = [0:(stf_len+ltf_len-1)]*sample_duration_sec - 160 * sample_duration_sec;			%correction time-coeffs for stf, ltf parts
+    t_secs = [0:(stf_len+ltf_len-1)]*sample_duration_sec - opt.stf_len * sample_duration_sec;			%correction time-coeffs for stf, ltf parts
+    %NOTE: I'm not sure if I am replacing 160 by the right mnemonic quantity. --MB, 08/24/14
+
+    t_secs = [t_secs mod([0:((pkt_length_samples - stf_len - ltf_len)-1)],opt.sym_len_s)*sample_duration_sec];	%correction time-coeffs for data symbols appended
     cfo_corr = exp(-2*pi*i*freq_off_hz*t_secs);
 
 
@@ -58,8 +62,8 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
 
     %%%%%%%%%%%%%%%%%%%%%%%
     ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
-    ltf1_t = ltf_samples(33:96);
-    ltf2_t = ltf_samples(97:160);
+    ltf1_t = ltf_samples(1+cp_len_ltf+cp_skip_ltf : cp_len_ltf+cp_skip_ltf+fft_size);
+    ltf2_t = ltf_samples(1+cp_len_ltf+cp_skip_ltf+fft_size : cp_len_ltf+cp_skip_ltf+2*fft_size);
     display('ltfs in time domain after all cfo correction');
     if (opt.printVars_chEsts)
 	  display('the two ltfs: ')

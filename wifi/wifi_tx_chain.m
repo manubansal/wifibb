@@ -1,5 +1,5 @@
 
-function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr, cplen)
 
   tx_params = wifi_tx_parameters();
 
@@ -82,7 +82,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   end
 
   %--------------------------------------------------------------------------------------
-  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms);
+  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms, cplen);
   %--------------------------------------------------------------------------------------
 
   tdsyms_w_cp_dump = tdsyms_w_cp * (2^12);
@@ -96,6 +96,6 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
   % add preamble
   %--------------------------------------------------------------------------
-  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params);
+  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params, cplen);
   %--------------------------------------------------------------------------
 end

@@ -1,4 +1,4 @@
-function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale, confStr)
+function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale, confStr, ch, cplen)
   if (nargin < 3)
     snr = Inf
   end
@@ -10,6 +10,14 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
     %scale = 2;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 4;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 8;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
+  end
+
+  if (nargin < 6)
+    ch = 'passthrough';
+  end
+
+  if (nargin < 7)
+    cplen = [16, 16, 16, 16];
   end
   
   n_msgs = length(msgs_hex)
@@ -49,7 +57,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
 
     % generate data samples
     %--------------------------------------------------------------------------
-    [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr);
+    [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr, cplen);
     %--------------------------------------------------------------------------
 
     msgs_scr{end + 1} = msg_scr;
@@ -109,7 +117,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   %td_pkt_samples = wifi_fading_channel(td_pkt_samples);
-  all_td_pkt_samples_faded = wifi_fading_channel(all_td_pkt_samples_with_zeropads);
+  all_td_pkt_samples_faded = wifi_fading_channel(all_td_pkt_samples_with_zeropads, ch);
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

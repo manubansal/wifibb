@@ -1,5 +1,5 @@
 %------------------------------------------------------------------------------------
-function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr)
+function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr, cplen)
 %------------------------------------------------------------------------------------
   rx_data_bytes = [];
 
@@ -34,7 +34,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   [stats, pkt_samples, coarse_cfo_freq_off_khz] = ...
   	wifi_coarse_cfo_correction(opt, stats, pkt_samples, data.corrvec, data.pkt_start_point);
   [stats, pkt_samples, fine_cfo_freq_off_khz] = ...
-  	wifi_fine_cfo_correction(opt, stats, pkt_samples);
+  	wifi_fine_cfo_correction(opt, stats, pkt_samples, cplen);
 
   net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
 
@@ -50,7 +50,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
 
 
   [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] ...
-  		= wifi_preamble_channel_estimation(opt, stats, pkt_samples);
+  		= wifi_preamble_channel_estimation(opt, stats, pkt_samples, cplen);
 
   [avgsnr avgsnr_dB snr_vector snr_vector_dB avgsnr_cross_dB] = util_ltfSNR(uu_ltf1, uu_ltf2, chi);
   ltf_avgsnr_dB = avgsnr_dB

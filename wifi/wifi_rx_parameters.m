@@ -1,4 +1,4 @@
-function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
+function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
   [DATA_DIR, TRACE_DIR] = setup_paths();
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -9,7 +9,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
 
-  if (nargin < 3)
+  if (nargin < 3 || strcmp(opt, 'null'))
 
     %------------ begin trace parameters ---------------
     %opt.trace.traceFolder = 'traces/';
@@ -273,7 +273,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt)
   opt.ltf_shift_len=64;
 
 
-  opt = wifi_common_parameters(opt);
+  opt = wifi_common_parameters(opt, cplen);
 
   opt.ftype.data 	= 0;
   opt.ftype.ack 	= 1;
