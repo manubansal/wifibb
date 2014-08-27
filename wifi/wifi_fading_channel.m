@@ -127,6 +127,11 @@ function ys = using_rayleighchan(xs, ch)
     tau = [0 1.0e-9*k];
     gains = [0, -12];
 
+  elseif strcmp(ch, 't50')  %Tu ~= 3ns, Trms ~= 12.2ns
+    k = 50;
+    tau = [0 1.0e-9*k];
+    gains = [0, -12];
+
   elseif strcmp(ch, 't100')  %Tu ~= 6ns, Trms ~= 24.3ns
     k = 100;
     tau = [0 1.0e-9*k];
