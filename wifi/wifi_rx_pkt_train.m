@@ -73,6 +73,11 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr, cplen)
     display('-------------- analyzing next packet --------------')
     [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr, cplen);
     display(['frame_type: ',num2str(frame_type),' crcValid: ',num2str(crcValid)])
+    if crcValid == -1
+      display('this pkt could not be processed through the receive chain, maybe because of insufficient samples')
+      %display('continuing without adding this pkt to stats...')
+      %continue
+    end
     rx_pkts{end+1} = {parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes};
     ber = stats.ber(end);
 

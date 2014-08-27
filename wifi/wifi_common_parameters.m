@@ -44,5 +44,7 @@ function [opt] = wifi_common_parameters(opt, cplen)
   opt.sig_len = opt.fft_size + opt.cp_len_s;			%no. of samples in signal field
   opt.sym_len_s = opt.fft_size + opt.cp_len_s;
 
+  %opt.pkt_start_pnt_shift_back_bias_s = 8;		%shift-back the detected pkt start point by 8 samples
+  opt.pkt_start_pnt_shift_back_bias_s = opt.cp_len_s/2;	%shift-back the detected pkt start point
 
 end

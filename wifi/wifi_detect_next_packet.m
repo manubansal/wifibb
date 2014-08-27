@@ -66,6 +66,9 @@ function [stats data]= wifi_detect_next_packet(data, opt, stats)
   end
 
   stats.max_corr_val = m;
+  display('biasing pkt_start_point by shifting it back by configured number of shift-back samples...');
+  pkt_start_point_old = pkt_start_point
+  pkt_start_point = pkt_start_point - opt.pkt_start_pnt_shift_back_bias_s
   stats.pkt_start_points(end+1,:) = pkt_start_point;
   data.pkt_start_point = pkt_start_point;
 

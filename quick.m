@@ -7,14 +7,14 @@ end
 function quick_cplentesting(t)
   snrs = 25:3:60;
   cplens=[16,32,64];
-  ch = 't100';
+  %ch = 't100';
   %ch = 'f10';
   %ch = 'f100';
   %ch = 'f50';
-  %ch = 'f20';
+  ch = 'f20';
   nbytes = 1000;
-  nmsgs = 500;
-  %nmsgs = 200;
+  %nmsgs = 500;
+  nmsgs = 200;
   %nmsgs = 50;
   %parfor cplen_idx = 1:length(cplens)
   %for cplen_idx = 1:length(cplens)

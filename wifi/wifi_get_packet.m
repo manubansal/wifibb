@@ -2,6 +2,7 @@
 %------------------------------------------------------------------------------------
 function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
 %------------------------------------------------------------------------------------
+  pkt_samples = [];
   data.cleanupDone = 0;
 
   noise_win_len = opt.noise_win_len;
