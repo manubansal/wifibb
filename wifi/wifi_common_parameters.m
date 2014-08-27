@@ -38,6 +38,11 @@ function [opt] = wifi_common_parameters(opt, cplen)
   opt.stf_len = 160;								%no. of samples
   opt.ltf_len = 2 * opt.fft_size + 2 * opt.cp_len_s_ltf;			%no. of samples
 
+  opt.stf_shift_len=80;	%used for cfo estimation
+  opt.ltf_shift_len=64;	%used for cfo estimation
+
   opt.sig_len = opt.fft_size + opt.cp_len_s;			%no. of samples in signal field
   opt.sym_len_s = opt.fft_size + opt.cp_len_s;
+
+
 end

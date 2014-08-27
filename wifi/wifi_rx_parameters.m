@@ -151,6 +151,8 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
     opt.dumpVars_dataParsed = false;
   end
 
+  opt = wifi_common_parameters(opt, cplen);
+
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % processing/analysis parameters
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -172,7 +174,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
   %of SNR. Though reliable SNR can only be known after detecting and decoding a packet, an SNR estimate can be obtained
   %upon detecting energy jumps on the channel.
 
-  opt.ns_ofdm_phy_preamble_signal = 80 * 2 + 80 * 2 + 80;	%stf, ltf, signal
+  opt.ns_ofdm_phy_preamble_signal = opt.stf_len + opt.ltf_len + opt.sig_len;	%stf, ltf, signal
   %this is the minimum number of samples from the peak detect point that we need for decoding at least
   %the signal field and to consider the packet at all
 
@@ -185,7 +187,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
   %opt.max_pkt_length_samples = (1500*8/6)*20 + opt.ns_ofdm_phy_preamble_signal;	%no. of samples in a 1500B pkt at 6Mbps
 
   opt.max_nsyms_data = 501;
-  opt.max_pkt_length_samples = (opt.max_nsyms_data*80) + opt.ns_ofdm_phy_preamble_signal;	
+  opt.max_pkt_length_samples = (opt.max_nsyms_data*opt.sym_len_s) + opt.ns_ofdm_phy_preamble_signal;	
   										%no. of samples with 500 ofdm syms (1500B/24bits - 
   										%at 6Mbps, one symbol as 24 data bits), with 
 											%1 additional symbol due to service and tail bits
@@ -269,11 +271,8 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
 
   opt.noise_win_len=256;		%no. of samples to compute noise over (keep at least 10 and a multiple of noise_fft_size)
   opt.noise_fft_size=64;		
-  opt.stf_shift_len=80;
-  opt.ltf_shift_len=64;
+  
 
-
-  opt = wifi_common_parameters(opt, cplen);
 
   opt.ftype.data 	= 0;
   opt.ftype.ack 	= 1;

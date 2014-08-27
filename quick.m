@@ -1,16 +1,25 @@
-function quick()
+function quick(t)
   %quick_spectesting()
   %quick_per_vs_msglen()
-  quick_cplentesting()
+  quick_cplentesting(t)
 end
 
-function quick_cplentesting()
+function quick_cplentesting(t)
   snrs = 25:3:60;
   cplens=[16,32,64];
   ch = 't100';
+  %ch = 'f10';
+  %ch = 'f100';
+  %ch = 'f50';
+  %ch = 'f20';
   nbytes = 1000;
   nmsgs = 500;
-  for cplen = cplens
+  %nmsgs = 200;
+  %nmsgs = 50;
+  %parfor cplen_idx = 1:length(cplens)
+  %for cplen_idx = 1:length(cplens)
+  for cplen_idx = t:t
+    cplen = cplens(cplen_idx);
     lb = sprintf('cp%d%s', cplen, ch)
     for snr = snrs; test_wifi_chain(lb,snr, nbytes, 54, nmsgs, ch, [cplen,cplen,cplen,cplen]); end
   end
