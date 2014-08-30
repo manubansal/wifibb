@@ -6,8 +6,8 @@ end
 
 function quick_cplentesting(t)
   %cnrs = 25:3:60;
-  %cnrs = 55;
-  cnrs = 100;
+  cnrs = 55;
+  %cnrs = 100;
   %cplens=[16,32,64];
   cplens=[16];
   %%%%ch = 't1000';

@@ -24,5 +24,6 @@ function hhat = time_domain_channel_impulse_response(xl,yl,taplength)
   %size(y)
   %pause
 
-  hhat=pinv(Xr)*y;
+  %hhat=pinv(Xr)*y;
+  hhat=Xr\y;
 end

@@ -93,21 +93,19 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   %[ch ch_abs_db]
 
 
-%  h = wifi_time_domain_channel_response(ltf1_s, ltf2_s, ltf_sync_freq_domain);
-%  stem(abs(h))
-%  pause
+  h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen);
 end
 
-%function h = wifi_time_domain_channel_response(ltf1_s, ltf2_s, ltf_sync_freq_domain)
-%  ltf_t = ifft(ltf_sync_freq_domain);
-%  ltf_s = (ltf1_s + ltf2_s)/2;
-%  x = ltf_t(:);
-%  y = ltf_s(:);
-%  %model: y = h conv x ==> y = x conv h. We know y and x, we want to find out h.
-%  %We can represent x conv h as A.h where A is the convolution matrix formed from x.
-%  %Then, h = pinv(A).y
-%  tap_length = 64;
-%  A = convmtx(x, tap_length);
-%  Ai = pinv(A);
-%  h = Ai * y;
-%end
+function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen)
+  ltf_sync_freq_domain = ltf_sync_freq_domain.';
+  %ltf_x = ifft(ltf_sync_freq_domain);
+  ltf_x = ifft(ifftshift(ltf_sync_freq_domain));
+  ltf_x = [ltf_x(end-2*cplen+1:end) ltf_x ltf_x];
+  ltf_y = ltf_samples;
+  taplength = 64;
+  %taplength = 52;
+  %taplength = 40;
+  h = time_domain_channel_impulse_response(ltf_x, ltf_y, taplength);
+  stem(abs(h))
+  pause
+end
