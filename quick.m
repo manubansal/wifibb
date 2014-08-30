@@ -5,25 +5,29 @@ function quick(t)
 end
 
 function quick_cplentesting(t)
-  snrs = 25:3:60;
-  cplens=[16,32,64];
-  ch = 't1000';
+  %cnrs = 25:3:60;
+  %cnrs = 55;
+  cnrs = 100;
+  %cplens=[16,32,64];
+  cplens=[16];
+  %%%%ch = 't1000';
   %ch = 't100';
   %ch = 't50';
   %ch = 'f10';
   %ch = 'f100';
   %ch = 'f50';
-  %ch = 'f20';
+  ch = 'f20';
   nbytes = 1000;
   %nmsgs = 500;
-  nmsgs = 200;
+  %nmsgs = 200;
   %nmsgs = 50;
+  nmsgs = 10;
   %parfor cplen_idx = 1:length(cplens)
   %for cplen_idx = 1:length(cplens)
   for cplen_idx = t:t
     cplen = cplens(cplen_idx);
     lb = sprintf('cp%d%s', cplen, ch)
-    for snr = snrs; test_wifi_chain(lb,snr, nbytes, 54, nmsgs, ch, [cplen,cplen,cplen,cplen]); end
+    for cnr = cnrs; test_wifi_chain(lb,cnr, nbytes, 54, nmsgs, ch, [cplen,cplen,cplen,cplen]); end
   end
 end
 
