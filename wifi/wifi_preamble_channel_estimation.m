@@ -107,5 +107,7 @@ function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf
   %taplength = 40;
   h = time_domain_channel_impulse_response(ltf_x, ltf_y, taplength);
   stem(abs(h))
+
+%   h = time_domain_channel_impulse_response_cvx(ltf_x, ltf_y, taplength,2 , 0.1);
   pause
 end

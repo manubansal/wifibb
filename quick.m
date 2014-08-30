@@ -21,7 +21,7 @@ function quick_cplentesting(t)
   %nmsgs = 500;
   %nmsgs = 200;
   %nmsgs = 50;
-  nmsgs = 10;
+  nmsgs = 1;
   %parfor cplen_idx = 1:length(cplens)
   %for cplen_idx = 1:length(cplens)
   for cplen_idx = t:t
