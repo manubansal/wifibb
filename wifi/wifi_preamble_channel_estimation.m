@@ -108,6 +108,11 @@ function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf
   h = time_domain_channel_impulse_response(ltf_x, ltf_y, taplength);
   stem(abs(h))
 
-%   h = time_domain_channel_impulse_response_cvx(ltf_x, ltf_y, taplength,2 , 0.1);
+%   technique = 'joint optimization';
+%   technique_params.num_paths = 2;
+%   technique_params.thresh_factor = 0.1;
+%   technique = 'l1 minimization';
+%   technique_params.error_norm_bound = 50;
+%   h = time_domain_channel_impulse_response_cvx(ltf_x, ltf_y, taplength, technique, technique_params);
   pause
 end
