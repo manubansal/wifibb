@@ -324,7 +324,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
 
   %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
   [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  data_constellation_avgsnr_dB_overestimate = avgsnr_dB
+  avgsnr_dB_from_data_constellation_evm = avgsnr_dB
+
 
   % plot the constellation for data part
   if (~opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH || filter_match)
@@ -480,12 +481,13 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
 
   power_ratio_SNR_dB = (stats.snr_db(end))
   ltf_avgsnr_dB = ltf_avgsnr_dB
-  data_constellation_avgsnr_dB_overestimate = data_constellation_avgsnr_dB_overestimate
+  avgsnr_dB_from_data_constellation_evm = avgsnr_dB_from_data_constellation_evm
 
   %%***************************************
   %% update statistics
   %%***************************************
   stats = updateStats(data, opt, stats, uu_ltf1, uu_ltf2, ch);
+  stats.avgsnr_dB_from_evm(end+1) = avgsnr_dB_from_data_constellation_evm;
 
   %display('Press any key to continue...')
   %pause

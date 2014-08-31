@@ -49,18 +49,33 @@ function [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(poi
   points_rep = repmat(points, 1, nstars);
   map_rep = repmat(map, npoints, 1);
 
-  diff = points_rep - map_rep;
-  diff_power = abs(diff).^2;
-  [noise_power_vector, colidx] = min(diff_power, [], 2);
+
+  %find the error vector energy relative to closest constellation point
+  diff = points_rep - map_rep; 	
+  diff_power = abs(diff).^2;	
+  [noise_power_vector, colidx] = min(diff_power, [], 2);	
   rowidx = 1:size(diff_power,1);
   rowidx = rowidx.';
   ind = sub2ind(size(diff_power),rowidx,colidx);
   nearest_star = map_rep(ind);
-  nearest_map_power = abs(nearest_star).^2;
-  snr_vector = nearest_map_power./noise_power_vector;
-  snr_vector_dB = 10 * log10(snr_vector);
-  %[diff_power noise_power_vector nearest_star nearest_map_power snr_vector snr_vector_dB]
+  nearest_map_power = abs(nearest_star).^2;	%e(k) - error vector energy
 
-  avgsnr = mean(snr_vector);
-  avgsnr_dB = 10 * log10(avgsnr);
+  %normalize the error vector energy - v0
+  %snr_vector = nearest_map_power./noise_power_vector;
+  %snr_vector_dB = 10 * log10(snr_vector);
+  %%[diff_power noise_power_vector nearest_star nearest_map_power snr_vector snr_vector_dB]
+  %avgsnr = mean(snr_vector);
+  %avgsnr_dB = 10 * log10(avgsnr);
+
+  %normalize the error vector energy - v1
+  %This version is implemented according to http://www.mathworks.com/help/comm/ref/evmmeasurement.html,
+  %with EVM Normalization Method chosen as Reference Signal.
+  snr_vector = nearest_map_power./noise_power_vector;	%questionable
+  snr_vector_dB = 10 * log10(snr_vector);		%questionable
+  mean_reference_symbol_energy = mean(nearest_map_power)
+  mean_error_vector_energy = mean(noise_power_vector)
+  evm_rms = sqrt(mean_error_vector_energy/mean_reference_symbol_energy)
+  snr_from_evm_rms_dB = -20*log10(evm_rms)
+  avgsnr = 1/(evm_rms^2);
+  avgsnr_dB = snr_from_evm_rms_dB
 end
