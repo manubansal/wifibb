@@ -105,8 +105,8 @@ function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf
   taplength = 64;
   %taplength = 52;
   %taplength = 40;
+
   h = time_domain_channel_impulse_response(ltf_x, ltf_y, taplength);
-  stem(abs(h))
 
 %   technique = 'joint optimization';
 %   technique_params.num_paths = 2;
@@ -114,5 +114,10 @@ function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf
 %   technique = 'l1 minimization';
 %   technique_params.error_norm_bound = 50;
 %   h = time_domain_channel_impulse_response_cvx(ltf_x, ltf_y, taplength, technique, technique_params);
-  pause
+
+  %stem(abs(h))
+  %xlabel('Sample index','FontSize',20)
+  %ylabel('Relative magnitude','FontSize',20)
+
+  %pause
 end
