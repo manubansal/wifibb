@@ -11,12 +11,11 @@ function [sim_params] = default_sim_parameters()
     sim_params.zero_postpad_dur_us = 5;
 
     sim_params.rate_sig = 6;
+    sim_params.sig_syms = 1;
     
     sim_params.service_bits = 16;
     sim_params.tail_bits = 6;
 
     sim_params.scrambler_init = [1 0 1 1 1 0 1];
-    
-    
 end
 

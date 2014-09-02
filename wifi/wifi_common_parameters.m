@@ -66,4 +66,9 @@ function [opt] = wifi_common_parameters(opt)
   opt.ltf_sync_freq_domain = [repmat(ltf_freq_left, 1, 8), 0, repmat(ltf_freq_right, 1, 8)]';
   opt.ltf_sync_freq_domain = [ zeros(48,1); opt.ltf_sync_freq_domain; zeros(47,1)];
 
+  %% WIFI specifics
+  opt.wifi_nbpsc = [1, 1, 2, 2, 4, 4, 6, 6];
+  opt.wifi_rt120 = [60, 90, 60, 90, 60, 90, 80, 90];
+  
+
 end

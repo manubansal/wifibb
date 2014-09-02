@@ -7,8 +7,8 @@ function [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] =
     ncbps = 0;
     nbpsc = 0;
   else
-    nbpsc_v = [1, 1, 2, 2, 4, 4, 6, 6];
-    rt120_v = [60, 90, 60, 90, 60, 90, 80, 90];
+    nbpsc_v = common_params.wifi_nbpsc;
+    rt120_v = common_params.wifi_rt120;
     ncbps_v = nbpsc_v*common_params.ndatasubc;
     ndbps_v = ncbps_v.*rt120_v/120;
     
