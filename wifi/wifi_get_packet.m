@@ -61,7 +61,7 @@ function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
   %  pause
   %  return
   %end
-  if (length(data.samples) < data.pkt_start_point + 480)
+  if (length(data.samples) < data.pkt_start_point + stf_len + ltf_len + sig_len + sym_len_s)
     display('WARNING: sample stream does not contain enough samples for data part to have at least one ofdm symbol');
   end
 
@@ -92,7 +92,7 @@ function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
   sig_power = util_power(sig_samples);
   %%%%data_power = util_power(data_samples);			%estimate from the whole data part
   %%%%data_power = util_power(data_samples(1:80));		%estimate only from the first data symbol
-  data_power = util_power(data_samples(1:min(length(data_samples),80)));%estimate only from the first data symbol
+  data_power = util_power(data_samples(1:min(length(data_samples),sym_len_s)));%estimate only from the first data symbol
   pkt_power = util_power(pkt_samples);
 
   snr_lin = stf_power/idle_noise_power;

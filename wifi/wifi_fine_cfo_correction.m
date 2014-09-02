@@ -6,7 +6,7 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
   sig_len = opt.sig_len;
   ltf_shift_len = opt.ltf_shift_len;
 
-  copt = wifi_common_parameters({},cplen);
+  copt = wifi_common_parameters({});
   cp_len_ltf = copt.cp_len_s_ltf;
   cp_skip_ltf  = copt.cp_skip_ltf;
 
@@ -67,7 +67,7 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
     display('ltfs in time domain after all cfo correction');
     if (opt.printVars_chEsts)
 	  display('the two ltfs: ')
-	  [ [1:64]' fix(opt.ti_factor_after_cfo * [ ltf1_t.' ltf2_t.'])]
+	  [ [1:fft_size]' fix(opt.ti_factor_after_cfo * [ ltf1_t.' ltf2_t.'])]
 	  %pause
     end
     %%%%%%%%%%%%%%%%%%%%%%%
@@ -76,7 +76,7 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
     plcp_samples = sig_samples;
     display('plcp signal field in time domain after all cfo correction');
     if (opt.printVars_cfoCorrectedPlcp)
-	  [ [1:80]' fix(opt.ti_factor_after_cfo * plcp_samples.')]
+	  [ [1:length(plcp_samples)]' fix(opt.ti_factor_after_cfo * plcp_samples.')]
 	  if (opt.PAUSE_AFTER_EVERY_PACKET)
 	    pause
 	  end

@@ -4,21 +4,25 @@ function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
   %df = df
 
   tx_params = wifi_tx_parameters();
+  sim_params = default_sim_parameters();
+  common_params = wifi_common_parameters({});
 
   if nargin < 1
-    tag = 'mytag';
+    tag = sim_params.tag;
   end
 
   if nargin < 2
-    snr = Inf;
+%     snr = Inf;
+    snr = sim_params.snr;
   end
 
   if nargin < 3
-    msglen = 200;	%bytes
+%     msglen = 200;	%bytes
+    msglen = sim_params.msglen; % bytes
   end
 
   if nargin < 4
-    rate = 54;
+    rate = sim_params.rate;
     %rate = 36;
     %rate = 24;
     %rate = 6;
@@ -30,15 +34,16 @@ function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
   end
 
   if nargin < 5
-    nmsgs = 1;
+    nmsgs = sim_params.nmsgs;
   end
 
   if nargin < 6
-    ch = 'passthrough';
+    ch = sim_params.ch;
   end
 
   if nargin < 7
-    cplen = [16, 16, 16, 16];
+%     cplen = [16, 16, 16, 16];
+    cplen = common_params.cplen;
   end
 
 
@@ -49,7 +54,7 @@ end
 function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
   %scale = sqrt(2);
   %scale = 2;
-  scale = 4;
+  scale = tx_params.scale;
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% pick the message(s)

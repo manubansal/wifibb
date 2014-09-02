@@ -151,7 +151,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
     opt.dumpVars_dataParsed = false;
   end
 
-  opt = wifi_common_parameters(opt, cplen);
+  opt = wifi_common_parameters(opt);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % processing/analysis parameters

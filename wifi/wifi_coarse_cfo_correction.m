@@ -24,11 +24,11 @@ function [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correct
     freq_off_khz = (angle_corr/(2*pi*stf_shift_len*sample_duration_sec))/1000;
 
     %for detecting multiples of 2*pi in case the offset is really high
-    stf_period = 16;
-    stf_9th_period = stf_samples(8*stf_period+1:9*stf_period);
-    stf_10th_period = stf_samples(9*stf_period+1:end);
-    angle_corr_short = angle(sum(conj(stf_9th_period) .* stf_10th_period));
-    angle_corr_pred_from_short = angle_corr_short * 5;
+    stf_period = opt.stf_period;
+    stf_penultimate_period = stf_samples((opt.num_stf_periods - 2)*stf_period+1:(opt.num_stf_periods - 1)*stf_period);
+    stf_last_period = stf_samples((opt.num_stf_periods - 1)*stf_period+1:end);
+    angle_corr_short = angle(sum(conj(stf_penultimate_period) .* stf_last_period));
+    angle_corr_pred_from_short = angle_corr_short * (opt.num_stf_periods/2);
     %freq_off_khz = (angle_corr/(pi*stf_len*sample_duration_sec))/1000
     freq_off_khz_short = (angle_corr_short/(2*pi*stf_period*sample_duration_sec))/1000;
 
@@ -66,8 +66,8 @@ function [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correct
     %%%%%%%%%%%%%%%%%%%%%%%
     ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
 
-    ltf1_t = ltf_samples(33:96);
-    ltf2_t = ltf_samples(97:160);
+%     ltf1_t = ltf_samples(33:96);
+%     ltf2_t = ltf_samples(97:160);
 
     ltf1_t = ltf_samples(cp_len_ltf + cp_skip_ltf + 1 : cp_len_ltf + cp_skip_ltf + fft_size);
     ltf2_t = ltf_samples(cp_len_ltf + cp_skip_ltf + fft_size + 1 : cp_len_ltf + cp_skip_ltf + 2 * fft_size);
@@ -75,7 +75,7 @@ function [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correct
     display('ltfs in time domain before any cfo');
     if (opt.printVars_chEsts)
 	  display('the two ltfs: ')
-	  [ [1:64]' fix(opt.ti_factor * [ ltf1_t.' ltf2_t.'])]
+	  [ [1:fft_size]' fix(opt.ti_factor * [ ltf1_t.' ltf2_t.'])]
 	  %pause
     end
     %%%%%%%%%%%%%%%%%%%%%%%

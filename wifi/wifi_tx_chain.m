@@ -2,6 +2,7 @@
 function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr, cplen)
 
   tx_params = wifi_tx_parameters();
+  sim_params = default_sim_parameters();
 
   %%%%%%%%%%%%%%
   %% add the crc 
@@ -15,10 +16,15 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% create the signal field mapped symbol
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  rate_sig = 6;
+  rate_sig = sim_params.rate_sig;
   tx_sig_field = wifi_pack_signal(rate, base_msg_len_bytes);
   %tx_sig_field = wifi_pack_signal(rate, orig_base_msg_len_bytes);
   [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate_sig);
+  
+  npad = ceil(length(tx_sig_field)/ndbps) * ndbps - length(tx_sig_field);
+  pad = zeros(1, npad);
+  tx_sig_field = [tx_sig_field pad];
+
   %n_ofdm_syms_sig = 1;
   %tx_sig_field = tx_sig_field
   %pause
@@ -32,8 +38,8 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% prepare the message with service, tail and pad bits
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  service = zeros(16,1);
-  tail = zeros(6,1);
+  service = zeros(sim_params.service_bits,1);
+  tail = zeros(sim_params.tail_bits,1);
   msg = [service; msg; tail];
 
   npad = ceil(length(msg)/ndbps) * ndbps - length(msg);
@@ -53,7 +59,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% scramble the message
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  src_initstate = [1 0 1 1 1 0 1];
+  src_initstate = sim_params.scrambler_init;
   %--------------------------------------------------------------------------------------
   [msg_scr scr_seq] = wifi_scramble(msg, src_initstate);
   %--------------------------------------------------------------------------------------
@@ -61,7 +67,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% zero-out tail portion after scrambling
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  msg_scr(16 + base_msg_len_bits + 1:16 + base_msg_len_bits + 6) = 0;
+  msg_scr(sim_params.service_bits + base_msg_len_bits + 1:sim_params.service_bits + base_msg_len_bits + sim_params.tail_bits) = 0;
 
 
   %--------------------------------------------------------------------------------------

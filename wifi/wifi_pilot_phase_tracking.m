@@ -6,7 +6,7 @@ function [stats data ofdm_syms_f rx_pilot_syms uu_pilot_syms] = wifi_pilot_phase
     [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
     tx_pilot_syms = data.sig_and_data_tx_pilot_syms(:,1:nsyms);
     %size(uu_pilot_syms)
-    uu_pilot_syms_avg = sum(uu_pilot_syms)/4;
+    uu_pilot_syms_avg = sum(uu_pilot_syms)/opt.npsubc;
     uu_pilot_syms_avg_ph = angle(uu_pilot_syms_avg);
     phase_correction = exp(-i*uu_pilot_syms_avg_ph);
     %size(ofdm_syms_f)
