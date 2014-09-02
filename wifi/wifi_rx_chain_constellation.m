@@ -48,7 +48,7 @@ wifi_rx_chain_constellation(pkt_samples, rate, payload_len, data, opt, stats, co
 
   %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
   [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  data_constellation_avgsnr_dB_overestimate = avgsnr_dB
+  avgsnr_dB_from_data_constellation_evm = avgsnr_dB
 
   % plot the constellation for data part
   if (~opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH || filter_match)
@@ -195,12 +195,13 @@ wifi_rx_chain_constellation(pkt_samples, rate, payload_len, data, opt, stats, co
     ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
   display('------------------------------------------------------------');
 
-  data_constellation_avgsnr_dB_overestimate = data_constellation_avgsnr_dB_overestimate
+  avgsnr_dB_from_data_constellation_evm = avgsnr_dB_from_data_constellation_evm
 
   %%***************************************
   %% update statistics
   %%***************************************
   stats = updateStats(data, opt, stats);
+  stats.avgsnr_dB_from_evm(end+1) = avgsnr_dB_from_data_constellation_evm;
 
   %display('Press any key to continue...')
   %pause
