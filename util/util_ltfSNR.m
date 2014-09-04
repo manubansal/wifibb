@@ -8,10 +8,15 @@ function [avgsnr avgsnr_dB snr_vector snr_vector_dB avgsnr_cross_dB] = util_ltfS
   ideal_normalized_ltfs = ones(52 * 2,1);	%since ideal ltfs are all magnitude 1 symbols
   noise_vector = normalized_ltfs - ideal_normalized_ltfs;
   noise_power_vector = abs(noise_vector).^2;
+
   snr_vector = 1./noise_power_vector;		%since ideal signal vector has power = 1
   snr_vector_dB = 10 * log10(snr_vector);
   avgsnr = mean(snr_vector);
   avgsnr_dB = 10 * log10(avgsnr);
 
   avgsnr_cross_dB = 0
+  %ltf_snr_vector_dB = snr_vector_dB
+
+  %avg_noise_power = mean(noise_power_vector);
+  %ltf_snr_2 = 10*log10(1/avg_noise_power)
 end

@@ -349,7 +349,8 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
 
   stats.snr_lin = [];
   stats.snr_db = [];
-  stats.avgsnr_dB_from_evm = [];
+  stats.avgsnr_dB_from_data_evm = [];
+  stats.avgsnr_dB_from_plcp_evm = [];
 
   stats.coarse_cfo_angle_corr = [];
   stats.coarse_cfo_freq_off_khz = [];

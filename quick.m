@@ -16,12 +16,15 @@ function quick_cplentesting(t)
   %ch = 'f10';
   %ch = 'f100';
   %ch = 'f50';
-  ch = 'f20';
+  %%%%ch = 'f20';
+  ch = 'passthrough';
   nbytes = 1000;
   %nmsgs = 500;
   %nmsgs = 200;
   %nmsgs = 50;
-  nmsgs = 1;
+  %nmsgs = 10;
+  nmsgs = 3;
+  %nmsgs = 1;
   %parfor cplen_idx = 1:length(cplens)
   %for cplen_idx = 1:length(cplens)
   for cplen_idx = t:t
