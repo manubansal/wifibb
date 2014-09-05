@@ -47,4 +47,8 @@ function [opt] = wifi_common_parameters(opt, cplen)
   %opt.pkt_start_pnt_shift_back_bias_s = 8;		%shift-back the detected pkt start point by 8 samples
   opt.pkt_start_pnt_shift_back_bias_s = opt.cp_len_s/2;	%shift-back the detected pkt start point
 
+  opt.nsubc = 64;
+  opt.psubc_idx = (opt.nsubc/2)+[(1+[-21 -7 7 21])];					%regular order (dc in middle)
+  opt.dsubc_idx = (opt.nsubc/2)+[(1+[-26:-22 -20:-8 -6:-1]) (1+[1:6 8:20 22:26])];	%regular order (dc in middle)
+
 end
