@@ -46,7 +46,7 @@ function quick_cplentesting_pxb()
   %f='~/tmp/cplentraces/floats_short'
   %f='~/tmp/cplentraces/floats_short_5_two_tap_35dB_tx_snr_cplen16'
   %f='~/tmp/cplentraces/floats_short7'
-  f='~/tmp/cplentraces_pxb_usrp_20MHz/floats_short_7_two_tap_600ns_35dB_tx_snr_cplen32_wifibbsnr50'
+  f='~/workspace/wifibb-traces/cplentraces_pxb_usrp_20MHz/floats_short_7_two_tap_600ns_35dB_tx_snr_cplen32_wifibbsnr50'
   %f='~/tmp/cplentraces/floats_short8'
   %f='~/tmp/cplentraces/floats_short_8_two_tap_600ns_35dB_tx_snr_cplen16_wifibbsnr50'
 
