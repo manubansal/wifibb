@@ -5,8 +5,8 @@ function hhat = time_domain_channel_impulse_response(xl,yl,taplength)
   %form the toeplitz matrix for convolution with the original signal; throw out
   %taplength part from the beginning to ensure we do not suffer from ISI in our
   %channel impulse response estimation
-  x=xl(taplength:end)
-  y=yl(taplength:end)
+  x=xl(taplength:end);
+  y=yl(taplength:end);
   lenx = length(x)
   leny = length(y)
   if lenx < taplength

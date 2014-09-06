@@ -4,8 +4,8 @@ function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf
   ltf_x = ifft(ifftshift(ltf_sync_freq_domain));
   ltf_x = [ltf_x(end-2*cplen+1:end) ltf_x ltf_x];
   ltf_y = ltf_samples;
-  taplength = 64;
-  %taplength = 52;
+  %taplength = 64;
+  taplength = 52;
   %taplength = 40;
 
   h = time_domain_channel_impulse_response(ltf_x, ltf_y, taplength);
@@ -17,9 +17,9 @@ function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf
 %   technique_params.error_norm_bound = 50;
 %   h = time_domain_channel_impulse_response_cvx(ltf_x, ltf_y, taplength, technique, technique_params);
 
-  %stem(abs(h))
+  stem(abs(h))
   %xlabel('Sample index','FontSize',20)
   %ylabel('Relative magnitude','FontSize',20)
 
-  %pause
+  pause
 end

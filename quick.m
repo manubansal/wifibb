@@ -1,30 +1,36 @@
 function quick(t)
   %quick_spectesting()
   %quick_per_vs_msglen()
-  quick_cplentesting(t)
+  %quick_cplentesting(t)
+  quick_cplentesting_pxb()
 end
 
 function quick_cplentesting(t)
   %cnrs = 25:3:60;
-  cnrs = 55;
+  %cnrs = 55;
+  %cnrs = Inf;
+  cnrs = 50;
   %cnrs = 100;
   %cplens=[16,32,64];
+
   cplens=[16];
+  %cplens=[32];
+
   %%%%ch = 't1000';
   %ch = 't100';
   %ch = 't50';
   %ch = 'f10';
   %ch = 'f100';
   %ch = 'f50';
-  %%%%ch = 'f20';
+  %ch = 'f20';
   ch = 'passthrough';
   nbytes = 1000;
   %nmsgs = 500;
   %nmsgs = 200;
   %nmsgs = 50;
   %nmsgs = 10;
-  nmsgs = 3;
-  %nmsgs = 1;
+  %nmsgs = 3;
+  nmsgs = 1;
   %parfor cplen_idx = 1:length(cplens)
   %for cplen_idx = 1:length(cplens)
   for cplen_idx = t:t
@@ -32,6 +38,44 @@ function quick_cplentesting(t)
     lb = sprintf('cp%d%s', cplen, ch)
     for cnr = cnrs; test_wifi_chain(lb,cnr, nbytes, 54, nmsgs, ch, [cplen,cplen,cplen,cplen]); end
   end
+end
+
+function quick_cplentesting_pxb()
+  %f='~/tmp/floats_short'
+  %f='~/tmp/cplentraces/floats_short'
+  %f='~/tmp/cplentraces/floats_short'
+  %f='~/tmp/cplentraces/floats_short_5_two_tap_35dB_tx_snr_cplen16'
+  %f='~/tmp/cplentraces/floats_short7'
+  f='~/tmp/cplentraces_pxb_usrp_20MHz/floats_short_7_two_tap_600ns_35dB_tx_snr_cplen32_wifibbsnr50'
+  %f='~/tmp/cplentraces/floats_short8'
+  %f='~/tmp/cplentraces/floats_short_8_two_tap_600ns_35dB_tx_snr_cplen16_wifibbsnr50'
+
+  %f='~/tmp/cplentraces/floats_short_5_cplen32'
+
+  %[samples, n_samples]=load_samples(f, 'cplx');
+  [samples, n_samples]=load_samples(f, 'float32');
+  n_samples = 20000;
+  %n_samples = 100000;
+  samples = samples(1:n_samples); 
+  cplen = [16 16 16 16];
+  %cplen = [32 32 32 32];
+  rx_pkts=rx_sample_stream(samples, cplen);
+  n_pkts = length(rx_pkts)
+  %d8s = [];
+  %for ii = 1 : n_pkts - 1
+  %%for ii = 1 : 5
+  %  rx_data_bytes = rx_pkts{ii}{5};
+  %  [parsed_data frame_type ber crcValid] = wifi_parse_payload(rx_data_bytes);
+  %  if prod(size(parsed_data)) > 0
+  %    d8 = parsed_data(9:16,:)';
+  %    d8 = d8(:);
+  %    d8 = d8';
+  %    d8s(end+1, :) = d8;
+  %  else
+  %    d8 = [];
+  %  end
+  %end
+  %char(d8s)
 end
 
 function quick_spectesting()

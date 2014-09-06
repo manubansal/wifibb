@@ -87,13 +87,13 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
 
 
     %------------ begin UI options ---------------------
-    opt.GENERATE_ONE_TIME_PLOTS_PRE = false;%
+    opt.GENERATE_ONE_TIME_PLOTS_PRE = true;%
     opt.GENERATE_ONE_TIME_PLOTS_POST = false;
 
     opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH = false;
-    opt.GENERATE_PER_PACKET_PLOTS = false;%
-    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = false;%
-    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = false;%
+    opt.GENERATE_PER_PACKET_PLOTS = true;%
+    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = true;%
+    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = true;%
 
     opt.PAUSE_AFTER_EVERY_PACKET = false;
     %------------ end UI options ---------------------
@@ -161,8 +161,9 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
   %opt.corr_threshold = 0.75;	%correlation threshold value to use for symbol timing acquisition/packet detection
   opt.corr_threshold = 0.7071;	%correlation threshold value to use for symbol timing acquisition/packet detection
   				%this particular value is sqrt(0.5), which means we can alternatively use 0.5 
-				%for squared correlation magnitude
+				%for squared correlation magnitude (easier implementation on the DSP)
 
+  %opt.sq_corr_threshold = 0.81;
   opt.sq_corr_threshold = 0.5;
 
   %corr_threshold = 0.6;		%correlation threshold value to use for symbol timing acquisition/packet detection
