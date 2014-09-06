@@ -87,13 +87,13 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
 
 
     %------------ begin UI options ---------------------
-    opt.GENERATE_ONE_TIME_PLOTS_PRE = true;%
+    opt.GENERATE_ONE_TIME_PLOTS_PRE = false;%
     opt.GENERATE_ONE_TIME_PLOTS_POST = false;
 
     opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH = false;
-    opt.GENERATE_PER_PACKET_PLOTS = true;%
-    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = true;%
-    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = true;%
+    opt.GENERATE_PER_PACKET_PLOTS = false;%
+    opt.GENERATE_PER_PACKET_PLOTS_CONSTELLATION = false;%
+    opt.GENERATE_PER_PACKET_PLOTS_CHANNEL = false;%
 
     opt.PAUSE_AFTER_EVERY_PACKET = false;
     %------------ end UI options ---------------------

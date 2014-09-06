@@ -46,7 +46,8 @@ function hhat = time_domain_channel_impulse_response(xl,yl,taplength)
   lambda = 0.001;
   Xi = inv(Xr.'*Xr + lambda*eye(size(Xr,2)))*Xr.';
   hhat=Xi*y;
-  stem(abs(hhat));
+
+  %stem(abs(hhat));
     
   %save_inversion_matrix(Xi);
 end
