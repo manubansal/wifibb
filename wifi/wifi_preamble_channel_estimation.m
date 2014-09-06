@@ -93,6 +93,16 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   %[ch ch_abs_db]
 
 
-  h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen);
+  %VERSION 1
+  [h, ltf_x] = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen);
+
+
+  td_data_samples = [0 0].';
+  confStr = 'jj';
+  tx_params.dumpVars_stfLtf = false;
+  %--------------------------------------------------------------------------
+  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params, cplen);
+  %--------------------------------------------------------------------------
+  
 end
 
