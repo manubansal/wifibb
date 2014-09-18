@@ -115,7 +115,8 @@ for random_num=1:1:3
         
         %load the recorded files
         
-        for file_num=1:1:30
+        %for file_num=1:1:30
+        for file_num=1:1:5
             
             if file_num>=1 && file_num<=9
                 
@@ -537,14 +538,17 @@ for random_num=1:1:3
                 end
                 
                 
-                [Max, Pos]=peak(log(PMU_817_ave{n_n}/MA2_817{n_n}), 2, -0.1); % calibrated with the maximum of each round
-                size(Max);
-                size(Pos);
+		%%%%%%%%%%%% commentented by MB %%%%%%%%%
+                %[Max, Pos]=peak(log(PMU_817_ave{n_n}/MA2_817{n_n}), 2, -0.1); % calibrated with the maximum of each round
+                %size(Max);
+                %size(Pos);
+		%%%%%%%%%%%% commentented by MB %%%%%%%%%
                 
                 [Max_new1, Pos_new1]=findpeaks(log(PMU_817_ave{n_n}/MA2_817{n_n}));
                 Pos_new1=(Pos_new1 -180)/2;
                 
-                if (off_index==2 && file_num==28 && random_num==1)
+                %if (off_index==2 && file_num==28 && random_num==1)
+                if (off_index==2 && file_num==5 && random_num==1)
                     
                     PMU_trans_7=(PMU_817_ave{n_n}/MA2_817{n_n}).';
                     polar(theta,PMU_trans_7);
@@ -900,15 +904,18 @@ for random_num=1:1:3
                 end
                 
                 
-                [Max, Pos]=peak(log(PMU_817_ave{n_n}/MA2_817{n_n}), 2, -0.1); % calibrated with the maximum of each round
-                size(Max);
-                size(Pos);
+		%%%%%%%%%%%% commentented by MB %%%%%%%%%
+                %[Max, Pos]=peak(log(PMU_817_ave{n_n}/MA2_817{n_n}), 2, -0.1); % calibrated with the maximum of each round
+                %size(Max);
+                %size(Pos);
+		%%%%%%%%%%%% commentented by MB %%%%%%%%%
                 
                 [Max_new2, Pos_new2]=findpeaks(log(PMU_817_ave{n_n}/MA2_817{n_n}));
                 Pos_new2=(Pos_new2 -180)/2;
                 
                 
-                if (off_index==2 && file_num==28 && random_num==1)
+                %if (off_index==2 && file_num==28 && random_num==1)
+                if (off_index==2 && file_num==5 && random_num==1)
                     
                     PMU_trans_7=(PMU_817_ave{n_n}/MA2_817{n_n}).';
                     polar(theta,PMU_trans_7);
