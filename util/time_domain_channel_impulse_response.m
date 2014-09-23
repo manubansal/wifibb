@@ -7,8 +7,8 @@ function hhat = time_domain_channel_impulse_response(xl,yl,taplength)
   %channel impulse response estimation
   x=xl(taplength:end);
   y=yl(taplength:end);
-  lenx = length(x)
-  leny = length(y)
+  lenx = length(x);
+  leny = length(y);
   if lenx < taplength
     error('WARNING: too few samples for solving for channel impulse response')
   end

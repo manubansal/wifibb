@@ -205,8 +205,10 @@ function util_dumpData(id, confStr, data)
 
 
   elseif strcmp(id, 'ltfRxSamples')
+    %count_exp = 160;
+    count_exp = 192;
     fprintf(1, 'Dumping ltfRxSamples\n');
-    if (sum(size(data(:)) == [160,1]) ~= 2)
+    if (sum(size(data(:)) == [count_exp,1]) ~= 2)
       fprintf(1, 'Bad size, skipping\n');
       return;
     end
@@ -218,13 +220,15 @@ function util_dumpData(id, confStr, data)
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
     fclose(f);
-    if (count ~= 160 * 2)
+    if (count ~= count_exp * 2)
       error('something went wrong')
     end
 
   elseif strcmp(id, 'plcpBaseSamples')
+    count_expected = 80;
+    count_expected = 96;
     fprintf(1, 'Dumping plcpBaseSamples\n');
-    if (sum(size(data(:)) == [80,1]) ~= 2)
+    if (sum(size(data(:)) == [count_expected,1]) ~= 2)
       fprintf(1, 'Bad size, skipping\n');
       return;
     end
@@ -236,7 +240,7 @@ function util_dumpData(id, confStr, data)
     f = fopen(fn, 'a+');
     count = fwrite(f, data, 'int16', 'ieee-be');
     fclose(f);
-    if (count ~= 80 * 2)
+    if (count ~= count_expected * 2)
       error('something went wrong')
     end
   elseif strcmp(id, 'plcpCfoCorrected')
