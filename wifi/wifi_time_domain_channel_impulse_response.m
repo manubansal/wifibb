@@ -25,7 +25,7 @@ function [h, ltf_x] = wifi_time_domain_channel_impulse_response(ltf_sync_freq_do
 %   technique_params.error_norm_bound = 50;
 %   h = time_domain_channel_impulse_response_cvx(ltf_x, ltf_y, taplength, technique, technique_params);
 
-  stem(abs(h))
-  xlabel('Sample index','FontSize',20)
-  ylabel('Relative magnitude','FontSize',20)
+  %stem(abs(h))
+  %xlabel('Sample index','FontSize',20)
+  %ylabel('Relative magnitude','FontSize',20)
 end
