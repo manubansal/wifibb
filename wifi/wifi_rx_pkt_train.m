@@ -1,4 +1,4 @@
-function rx_pkts = wifi_rx_pkt_train(samples, confStr, cplen)
+function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(samples, confStr, cplen)
   rx_pkts = {}
 
   %scale = sqrt(2);
@@ -94,6 +94,7 @@ function rx_pkts = wifi_rx_pkt_train(samples, confStr, cplen)
   %display and summarize stats
   stats = summarizeStats(stats, data, opt);
   stats.opt = opt;
+  pkt_start_points = stats.pkt_start_points;
 end
 
 

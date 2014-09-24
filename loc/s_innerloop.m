@@ -1,4 +1,5 @@
-function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index)
+%function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index, signature_start_point))
+function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, signature_start_point)
   PMU_trans_7 = {};
 
   Node2_Radio1_RxData = INPDATA(1,:);
@@ -38,8 +39,9 @@ function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index)
   m=1; % how many packet
   AOA_NUM=50; % for each packet, how many samples will be used
   L=0; % shiftif nn
-  WIN_SIZE=800;
-  WIN_OFFSET=10 + 800* off_index; % mofify here to use different packet
+
+  %WIN_SIZE=800;
+  %WIN_OFFSET=10 + 800* off_index; % mofify here to use different packet
 
   %%%%%%%%%% MB %%%%%%%%%%%%%%%
   % MORE INIT STUFF
@@ -234,35 +236,37 @@ function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index)
   % some parameter array
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
   P(1,3)=AOA_NUM;
-  P(1,1)=1 + WIN_OFFSET;
-  P(1,2)=AOA_NUM + WIN_OFFSET;
+  %%jjP(1,1)=1 + WIN_OFFSET;
+  %%P(1,2)=AOA_NUM + WIN_OFFSET;
+  P(1,1)=signature_start_point;
+  P(1,2)=AOA_NUM + signature_start_point - 1;
 
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
   % more parameter initialization stuff
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
   % initiate from the second
-  for j=1:1:floor(m/(WIN_SIZE/200))
-      
-      P(j+1,3)= AOA_NUM; %number of samples in each packet
-      P(j+1,1)=(j)*WIN_SIZE+1 + WIN_OFFSET;
-      P(j+1,2)=(j)*WIN_SIZE +AOA_NUM +WIN_OFFSET;
-      
-      
-      CP{j} =zeros(P(j,3),8);  % 8 antenna
-      CP_8171{j}= zeros(P(j,3),7); % 8x1; ssp 7x1
-      CP_8172{j}= zeros(P(j,3),7);
-      
-      CP_8161{j}= zeros(P(j,3),6);
-      CP_8162{j}= zeros(P(j,3),6); % 8x1: ssp 6x1
-      CP_8163{j}= zeros(P(j,3),6);
-      
-      CP_8151{j}= zeros(P(j,3),5);
-      CP_8152{j}= zeros(P(j,3),5); % 8x1: ssp 5x1
-      CP_8153{j}= zeros(P(j,3),5);
-      CP_8154{j}= zeros(P(j,3),5);
-      
-      CP_s{j}= zeros(P(j,3),4);
-  end
+  %%for j=1:1:floor(m/(WIN_SIZE/200))
+  %%    
+  %%    P(j+1,3)= AOA_NUM; %number of samples in each packet
+  %%    P(j+1,1)=(j)*WIN_SIZE+1 + WIN_OFFSET;
+  %%    P(j+1,2)=(j)*WIN_SIZE +AOA_NUM +WIN_OFFSET;
+  %%    
+  %%    
+  %%    CP{j} =zeros(P(j,3),8);  % 8 antenna
+  %%    CP_8171{j}= zeros(P(j,3),7); % 8x1; ssp 7x1
+  %%    CP_8172{j}= zeros(P(j,3),7);
+  %%    
+  %%    CP_8161{j}= zeros(P(j,3),6);
+  %%    CP_8162{j}= zeros(P(j,3),6); % 8x1: ssp 6x1
+  %%    CP_8163{j}= zeros(P(j,3),6);
+  %%    
+  %%    CP_8151{j}= zeros(P(j,3),5);
+  %%    CP_8152{j}= zeros(P(j,3),5); % 8x1: ssp 5x1
+  %%    CP_8153{j}= zeros(P(j,3),5);
+  %%    CP_8154{j}= zeros(P(j,3),5);
+  %%    
+  %%    CP_s{j}= zeros(P(j,3),4);
+  %%end
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
   %for loop on j = 1:floor(m/(WIN_SIZE/200))
   %not sure what this is for
@@ -275,7 +279,7 @@ function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index)
   % n isn't being used directly, so it is
   % simply serving to iterate through packets.
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
-  for n = 0:WIN_SIZE:(m-1)*WIN_SIZE
+  %for n = 0:WIN_SIZE:(m-1)*WIN_SIZE
       
       %for n = 0:200:numSamples-1
       
@@ -477,7 +481,7 @@ function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index)
       %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
       
       
-  end
+  %end
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
   %end of n=0:WIN_SIZE:(m-1)*WIN_SIZE loop
   %so the iteration count of this loop is

@@ -1,4 +1,4 @@
-function [] = securearray()
+function [] = securearray(INPDATA, pkt_start_points)
 
 % This version generates AOA spectra for comparison
 
@@ -49,11 +49,12 @@ for random_num=1:1:1
     %for file_num=1:1:30
     for file_num=1:1:5
 
+      %load the recorded files
+      
+      if (nargin < 1)
       ev=['load traces/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_'  sprintf('%03d', file_num) '.mat'];
       eval(ev);
 
-      %load the recorded files
-      
       INPDATA=[...
 	  Node2_Radio1_RxData;...
 	  Node2_Radio2_RxData;...
@@ -64,14 +65,17 @@ for random_num=1:1:1
 	  Node1_Radio3_RxData;...
 	  Node1_Radio4_RxData;...
 	  ];
+      end
 
       %for off_index=1:1:2
 
 	    %off_index = off_index
-	    off_index = 1;
+	    %off_index = 1;
+
+	    start_point_1 = pkt_start_points(1) + 160 + 10;
 
 	    %%%% CLIENT FIRST TX %%%%
-	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, 0);
+	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, start_point_1);
 	    %if file_num == 5
 	      n_n = 1;
 	      %plot_result(theta, PMU_trans_7, n_n, 'b');
@@ -79,8 +83,10 @@ for random_num=1:1:1
 	      hold on
 	    %end
 
+	    start_point_2 = pkt_start_points(2) + 160 + 10;
+
 	    %%%% ATTACKER %%%%
-	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index);
+	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, start_point_2);
 	    %if file_num == 5
 	      n_n = 1;
 	      %plot_result(theta, PMU_trans_7, n_n);
@@ -89,7 +95,7 @@ for random_num=1:1:1
 	    %end
 
 
-	    off_index = 2;
+	    %off_index = 2;
 
 	    %[theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, 0);
 	    %%if file_num == 5
@@ -100,25 +106,27 @@ for random_num=1:1:1
 	    %%end
 
 	    %%%% CLIENT SECOND TX %%%%
-	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index);
-	    %if file_num == 5
-	      n_n = 1;
-	      %plot_result(theta, PMU_trans_7, n_n);
-	      polar(theta,PMU_trans_7{n_n}, 'g');
-	      hold on
-	    %end
+% 	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index);
+% 	    %if file_num == 5
+% 	      n_n = 1;
+% 	      %plot_result(theta, PMU_trans_7, n_n);
+% 	      polar(theta,PMU_trans_7{n_n}, 'g');
+% 	      hold on
+% 	    %end
 
 
 
-	    ev=['clear load/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_'  sprintf('%03d', file_num) '.mat'];
-	    eval(ev);
+	    end
             
 	    %SIMILARITY
             
         
       %end %end of off_index=1:2 for loop
       hold off
-      pause
+
+    if nargin < 1
+    ev=['clear load/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_'  sprintf('%03d', file_num) '.mat'];
+    eval(ev);
 
     end %end of file_num=1:30 for loop
     

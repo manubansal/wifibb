@@ -1,0 +1,40 @@
+I have attached the original TGn model doc.
+
+Also attached is chmodel_code.zip that has matlab codes that I created for localization research. Two files of importance are:
+
+>> tgn802p11nChannel: Models up to 4x4 MIMO channel model described in the TGn doc
+>> tgn802p11nChannel2: This script models two 802.11n channels, one is for the signal of interest and the other is for the source of interference.
+
+Hopefully the comments in the code are clear enough but please let me know if you need any clarifications.
+
+Also this script uses bell shaped doppler spectrum for modeling walking speed, you need to add a component to model the the moving vehicle. This is in lin#39 of tgn802p11nMPF.m.
+
+Example usage :
+
+%Applies the TGn 802.11n model to the input stream
+%d: distance between the tx-rx
+%ts: sampling interval
+%in:input vector to the channel
+%SNR: SNR at the output of the channel (dB)
+%seednum: seednumber to control the Gaussian noise
+%type: Valid input A-F represnting the ModelA-F of 802.11n, TGn model
+%Aoanew = mean Angle of Arrival of the first cluster, all the remaining AOA
+%will be adjusted with relative to the first AOA
+
+
+
+size(xup)
+
+ans =
+
+        2000           1
+
+>> y=tgn802p11nChannel(1,4,1,1/40e6,xup,10,1,30,'C');
+62  [tau,pdb,AoA,AS_Rx, AoD, AS_Tx,K] = tgn802p11nData(d,type);
+>> size(y)
+
+ans =
+
+        2000           4
+
+>>
