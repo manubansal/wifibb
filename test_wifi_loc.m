@@ -96,16 +96,20 @@ function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
   dclient = 5;
   AoAattacker = 100;
   dattacker = 10;
-  snrdB = 50;
+  snrdB = 35;
+  %snrdB = 50;
   %snrdB = 100;
 
-  x_i = td_pkt_samples_16bit;
-  x = x_i(1:2:end) + i * x_i(2:2:end);
+  x = td_pkt_samples_16bit;
 
-  %seed=2;
-  seed=rand();
-  yclient   = tgn802p11nChannel(1,8,dclient,1/20e6,x,snrdB,seed,AoAclient,'B');
-  yattacker = tgn802p11nChannel(1,8,dattacker,1/20e6,x,snrdB,seed,AoAattacker,'B');
+  %tgn_channel_type = 'A';	%single tap channel
+  %tgn_channel_type = 'B';	%indoor multipath channel
+  tgn_channel_type = 'C';
+
+  seed=2;
+  %seed=rand();
+  yclient   = tgn802p11nChannel(1,8,dclient,1/20e6,x,snrdB,seed,AoAclient,tgn_channel_type);
+  yattacker = tgn802p11nChannel(1,8,dattacker,1/20e6,x,snrdB,seed,AoAattacker,tgn_channel_type);
 
   yclient = yclient.';
   yattacker = yattacker.';
@@ -113,9 +117,7 @@ function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
 
   %y1 = y8(1,:);
   y1 = y8(2,:);
-  yi = real(y1);
-  yq = imag(y1);
-  y1 = reshape([yi; yq], [], 1);
+  y1 = y1.';
 
   %pause
   %msgs_hex, rate, snr, scale = wifi_rx_pkt_train(td_pkt_samples_16bit)
@@ -131,9 +133,7 @@ function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
   %% decode messages
   %%%%%%%%%%%%%%%%%%%%%%
   [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(y1, confStr, cplen);
-  pkt_start_points = pkt_start_points	%in interleaved I/Q indexing
-  pkt_start_points = ceil(pkt_start_points/2)	%in complex sample indexing
-  %pkt_start_points = [179 939];
+  pkt_start_points = pkt_start_points
 
   %%%%%%%%%%%%%%%%%%%%
   % localization stuff
