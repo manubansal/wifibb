@@ -1,4 +1,4 @@
-function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
+function [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index)
   PMU_trans_7 = {};
 
   Node2_Radio1_RxData = INPDATA(1,:);
@@ -30,16 +30,16 @@ function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
   D_M8=1;
 
 
-  %FIRST_INIT
+  %INIT
 
   OFF = [OFF12 OFF13 OFF14 OFF15 OFF16 OFF17 OFF18];
 
-  %FIRST_INIT
+  %INIT
   m=1; % how many packet
   AOA_NUM=50; % for each packet, how many samples will be used
-  L=0;
+  L=0; % shiftif nn
   WIN_SIZE=800;
-  WIN_OFFSET=10 + 800 * off_index;
+  WIN_OFFSET=10 + 800* off_index; % mofify here to use different packet
 
   %%%%%%%%%% MB %%%%%%%%%%%%%%%
   % MORE INIT STUFF
@@ -107,7 +107,7 @@ function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
   %ES_817_ave=cell(m,1);
   %EValue11=cell(m,1);
 
-  %FIRST_PREP_DATA
+  %PREP_DATA
   theta=(-pi/2-pi/360):pi/360:pi/2;
   n_n=0;
 
@@ -210,7 +210,7 @@ function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
   % prepare test data - end
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
 
-  %FIRST_II
+  %MORE_INIT
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
   % more init stuff
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
@@ -268,7 +268,7 @@ function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
   %not sure what this is for
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
 
-  %FIRST_FOR_LOOP
+  %FOR_LOOP
   %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
   % in the following loop, n seems to
   % be a scaled packet index. the variable
@@ -389,6 +389,9 @@ function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
       % MUSIC END
       %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
       
+      EVector2=EV_817_ave{n_n};
+      RXX2=Rave_817_ave{n_n};
+      EValue2 = V_817_ave{n_n};
       
       
       %%%%%%%%%%%%% MB %%%%%%%%%%%%%%%%%
@@ -428,7 +431,7 @@ function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
 	  MV2_817 =MA2_817{n_n};
       end
       
-      %EValue1=EN_817_ave{n_n} * (EN_817_ave{n_n})';
+      %EValue2=EN_817_ave{n_n} * (EN_817_ave{n_n})';
       EValue=EN_817_ave{n_n} * (EN_817_ave{n_n})';
       
       [Y_815_ave{n_n},INDEX_815_ave{n_n}] = sort (diag (V_815_ave{n_n}));
@@ -451,8 +454,8 @@ function [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF, off_index)
       %size(Pos);
       %%%%%%%%%%%% commentented by MB %%%%%%%%%
       
-      %[Max_new1, Pos_new1]=findpeaks(log(PMU_817_ave{n_n}/MA2_817{n_n}));
-      %Pos_new1=(Pos_new1 -180)/2;
+      [Max_new2, Pos_new2]=findpeaks(log(PMU_817_ave{n_n}/MA2_817{n_n}));
+      Pos_new2=(Pos_new2 -180)/2;
       [Max_new, Pos_new]=findpeaks(log(PMU_817_ave{n_n}/MA2_817{n_n}));
       Pos_new=(Pos_new -180)/2;
       

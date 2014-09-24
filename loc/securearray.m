@@ -41,12 +41,10 @@ for random_num=1:1:1
     cell_matrix1{random_num}=zeros(num_pos,num_group);
     cell_matrix2{random_num}=zeros(num_pos,num_group);
     
+    OFF = offsets(random_num);
     
     for off_index=1:1:2
-        
-        
-        
-	OFF = offsets(random_num);
+        off_index = off_index
 
         jie_gap= 20000;
         jie_distance='5cm';
@@ -70,22 +68,22 @@ for random_num=1:1:1
 	    	Node1_Radio4_RxData;...
 		];
 
-	    [theta, PMU_trans_7] = s_firstloop(INPDATA, OFF);
-	    %FIRST_INIT
-	    %FIRST_PREP_DATA
-	    %FIRST_II
-	    %FIRST_FOR_LOOP
-	    if file_num == 5
+	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, 0);
+
+	    %if file_num == 5
 	      n_n = 1;
 	      plot_result(theta, PMU_trans_7, n_n);
-	    end
+	      hold on
+	    %end
 
-            
-            %SECOND_INIT
-	    %SECOND_PREP_DATA
-	    %SECOND_II
-	    %SECOND_FOR_LOOP
-            
+	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index);
+	    %if file_num == 5
+	      n_n = 1;
+	      plot_result(theta, PMU_trans_7, n_n);
+	      hold off
+	    %end
+	    pause
+
 	    ev=['clear MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_'  sprintf('%03d', file_num) '.mat'];
 	    eval(ev);
             
@@ -102,7 +100,7 @@ for random_num=1:1:1
     cell_matrix2{random_num} = similarity_matrix2;
     
     
-    cell_matrix2{random_num}
+    %cell_matrix2{random_num}
     
     
     for sim_th=start_point:move_step:ending_point
