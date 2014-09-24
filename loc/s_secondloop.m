@@ -1,4 +1,10 @@
 %SECOND_INIT
+            m=1; % how many packet
+            AOA_NUM=50; % for each packet, how many samples will be used
+            L=0; % shiftif nn
+            WIN_SIZE=800;
+            WIN_OFFSET=10 + 800* off_index; % mofify here to use different packet
+
             %%%%%%%%%% MB %%%%%%%%%%%%%%%
             % MORE INIT STUFF
             %%%%%%%%%% MB %%%%%%%%%%%%%%%
