@@ -120,12 +120,12 @@ for random_num=1:1:3
             
             if file_num>=1 && file_num<=9
                 
-                ev=['load MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_00'  int2str(file_num) '.mat'];
+                ev=['load traces/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_00'  int2str(file_num) '.mat'];
                 eval(ev);
                 
             elseif file_num>=10
                 
-                ev=['load MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_0'  int2str(file_num) '.mat'];
+                ev=['load traces/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_0'  int2str(file_num) '.mat'];
                 eval(ev);
                 
             end
@@ -942,12 +942,12 @@ for random_num=1:1:3
             
             if file_num>=1 && file_num<=9
                 
-                ev=['clear MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_00'  int2str(file_num) '.mat'];
+                ev=['clear traces/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_00'  int2str(file_num) '.mat'];
                 eval(ev);
                 
             elseif file_num>=10
                 
-                ev=['clear MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_0'  int2str(file_num) '.mat'];
+                ev=['clear traces/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_0'  int2str(file_num) '.mat'];
                 eval(ev);
                 
             end
