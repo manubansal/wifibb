@@ -8,11 +8,13 @@ function [rate len modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(
   rate_idx = [6 7 2 3 4 5 0 1];
 
   %rate_chart = [48 54 12 18 24 36 6 9];
-  rate_chart = [6 9 12 18 24 36 48 54];
-  modu_chart = [1 1 2 2 4 4 6 6];
-  code_chart = [60 90 60 90 60 90 80 90];
-  ncbps_v = modu_chart*common_params.ndatasubc;
-  ndbps_chart = ncbps_v.*code_chart/120;
+  modu_chart = common_params.wifi_nbpsc;
+  code_chart = common_params.wifi_rt120;
+  ncbps_chart = modu_chart*common_params.ndatasubc;
+  ndbps_chart = ncbps_chart.*code_chart/120;
+    
+  rate_chart = ndbps_chart/(common_params.sample_duration_sec*common_params.sym_len_s*10^6);
+
     
 %   ndbps_chart = [24 36 48 72 96 144 192 216];
 

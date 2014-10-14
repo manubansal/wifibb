@@ -73,4 +73,9 @@ function [opt] = wifi_common_parameters(opt)
   opt.psubc_idx = (opt.nsubc/2)+[(1+[-21 -7 7 21])];					%regular order (dc in middle)
   opt.dsubc_idx = (opt.nsubc/2)+[(1+[-26:-22 -20:-8 -6:-1]) (1+[1:6 8:20 22:26])];	%regular order (dc in middle)
 
+  %% WIFI specifics
+  opt.wifi_nbpsc = [1, 1, 2, 2, 4, 4, 6, 6];
+  opt.wifi_rt120 = [60, 90, 60, 90, 60, 90, 80, 90];
+  
+
 end
