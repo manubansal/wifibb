@@ -161,8 +161,9 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
   %opt.corr_threshold = 0.75;	%correlation threshold value to use for symbol timing acquisition/packet detection
   opt.corr_threshold = 0.7071;	%correlation threshold value to use for symbol timing acquisition/packet detection
   				%this particular value is sqrt(0.5), which means we can alternatively use 0.5 
-				%for squared correlation magnitude
+				%for squared correlation magnitude (easier implementation on the DSP)
 
+  %opt.sq_corr_threshold = 0.81;
   opt.sq_corr_threshold = 0.5;
 
   %corr_threshold = 0.6;		%correlation threshold value to use for symbol timing acquisition/packet detection
@@ -349,7 +350,8 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
 
   stats.snr_lin = [];
   stats.snr_db = [];
-  stats.avgsnr_dB_from_evm = [];
+  stats.avgsnr_dB_from_data_evm = [];
+  stats.avgsnr_dB_from_plcp_evm = [];
 
   stats.coarse_cfo_angle_corr = [];
   stats.coarse_cfo_freq_off_khz = [];

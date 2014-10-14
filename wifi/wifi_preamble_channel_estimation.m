@@ -95,31 +95,16 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   %[ch ch_abs_db]
 
 
-%   h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen);
+  %VERSION 1
+  [h, ltf_x] = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen);
+
+
+  td_data_samples = [0 0].';
+  confStr = 'jj';
+  tx_params.dumpVars_stfLtf = false;
+  %--------------------------------------------------------------------------
+  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params, cplen);
+  %--------------------------------------------------------------------------
+  
 end
 
-function h = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen)
-  ltf_sync_freq_domain = ltf_sync_freq_domain.';
-  %ltf_x = ifft(ltf_sync_freq_domain);
-  ltf_x = ifft(ifftshift(ltf_sync_freq_domain));
-  ltf_x = [ltf_x(end-2*cplen+1:end) ltf_x ltf_x];
-  ltf_y = ltf_samples;
-  taplength = 64;
-  %taplength = 52;
-  %taplength = 40;
-
-  h = time_domain_channel_impulse_response(ltf_x, ltf_y, taplength);
-
-%   technique = 'joint optimization';
-%   technique_params.num_paths = 2;
-%   technique_params.thresh_factor = 0.1;
-%   technique = 'l1 minimization';
-%   technique_params.error_norm_bound = 50;
-%   h = time_domain_channel_impulse_response_cvx(ltf_x, ltf_y, taplength, technique, technique_params);
-
-  %stem(abs(h))
-  %xlabel('Sample index','FontSize',20)
-  %ylabel('Relative magnitude','FontSize',20)
-
-  %pause
-end

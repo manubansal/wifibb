@@ -3,6 +3,19 @@
 function [parsed_data frame_type ber crcValid service_field da seq] = wifi_parse_payload(databytes)	
 %databytes format: each column is a byte, top of a byte being the earliest bit
 
+  %nbytes_in_payload = size(databytes)
+  %pause
+  if size(databytes, 2) < 10
+    parsed_data = [];
+    frame_type = -1;
+    ber = -1;
+    crcValid = -1;
+    service_field = [];
+    da = [];
+    seq = [];
+    return
+  end
+
   %display('service field:');
   service_field = databytes(:,1:2);
   service_field = service_field(:).';

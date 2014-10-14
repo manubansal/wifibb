@@ -61,9 +61,16 @@ function [opt] = wifi_common_parameters(opt)
   opt.ltf_len = 2 * opt.fft_size + 2 * opt.cp_len_s_ltf;			%no. of samples
   opt.ltf_shift_len=512;	%used for cfo estimation
 
-  ltf_freq_left = [1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1];
-  ltf_freq_right = [1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1];
-  opt.ltf_sync_freq_domain = [repmat(ltf_freq_left, 1, 8), 0, repmat(ltf_freq_right, 1, 8)]';
-  opt.ltf_sync_freq_domain = [ zeros(48,1); opt.ltf_sync_freq_domain; zeros(47,1)];
+ % ltf_freq_left = [1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1];
+ % ltf_freq_right = [1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1];
+ % opt.ltf_sync_freq_domain = [repmat(ltf_freq_left, 1, 8), 0, repmat(ltf_freq_right, 1, 8)]';
+ % opt.ltf_sync_freq_domain = [ zeros(48,1); opt.ltf_sync_freq_domain; zeros(47,1)];
+  %opt.pkt_start_pnt_shift_back_bias_s = 4;		%shift-back the detected pkt start point by 4 samples
+  %opt.pkt_start_pnt_shift_back_bias_s = 8;		%shift-back the detected pkt start point by 8 samples
+  opt.pkt_start_pnt_shift_back_bias_s = opt.cp_len_s/2;	%shift-back the detected pkt start point
+
+  opt.nsubc = 64;
+  opt.psubc_idx = (opt.nsubc/2)+[(1+[-21 -7 7 21])];					%regular order (dc in middle)
+  opt.dsubc_idx = (opt.nsubc/2)+[(1+[-26:-22 -20:-8 -6:-1]) (1+[1:6 8:20 22:26])];	%regular order (dc in middle)
 
 end

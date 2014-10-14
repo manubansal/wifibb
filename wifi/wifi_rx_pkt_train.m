@@ -203,7 +203,8 @@ function stats = summarizeStats(stats, data, opt)
   crc_vec_ack = stats.crc_vec_ack
   crc_vec_unknown = stats.crc_vec_unknown
   snr_db_vec_power_ratio = stats.snr_db.'
-  snr_dB_from_evmstats = stats.avgsnr_dB_from_evm
+  snr_dB_from_data_evm_stats = stats.avgsnr_dB_from_data_evm
+  snr_dB_from_plcp_evm_stats = stats.avgsnr_dB_from_plcp_evm
   display('=============================================================================================');
 
   if (opt.GENERATE_ONE_TIME_PLOTS_PRE)
