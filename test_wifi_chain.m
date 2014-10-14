@@ -42,7 +42,6 @@ function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
   end
 
   if nargin < 7
-%     cplen = [16, 16, 16, 16];
     cplen = common_params.cplen;
   end
 
