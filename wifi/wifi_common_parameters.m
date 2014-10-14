@@ -83,15 +83,15 @@ if (fftlen == 64)
     opt.nsubc = 64;
     opt.psubc_idx = (opt.nsubc/2)+[(1+[-21 -7 7 21])];					%regular order (dc in middle)
     opt.dsubc_idx = (opt.nsubc/2)+[(1+[-26:-22 -20:-8 -6:-1]) (1+[1:6 8:20 22:26])];	%regular order (dc in middle)
-    opt.d1subc_idx = [1 31 33 64];
+    opt.d1subc_idx = (opt.nsubc/2)+[(1+[-32 -1 1 32])];
     
-    opt.intrasym_pilot_sc = [1,1,-1,1];
+    opt.intrasym_pilot_sc = [1,-1,1,1];
     
     %% LTF
     opt.ltf_shift_len=64;	%used for cfo estimation
     ltf_freq_left = [1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1];
     ltf_freq_right = [1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1];
-    opt.ltf_sync_freq_domain = [repmat(ltf_freq_left, 1, 1), 0, repmat(ltf_freq_right, 1, 1)]';
+    opt.ltf_sync_freq_domain = [ltf_freq_left, 0, ltf_freq_right]';
     opt.ltf_sync_freq_domain = [ zeros(6,1); opt.ltf_sync_freq_domain; zeros(5,1)];
 end
 
