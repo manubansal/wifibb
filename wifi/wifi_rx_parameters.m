@@ -87,7 +87,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
 
 
     %------------ begin UI options ---------------------
-    opt.GENERATE_ONE_TIME_PLOTS_PRE = false;%
+    opt.GENERATE_ONE_TIME_PLOTS_PRE = true;%
     opt.GENERATE_ONE_TIME_PLOTS_POST = false;
 
     opt.GENERATE_PER_PACKET_PLOTS_ONLY_ON_FILTER_MATCH = false;
@@ -151,7 +151,7 @@ function [opt, stats] = wifi_rx_parameters(scale, mod, opt, cplen)
     opt.dumpVars_dataParsed = false;
   end
 
-  opt = wifi_common_parameters(opt, cplen);
+  opt = wifi_common_parameters(opt);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % processing/analysis parameters

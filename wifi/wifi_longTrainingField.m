@@ -1,15 +1,13 @@
 
 function ltf_sync_total = wifi_longTrainingField(cplen)
   opt = {};
-  opt = wifi_common_parameters(opt, cplen);
+  opt = wifi_common_parameters(opt);
   cp_len_ltf = opt.cp_len_s_ltf;
   ltf_len = opt.ltf_len;
 
 
-  ltf_sync_freq_domain = [1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 0, ...
-			  1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1]';
-  ltf_sync_freq_domain = [ zeros(6,1); ltf_sync_freq_domain; zeros(5,1)];
-
+  ltf_sync_freq_domain = opt.ltf_sync_freq_domain;
+  
   ltf_sync_time_oneperiod = (ifft(ifftshift(ltf_sync_freq_domain)));
 
   window_func = [0.5 ones(1,ltf_len-1) 0.5]';

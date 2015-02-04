@@ -89,9 +89,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %%********************************
   %%%%%%%%% process signal field
   %%********************************
-
-  nbpsc = 1;	%signal field is coded with bpsk
-  nsyms = 1;	%signal field occupies one ofdm symbol
+  sim_params = default_sim_parameters();
+  [ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameters(sim_params.rate_sig);
+  nbpsc = nbpsc_sig;	%signal field is coded with bpsk
+  nsyms = sim_params.sig_syms;	%signal field occupies one ofdm symbol
 
   [stats data ofdm_syms_f]  		= wifi_ofdm_demod(sig_samples, nsyms, data, opt, stats);
 
@@ -101,10 +102,10 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   if (opt.printVars_ofdmDemodPlcp)
     display('plcp signal field in frequency domain before equalization');
       display('plcp data subcarriers:');
-    [ [1:48]' fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1))]
+    [ [1:opt.ndatasubc]' fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, 1))]
       display('plcp pilot subcarriers:');
     tx_pilot_syms = data.sig_and_data_tx_pilot_syms(:,1:nsyms);
-    [ [1:4]' fix(opt.ti_factor_after_cfo * (ofdm_syms_f(psubc_idx, 1) .* conj(tx_pilot_syms(:,1))))]
+    [ [1:opt.npsubc]' fix(opt.ti_factor_after_cfo * (ofdm_syms_f(psubc_idx, 1) .* conj(tx_pilot_syms(:,1))))]
   end
   %%%%%%%%%%%%%%%%%%%%%%%
 
@@ -184,7 +185,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   [stats ber]   	     		= util_computeModulationBER(data, opt, stats);
   [stats data rx_data_bits_deint]       = wifi_wrapper_deinterleave(data, opt, stats, rx_data_bits, nbpsc);
 
-  [rx_data_bits_dec]         = wifi_wrapper_decode(rx_data_bits_deint, 18, opt);
+  
+  [rx_data_bits_dec]         = wifi_wrapper_decode(rx_data_bits_deint,ndbps_sig - 6 , opt);
   if (opt.writeVars_decode)
     writeVars_decode(rx_data_bits_deint, opt.soft_slice_nbits, opt.tblen_signal, rx_data_bits_dec);
   end
@@ -383,10 +385,11 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   %decode the actual data length portion
-  data_and_tail_length_bits = 16 + data.sig_payload_length * 8 + 6;	%first 16 for service, last 6 for tail
+  sim_params = default_sim_parameters();
+  data_and_tail_length_bits = sim_params.service_bits + data.sig_payload_length * 8 + sim_params.tail_bits;	%first 16 for service, last 6 for tail
   actual_data_portion_with_tail = rx_data_bits_depunct(1:(data_and_tail_length_bits * 2));	%since it's a half rate code
 
-  [rx_data_bits_dec]         = wifi_wrapper_decode(actual_data_portion_with_tail, 16 + data.sig_payload_length * 8, opt);
+  [rx_data_bits_dec]         = wifi_wrapper_decode(actual_data_portion_with_tail, sim_params.service_bits + data.sig_payload_length * 8, opt);
   if (opt.writeVars_decode)
     writeVars_decode(actual_data_portion_with_tail, opt.soft_slice_nbits, opt.tblen_data, rx_data_bits_dec);
   end
@@ -424,8 +427,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %rx_data_bytes = reshape(rx_data_bits_descr, 8, length(rx_data_bits_descr)/8);
 
   %retain only upto the data portion, including service field but discarding tail and pad
-  rx_data_bits_descr = rx_data_bits_descr(1:(16+data.sig_payload_length * 8));
-  rx_data_bytes = reshape(rx_data_bits_descr, 8, data.sig_payload_length + 2);
+  rx_data_bits_descr = rx_data_bits_descr(1:(sim_params.service_bits+data.sig_payload_length * 8));
+  rx_data_bytes = reshape(rx_data_bits_descr, 8, data.sig_payload_length + (sim_params.service_bits/8));
   size_rx_data_bytes = size(rx_data_bytes);
 
   %++++++++++++++++++++++++++++++++++++++++++++++

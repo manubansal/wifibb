@@ -1,18 +1,19 @@
 function [interleaved_bits j] = wifi_interleave(coded_bits, N_CBPS)
+  common_params = wifi_common_parameters({});
   %Each modulation rate (bpsk, qpsk, 16qam, 64qam) allows this many bits per
   %subcarrier:
-  Number_of_coded_bits_per_symbol_options = [ 48, 96, 192, 288];
+%   Number_of_coded_bits_per_symbol_options = [ 48, 96, 192, 288];
 
   %Index definitions for the four options:
-  BPSK = 1; QPSK = 2; QAM16 = 3; QAM64 = 4;
+%   BPSK = 1; QPSK = 2; QAM16 = 3; QAM64 = 4;
 
   %By default, script generates the 64QAM look up table:
-  if (nargin < 2)
-    N_CBPS=Number_of_coded_bits_per_symbol_options(QAM16); 
-  end
+%   if (nargin < 2)
+%     N_CBPS=Number_of_coded_bits_per_symbol_options(QAM16); 
+%   end
 
   %Generate additional necessary parameters per the 802.11 specification:
-  N_BPSC=N_CBPS/48;
+  N_BPSC=N_CBPS/common_params.ndatasubc;
   s=max(N_BPSC/2,1);
 
   %initial indices

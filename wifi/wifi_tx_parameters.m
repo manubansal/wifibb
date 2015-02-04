@@ -10,4 +10,6 @@ function tx_params = wifi_tx_parameters()
 
     tx_params.compare_tx_rx_pkts = false;
     tx_params.writeSamples = true;
+    
+    tx_params.scale = 1.41;
 end

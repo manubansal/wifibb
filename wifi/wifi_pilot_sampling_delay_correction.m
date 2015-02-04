@@ -20,7 +20,8 @@ wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_sym
 
     %%%%% begin algorithm 1 %%%%%%%%
     %p_vec = (1/980)*([-21 -7 7 21] * mod(angle(uu_pilot_syms),2*pi));
-    p_vec = (1/980)*([-21 -7 7 21] * angle(uu_pilot_syms));
+    psubc_centered_idx = opt.psubc_idx -1-(opt.nsubc/2);
+    p_vec = (1/(psubc_centered_idx*psubc_centered_idx'))*(psubc_centered_idx * angle(uu_pilot_syms));
     %%%%% finish algorithm 1 %%%%%%%%
 
     %%%%%%%%%% begin algorithm 2 %%%%%%%%
@@ -60,7 +61,7 @@ wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_sym
     %%%%%%%%%% finish algorithm 2 %%%%%%%%
     %%%%%%%%% this one seems buggy %%%%%
 
-    p_corr_terms = exp(-i * diag([-32:31]) * ones(64,size(ofdm_syms_f,2)) * diag(p_vec));
+    p_corr_terms = exp(-i * diag([-(opt.nsubc/2):(opt.nsubc/2)-1]) * ones(opt.nsubc,size(ofdm_syms_f,2)) * diag(p_vec));
     ofdm_syms_f = ofdm_syms_f .* p_corr_terms;
 
     rx_pilot_syms = ofdm_syms_f(psubc_idx, :);

@@ -1,6 +1,6 @@
 
 function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] = wifi_preamble_channel_estimation(opt, stats, pkt_samples, cplen)
-  copt = wifi_common_parameters({}, cplen);
+  copt = wifi_common_parameters({});
   cp_len = copt.cp_len_s_ltf;
   cp_skip  = copt.cp_skip_ltf;
 
@@ -14,9 +14,11 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   %pkt_length_samples = length(pkt_samples);
   ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
   %------- channel estimation and correction ----
-  ltf_sync_freq_domain = [1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 0, ...
-			  1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1]';
-  ltf_sync_freq_domain = [ zeros(6,1); ltf_sync_freq_domain; zeros(5,1)];
+  ltf_sync_freq_domain = copt.ltf_sync_freq_domain;
+  
+  %[1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 1, 1, -1, -1, 1, 1, -1, 1, -1, 1, 1, 1, 1, 0, ...
+%			  1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1]';
+%  ltf_sync_freq_domain = [ zeros(6,1); ltf_sync_freq_domain; zeros(5,1)];
 
   %ltf_sync_time_oneperiod = (ifft(ifftshift(ltf_sync_freq_domain)))
 
@@ -33,7 +35,7 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
 
   if (opt.printVars_chEsts)
 	  display('the two ltfs in frequency domain: ')
-	  [ [1:64]' fix(opt.ti_factor * [ ltf1_f.' ltf2_f.'])]
+	  [ [1:fft_size]' fix(opt.ti_factor * [ ltf1_f.' ltf2_f.'])]
 	  pause
   end
 
@@ -52,18 +54,18 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   %%%%%%%%%%%%% finish algo 1 %%%%%%%%%%%%%%%
 
   %add to statistics
-  stats.all_ltf1_64(end+1:end+64) = ltf1_f;
-  stats.all_ltf2_64(end+1:end+64) = ltf2_f;
-  stats.all_ltf_av_64(end+1:end+64) = ltf_f_av;
-  stats.all_channel_64(end+1:end+64) = ch;
+  stats.all_ltf1_64(end+1:end+fft_size) = ltf1_f;
+  stats.all_ltf2_64(end+1:end+fft_size) = ltf2_f;
+  stats.all_ltf_av_64(end+1:end+fft_size) = ltf_f_av;
+  stats.all_channel_64(end+1:end+fft_size) = ch;
 
   if (opt.printVars_chEsts)
-	  [ [1:64]' fix(opt.ti_factor * ch)]
-	  nsubc = 64
-	  psubc_idx = (nsubc/2)+[(1+[-21 -7 7 21])];					%regular order (dc in middle)
-	  dsubc_idx = (nsubc/2)+[(1+[-26:-22 -20:-8 -6:-1]) (1+[1:6 8:20 22:26])];	%regular order (dc in middle)
-	  ch_data = [[1:48]' fix(opt.ti_factor * ch(dsubc_idx))]
-	  ch_pilot = [[1:4]' fix(opt.ti_factor * ch(psubc_idx))]
+	  [ [1:copt.nsubc]' fix(opt.ti_factor * ch)]
+	  nsubc = copt.nsubc
+	  psubc_idx = copt.psubc_idx;				%regular order (dc in middle)
+	  dsubc_idx = copt.dsubc_idx;	%regular order (dc in middle)
+	  ch_data = [[1:copt.ndatasubc]' fix(opt.ti_factor * ch(dsubc_idx))]
+	  ch_pilot = [[1:copt.npsubc]' fix(opt.ti_factor * ch(psubc_idx))]
 	  if (opt.PAUSE_AFTER_EVERY_PACKET)
 	  pause
 	  end

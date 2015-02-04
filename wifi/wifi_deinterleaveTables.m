@@ -2,11 +2,15 @@
 function [t] = wifi_deinterleaveTables()
   %ncbps = 48, 96, 192, 288
   %nbpsc = 1, 2, 4, 6
-
-  t.bpsk = table(48, 1);
-  t.qpsk = table(96, 2);
-  t.qam16 = table(192, 4);
-  t.qam64 = table(288, 6);
+  [~, ~, ncbps_bpsk, nbpsc_bpsk, ~, ~, ~, ~] = wifi_parameters(6);
+  [~, ~, ncbps_qpsk, nbpsc_qpsk, ~, ~, ~, ~] = wifi_parameters(12);
+  [~, ~, ncbps_qam16, nbpsc_qam16, ~, ~, ~, ~] = wifi_parameters(24);
+  [~, ~, ncbps_qam64, nbpsc_qam64, ~, ~, ~, ~] = wifi_parameters(48);
+  
+  t.bpsk = table(ncbps_bpsk, nbpsc_bpsk);
+  t.qpsk = table(ncbps_qpsk, nbpsc_qpsk);
+  t.qam16 = table(ncbps_qam16, nbpsc_qam16);
+  t.qam64 = table(ncbps_qam64, nbpsc_qam64);
 
   %sort(t.64qam(:,2))
 end

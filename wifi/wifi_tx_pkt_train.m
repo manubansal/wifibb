@@ -1,31 +1,34 @@
 function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale, confStr, ch, cplen)
+  sim_params = default_sim_parameters();
+  tx_params = wifi_tx_parameters();
+  common_params = wifi_common_parameters();
   if (nargin < 3)
-    snr = Inf
+    snr = sim_params.snr;
   end
 
   if (nargin < 4)
     %scale = 1;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 256;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
-    scale = sqrt(2)		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
+    scale = tx_params.scale;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 2;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 4;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 8;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
   end
 
   if (nargin < 6)
-    ch = 'passthrough';
+    ch = sim_params.ch;
   end
 
   if (nargin < 7)
-    cplen = [16, 16, 16, 16];
+    cplen = common_params.cplen;
   end
   
   n_msgs = length(msgs_hex)
 
   %zero_prepad_dur_us = 100;		%zero samples of this duration (us) will be prefixed to every packet
   %zero_prepad_dur_us = 10;		%zero samples of this duration (us) will be prefixed to every packet
-  zero_prepad_dur_us = 9;		%zero samples of this duration (us) will be prefixed to every packet
-  zero_postpad_dur_us = 5;
+  zero_prepad_dur_us = sim_params.zero_prepad_dur_us;		%zero samples of this duration (us) will be prefixed to every packet
+  zero_postpad_dur_us = sim_params.zero_postpad_dur_us;
   
   %54mbps
   %snr 15	16	17	18
@@ -70,7 +73,8 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   display('number of samples in data packet(s): ')
   n_samples = length(cat_td_pkt_samples)
   display('data packet(s) duration (us):')
-  dur_us = n_samples/20
+  samples_per_us = 1/(10^6*common_params.sample_duration_sec);
+  dur_us = n_samples/samples_per_us;
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -78,11 +82,11 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   signal_rms = rms(cat_td_pkt_samples);
 
-  rms_prepad_samples = zeros(20 * zero_prepad_dur_us - 1, 1) + signal_rms; 	
+  rms_prepad_samples = zeros(samples_per_us * zero_prepad_dur_us - 1, 1) + signal_rms; 	
   %-1 in zero-pad-length is because data portion is generated with one
   %extra sample for windowing
 
-  rms_postpad_samples = zeros(20 * zero_postpad_dur_us, 1) + signal_rms; 	
+  rms_postpad_samples = zeros(samples_per_us * zero_postpad_dur_us, 1) + signal_rms; 	
 
   td_pkt_samples = [];
   for ii = 1:n_msgs
@@ -95,11 +99,11 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
 
   noise_vector = noisy_td_pkt_samples - td_pkt_samples;
 
-  zero_prepad_samples = zeros(20 * zero_prepad_dur_us - 1, 1);
+  zero_prepad_samples = zeros(samples_per_us * zero_prepad_dur_us - 1, 1);
   %-1 in zero-pad-length is because data portion is generated with one
   %extra sample for windowing
 
-  zero_postpad_samples = zeros(20 * zero_postpad_dur_us, 1);
+  zero_postpad_samples = zeros(samples_per_us * zero_postpad_dur_us, 1);
 
 
   %td_pkt_samples = [];
@@ -154,7 +158,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   display('number of samples in zero-padded packet(s): ')
   n_samples = length(td_pkt_samples_16bit)
   display('zero-padded packet(s) duration (us):')
-  dur_us = n_samples/20
+  dur_us = n_samples/samples_per_us
 
   disp('displaying the maximum real and imaginary components in generated packet');
   disp('make sure they are not over 32767, the maximum permissible 16 bit value');

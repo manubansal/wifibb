@@ -4,7 +4,7 @@ function td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_par
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
   opt = {};
-  opt = wifi_common_parameters(opt, cplen);
+  opt = wifi_common_parameters(opt);
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   								%extra sample due to windowing. this makes the length exactly match up.
