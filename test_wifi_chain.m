@@ -45,7 +45,6 @@ function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
     cplen = common_params.cplen;
   end
 
-
   %do_test_old(rate, snr)
   do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
 end
