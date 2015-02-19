@@ -63,7 +63,7 @@ function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
     warning('using only the first msg')
   end
   msgs_hex = msgs_hex(1);
-  msgs_hex = repmat(msgs_hex, 1, nmsgs)
+  msgs_hex = repmat(msgs_hex, 1, nmsgs);
   n_msgs = nmsgs;
 
 
