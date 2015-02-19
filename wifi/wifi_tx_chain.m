@@ -17,7 +17,8 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %% create the signal field mapped symbol
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   rate_sig = sim_params.rate_sig;
-  tx_sig_field = wifi_pack_signal(rate, base_msg_len_bytes);
+  rate_chart = sim_params.rate_chart;
+  tx_sig_field = wifi_pack_signal(rate, rate_chart, base_msg_len_bytes);
   %tx_sig_field = wifi_pack_signal(rate, orig_base_msg_len_bytes);
   [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate_sig);
   
