@@ -1,8 +1,6 @@
-function [opt] = wifi_common_parameters(opt, sim_params)
+function [opt] = wifi_common_parameters(opt)
 
-if nargin < 2
-    sim_params = default_sim_parameters;
-end
+sim_params = default_sim_parameters;
 
 fftlen = sim_params.fftlen;
 
@@ -147,6 +145,5 @@ opt.pkt_start_pnt_shift_back_bias_s = opt.cp_len_s/2;	%shift-back the detected p
 %% WIFI specifics
 opt.wifi_nbpsc = [1, 1, 2, 2, 4, 4, 6, 6];
 opt.wifi_rt120 = [60, 90, 60, 90, 60, 90, 80, 90];
-
 
 end
