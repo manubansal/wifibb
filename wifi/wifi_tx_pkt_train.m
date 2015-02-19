@@ -23,7 +23,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
     cplen = common_params.cplen;
   end
   
-  n_msgs = length(msgs_hex)
+  n_msgs = length(msgs_hex);
 
   %zero_prepad_dur_us = 100;		%zero samples of this duration (us) will be prefixed to every packet
   %zero_prepad_dur_us = 10;		%zero samples of this duration (us) will be prefixed to every packet
@@ -74,7 +74,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
   n_samples = length(cat_td_pkt_samples)
   display('data packet(s) duration (us):')
   samples_per_us = 1/(10^6*common_params.sample_duration_sec);
-  dur_us = n_samples/samples_per_us;
+  dur_us = n_samples/samples_per_us
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
