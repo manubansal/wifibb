@@ -19,12 +19,12 @@ function [sim_params] = default_sim_parameters()
     sim_params.nmsgs = 2;
     sim_params.ch = 'passthrough';
     
-    sim_params.zero_prepad_dur_us = 100; 
-        % Changed from 10 in WiFi-64 to 100 so that number of samples at
+    sim_params.zero_prepad_dur_us = 25; 
+        % Changed from 10 in WiFi-64 to 25 so that number of samples at
         % 15.36 MHz is an integer
         
-    sim_params.zero_postpad_dur_us = 100; 
-        % Changed from 10 in WiFi-64 to 100 so that number of samples at 
+    sim_params.zero_postpad_dur_us = 25; 
+        % Changed from 10 in WiFi-64 to 25 so that number of samples at 
         % 15.36 MHz is an integer    
     
     sim_params.service_bits = 16;
