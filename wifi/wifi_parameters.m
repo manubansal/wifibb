@@ -14,7 +14,10 @@ function [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] =
     
     rate_v = ndbps_v/(common_params.sample_duration_sec*common_params.sym_len_s*10^6);
 
-    ri = find(rate_v == rate);
+    ri = find(rate_v <= rate, 1, 'last');
+        % essentially, find(rate_v == rate), but written in this way
+        % to avoid floating point/round off issues when rate is non integer
+    
     ndbps = ndbps_v(ri);
     ncbps = ncbps_v(ri);
     nbpsc = nbpsc_v(ri);
