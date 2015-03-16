@@ -1,15 +1,17 @@
-function td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params, cplen)
+function td_pkt_samples = util_prepend_preamble(cmp, td_data_samples, confStr, tx_params, cplen)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Generate preamble portions
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  opt = {};
-  opt = wifi_common_parameters(opt);
+  %opt = {};
+  %opt = wifi_common_parameters(opt);
+  opt = cmp;
+
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   								%extra sample due to windowing. this makes the length exactly match up.
-  [ig1, ig2, stf_sync_total] = wifi_shortTrainingField();
-  ltf_sync_total = wifi_longTrainingField(cplen);
+  [ig1, ig2, stf_sync_total] = wifi_shortTrainingField(cmp);
+  ltf_sync_total = wifi_longTrainingField(cmp, cplen);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % Join stf and ltf

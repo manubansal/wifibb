@@ -90,14 +90,14 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %%%%%%%%% process signal field
   %%********************************
   sim_params = default_sim_parameters();
-  [ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameters(sim_params.rate_sig);
+  [ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameter_parser(opt,sim_params.rate_sig);
   nbpsc = nbpsc_sig;	%signal field is coded with bpsk
   nsyms = sim_params.sig_syms;	%signal field occupies one ofdm symbol
 
   [stats data ofdm_syms_f]  		= wifi_ofdm_demod(sig_samples, nsyms, data, opt, stats);
 
   %++++++++++++++++++++++++++++++++++++++++++++++
-  [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
+  [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(opt,0);
   %%%%%%%%%%%%%%%%%%%%%%%
   if (opt.printVars_ofdmDemodPlcp)
     display('plcp signal field in frequency domain before equalization');
@@ -128,7 +128,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
     %util_dumpData('plcpOfdmEq.eqPnts', confStr, fix(ofdm_syms_f(dsubc_idx, 1)))
     util_dumpData('plcpOfdmEq.eqPnts', confStr, ofdm_syms_f(dsubc_idx, 1))
     util_dumpData('plcpOfdmEq.channeli', confStr, chi)
-    [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
+    [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(opt,0);
 
     ch_dsubc = ch(dsubc_idx);
     util_dumpData('plcpOfdmEq.channel_dsubc', confStr, ch_dsubc)
@@ -316,7 +316,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
     %util_dumpData('dataOfdmEq.eqPnts', fix(opt.ti_factor_after_cfo * ofdm_syms_f(dsubc_idx, :)))
     util_dumpData('dataOfdmEq.eqPnts', confStr, ofdm_syms_f(dsubc_idx, :))
     %util_dumpData('dataOfdmEq.channeli', chi)
-    %[ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(0);
+    %[ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(opt,0);
 
     %ch_dsubc = ch(dsubc_idx)
     %util_dumpData('dataOfdmEq.channel_dsubc', ch_dsubc)

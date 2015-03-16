@@ -1,5 +1,5 @@
-function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate, plcp_or_data, confStr, tx_params)
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate);
+function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(cmp, msg_scr, rate, plcp_or_data, confStr, tx_params)
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate);
   n_ofdm_syms = length(msg_scr)/ndbps;
   %pause
 
@@ -28,7 +28,7 @@ function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg
   %% interleave the bits
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %util_dumpData('interleaver48_in', confStr, msg_code_syms);
-  msg_int_syms = wifi_interleave(msg_code_syms, ncbps);
+  msg_int_syms = wifi_interleave(cmp,msg_code_syms, ncbps);
   %util_dumpData('interleaver48_out', confStr, msg_int_syms);
 
   %msg_int_syms = msg_int_syms

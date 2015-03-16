@@ -1,10 +1,10 @@
 %Dump data into a binary file for scripted comparison/test case generation
 %
-function util_dumpData(id, confStr, data)
+function util_dumpData(cmp, id, confStr, data)
   [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths();
   num_strs = regexp(confStr, '\d+', 'match');
   rate = str2double(num_strs(1));
-  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(rate);
+  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(cmp,rate);
 
   if strcmp(id, '')
       

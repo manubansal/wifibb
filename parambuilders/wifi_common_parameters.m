@@ -1,6 +1,8 @@
-function [opt] = wifi_common_parameters(opt)
+function [opt] = wifi_common_parameters(opt, sim_params)
 
+if nargin < 2
 sim_params = default_sim_parameters;
+end
 
 fftlen = sim_params.fftlen;
 

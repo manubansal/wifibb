@@ -1,7 +1,9 @@
 %datasyms are frequency domain symbols with just the data subcarriers
-function [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms, cplen)
-    copt = {};
-    copt = wifi_common_parameters(copt);
+function [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(cmp, datasyms, cplen)
+    %copt = {};
+    %copt = wifi_common_parameters(copt);
+    copt = cmp;
+
     cplength = copt.cp_len_s;
 
     nsubc = copt.nsubc; 			%number of subcarriers

@@ -1,8 +1,10 @@
 
-function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr, cplen)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen)
 
-  tx_params = wifi_tx_parameters();
-  sim_params = default_sim_parameters();
+  %sim_params = default_sim_parameters();
+  %tx_params = wifi_tx_parameters();
+  sim_params = smp;
+  tx_params = txp;
 
   %%%%%%%%%%%%%%
   %% add the crc 
@@ -20,7 +22,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   rate_chart = sim_params.rate_chart;
   tx_sig_field = wifi_pack_signal(rate, rate_chart, base_msg_len_bytes);
   %tx_sig_field = wifi_pack_signal(rate, orig_base_msg_len_bytes);
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate_sig);
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate_sig);
   
   npad = ceil(length(tx_sig_field)/ndbps) * ndbps - length(tx_sig_field);
   pad = zeros(1, npad);
@@ -29,12 +31,12 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %n_ofdm_syms_sig = 1;
   %tx_sig_field = tx_sig_field
   %pause
-  [sigsym, ig1, ig2] = wifi_tx_chain_inner(tx_sig_field, rate_sig, 'plcp', confStr, tx_params);
+  [sigsym, ig1, ig2] = wifi_tx_chain_inner(cmp, tx_sig_field, rate_sig, 'plcp', confStr, tx_params);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% create the data field
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate);
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% prepare the message with service, tail and pad bits
@@ -72,7 +74,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
 
   %--------------------------------------------------------------------------------------
-  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(msg_scr, rate, 'data', confStr, tx_params);
+  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(cmp, msg_scr, rate, 'data', confStr, tx_params);
   %--------------------------------------------------------------------------------------
 
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);
@@ -89,7 +91,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   end
 
   %--------------------------------------------------------------------------------------
-  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms, cplen);
+  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(cmp, datasyms, cplen);
   %--------------------------------------------------------------------------------------
 
   tdsyms_w_cp_dump = tdsyms_w_cp * (2^12);
@@ -103,6 +105,6 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
   % add preamble
   %--------------------------------------------------------------------------
-  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params, cplen);
+  td_pkt_samples = util_prepend_preamble(cmp, td_data_samples, confStr, tx_params, cplen);
   %--------------------------------------------------------------------------
 end

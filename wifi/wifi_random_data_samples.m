@@ -1,7 +1,9 @@
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
 % Generate data portion
 %%%%%%%%%%%%%%%%%%%%%%%%%%%%
-function [td_data_samples databits_i databits_q datasyms] = wifi_random_data_samples(mod, nsyms, databits_i, databits_q)
+function [td_data_samples databits_i databits_q datasyms] = wifi_random_data_samples(common_params, mod, nsyms, databits_i, databits_q)
+  cmp = common_params;
+
   bpskmap = [1, -1];
   bpskbmap_i = [1, 0];
   bpskbmap_q = [0, 0];
@@ -56,7 +58,7 @@ function [td_data_samples databits_i databits_q datasyms] = wifi_random_data_sam
   end
 
   %--------------------------------------------------------------------------------------
-  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(datasyms)
+  [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(cmp, datasyms)
   %--------------------------------------------------------------------------------------
 
   %--------------------------------------------------------------------------------------

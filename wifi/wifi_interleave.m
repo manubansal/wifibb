@@ -1,5 +1,6 @@
-function [interleaved_bits j] = wifi_interleave(coded_bits, N_CBPS)
-  common_params = wifi_common_parameters({});
+function [interleaved_bits j] = wifi_interleave(cmp, coded_bits, N_CBPS)
+  %common_params = wifi_common_parameters({});
+  common_params = cmp;
   %Each modulation rate (bpsk, qpsk, 16qam, 64qam) allows this many bits per
   %subcarrier:
 %   Number_of_coded_bits_per_symbol_options = [ 48, 96, 192, 288];

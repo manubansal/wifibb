@@ -1,11 +1,13 @@
-function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(samples, confStr, cplen)
-  rx_pkts = {}
-
+function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(opt, samples, confStr, cplen)
   %scale = sqrt(2);
   scale = 'kk';
   %mod = 'jj';
 
-  [opt, stats] = wifi_rx_parameters('1','54M','null',cplen);
+  %[opt, stats] = wifi_rx_parameters('1','54M');
+  stats = util_rx_stats();
+  opt = util_rx_fig_init(opt);
+
+  rx_pkts = {}
 
   if length(samples) == 0
     samples = util_loadBinaryFilePart(opt.traceFile, opt.ns_to_process, opt.ns_to_skip);
@@ -40,7 +42,7 @@ function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(samples, confStr, cplen
   end
 
 
-  data.deinterleave_tables = wifi_deinterleaveTables();
+  data.deinterleave_tables = wifi_deinterleaveTables(opt);
 
   t = 0;
   ber = 0;

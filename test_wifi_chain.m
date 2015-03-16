@@ -1,27 +1,40 @@
-function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
+%function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
+function test_wifi_chain(sim_params, tx_params, rx_params, common_params, tag, snr, msglen, rate, nmsgs, ch, cplen)
   %df = sprintf('diary.test_wifi_chain.%s.%d.%d.%d.%d', tag, snr, msglen, rate, nmsgs)
   %diary(df);
   %df = df
 
-  tx_params = wifi_tx_parameters();
-  sim_params = default_sim_parameters();
-  common_params = wifi_common_parameters({});
-
   if nargin < 1
+  sim_params = default_sim_parameters();
+  end
+  
+  if nargin < 2
+  tx_params = wifi_tx_parameters();
+  end
+
+  if nargin < 3
+  tx_params = wifi_rx_parameters();
+  end
+
+  if nargin < 4
+  common_params = wifi_common_parameters({});
+  end
+
+  if nargin < 5
     tag = sim_params.tag;
   end
 
-  if nargin < 2
+  if nargin < 6
 %     snr = Inf;
     snr = sim_params.snr;
   end
 
-  if nargin < 3
+  if nargin < 7
 %     msglen = 200;	%bytes
     msglen = sim_params.msglen; % bytes
   end
 
-  if nargin < 4
+  if nargin < 8
     rate = sim_params.rate;
     %rate = 36;
     %rate = 24;
@@ -33,23 +46,23 @@ function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
     %snr = 17; 	
   end
 
-  if nargin < 5
+  if nargin < 9
     nmsgs = sim_params.nmsgs;
   end
 
-  if nargin < 6
+  if nargin < 10
     ch = sim_params.ch;
   end
 
-  if nargin < 7
+  if nargin < 11
     cplen = common_params.cplen;
   end
 
   %do_test_old(rate, snr)
-  do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
+  do_test(sim_params, tx_params, rx_params, common_params, tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
 end
 
-function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
+function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
   %scale = sqrt(2);
   %scale = 2;
   scale = tx_params.scale;
@@ -91,7 +104,7 @@ function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
   %%%%%%%%%%%%%%%%%%%%%%
   %% modulate messages
   %%%%%%%%%%%%%%%%%%%%%%
-  [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale, confStr, ch, cplen);
+  [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs_hex, rate, snr, scale, confStr, ch, cplen);
   n_tx_samples = length(td_pkt_samples_16bit)
 
   %pause
@@ -107,7 +120,7 @@ function do_test(tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
   %%%%%%%%%%%%%%%%%%%%%%
   %% decode messages
   %%%%%%%%%%%%%%%%%%%%%%
-  rx_pkts = wifi_rx_pkt_train(td_pkt_samples_16bit, confStr, cplen);
+  rx_pkts = wifi_rx_pkt_train(rxp, td_pkt_samples_16bit, confStr, cplen);
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% detailed comparison

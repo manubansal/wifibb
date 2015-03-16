@@ -1,6 +1,8 @@
 
-function [stf_time_domain, stf_time_domain_16bit, stf_sync_total] = wifi_shortTrainingField()
-  common_params = wifi_common_parameters({});
+function [stf_time_domain, stf_time_domain_16bit, stf_sync_total] = wifi_shortTrainingField(cmp)
+  %common_params = wifi_common_parameters({});
+  common_params = cmp;
+
   short_sync_freq_domain = common_params.short_sync_freq_domain;
 
 

@@ -1,7 +1,9 @@
 
-function ltf_sync_total = wifi_longTrainingField(cplen)
-  opt = {};
-  opt = wifi_common_parameters(opt);
+function ltf_sync_total = wifi_longTrainingField(cmp, cplen)
+  %opt = {};
+  %opt = wifi_common_parameters(opt);
+  opt = cmp;
+
   cp_len_ltf = opt.cp_len_s_ltf;
   ltf_len = opt.ltf_len;
 

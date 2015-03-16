@@ -1,9 +1,9 @@
 
-function rx_data_field = wifi_rx_chain_simple(rx_samples_f, rate, n_ofdm_syms, base_msg_len_bits, softbit_scale_nbits, tblen)
+function rx_data_field = wifi_rx_chain_simple(rx_params, rx_samples_f, rate, n_ofdm_syms, base_msg_len_bits, softbit_scale_nbits, tblen)
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% configure parameters
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameters(rate);
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(rx_params, rate);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% demap symbols

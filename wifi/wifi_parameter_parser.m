@@ -1,6 +1,7 @@
 
-function [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(rate)
-  common_params = wifi_common_parameters({});
+function [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(cmp, rate)
+  %common_params = wifi_common_parameters({});
+  common_params = cmp;
   if (rate == 0)
     ndbps = 0;
     rt120 = 0;
@@ -14,9 +15,10 @@ function [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] =
     
     rate_v = ndbps_v/(common_params.sample_duration_sec*common_params.sym_len_s*10^6);
 
-    ri = find(rate_v <= rate, 1, 'last');
-        % essentially, find(rate_v == rate), but written in this way
-        % to avoid floating point/round off issues when rate is non integer
+    ri = find(rate_v == rate);
+    %ri = find(rate_v <= rate, 1, 'last');
+    % essentially, find(rate_v == rate), but written in this way
+    % to avoid floating point/round off issues when rate is non integer
     
     ndbps = ndbps_v(ri);
     ncbps = ncbps_v(ri);

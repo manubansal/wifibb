@@ -103,7 +103,7 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   confStr = 'jj';
   tx_params.dumpVars_stfLtf = false;
   %--------------------------------------------------------------------------
-  td_pkt_samples = util_prepend_preamble(td_data_samples, confStr, tx_params, cplen);
+  td_pkt_samples = util_prepend_preamble(opt, td_data_samples, confStr, tx_params, cplen);
   %--------------------------------------------------------------------------
   
 end

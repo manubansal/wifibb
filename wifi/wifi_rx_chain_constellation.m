@@ -23,7 +23,7 @@ wifi_rx_chain_constellation(pkt_samples, rate, payload_len, data, opt, stats, co
   %%%%%% decide whether to process data field
   %%*********************************
 
-  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameters(rate);
+  [ndbps, rt120, ncbps, nbpsc, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(opt, rate);
   n_cplx_samples_per_pkt = length(pkt_samples);
   nsyms = n_cplx_samples_per_pkt/48
 

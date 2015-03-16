@@ -1,12 +1,16 @@
-function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr, scale, confStr, ch, cplen)
-  sim_params = default_sim_parameters();
-  tx_params = wifi_tx_parameters();
-  common_params = wifi_common_parameters();
-  if (nargin < 3)
+function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs_hex, rate, snr, scale, confStr, ch, cplen)
+  %sim_params = default_sim_parameters();
+  %tx_params = wifi_tx_parameters();
+  %common_params = wifi_common_parameters();
+  sim_params = smp;
+  tx_params = txp;
+  common_params = cmp;
+
+  if (nargin < 6)
     snr = sim_params.snr;
   end
 
-  if (nargin < 4)
+  if (nargin < 7)
     %scale = 1;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     %scale = 256;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     scale = tx_params.scale;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
@@ -15,11 +19,11 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
     %scale = 8;		%factor by which to scale down the samples (so this cuts down the tx gain (linear)
   end
 
-  if (nargin < 6)
+  if (nargin < 9)
     ch = sim_params.ch;
   end
 
-  if (nargin < 7)
+  if (nargin < 10)
     cplen = common_params.cplen;
   end
   
@@ -60,7 +64,7 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(msgs_hex, rate, snr
 
     % generate data samples
     %--------------------------------------------------------------------------
-    [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(msg, rate, confStr, cplen);
+    [samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen);
     %--------------------------------------------------------------------------
 
     msgs_scr{end + 1} = msg_scr;
