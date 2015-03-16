@@ -43,86 +43,35 @@ for random_num=1:1:1
     
     OFF = offsets(random_num);
     
-    jie_gap= 20000;
-    jie_distance='5cm';
+    %for file_num=1:1:5
 
-    %for file_num=1:1:30
-    for file_num=1:1:5
+    %load the recorded files
+    %if (nargin < 1)
+    %  INPDATA=load_trace_data(file_num);
+    %end
 
-      %load the recorded files
-      
-      if (nargin < 1)
-      ev=['load traces/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_'  sprintf('%03d', file_num) '.mat'];
-      eval(ev);
+    %%%% CLIENT FIRST TX %%%%
+    start_point_1 = pkt_start_points(1) + 160 + 10;
+    %[theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, start_point_1);
+    %polar(theta,PMU_trans_7{1}, 'b');
+    [theta, PMU_trans_7, Pos_new] = s_innerloop7(INPDATA, OFF, start_point_1);
+    polar(theta,PMU_trans_7, 'b');
+    hold on
 
-      INPDATA=[...
-	  Node2_Radio1_RxData;...
-	  Node2_Radio2_RxData;...
-	  Node2_Radio3_RxData;...
-	  Node2_Radio4_RxData;...
-	  Node1_Radio1_RxData;...
-	  Node1_Radio2_RxData;...
-	  Node1_Radio3_RxData;...
-	  Node1_Radio4_RxData;...
-	  ];
-      end
+    %%%% ATTACKER %%%%
+    start_point_2 = pkt_start_points(2) + 160 + 10;
+    %[theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, start_point_2);
+    %polar(theta,PMU_trans_7{1}, 'r');
+    [theta, PMU_trans_7, Pos_new] = s_innerloop7(INPDATA, OFF, start_point_2);
+    polar(theta,PMU_trans_7, 'r');
+    hold on
 
-      %for off_index=1:1:2
-
-	    %off_index = off_index
-	    %off_index = 1;
-
-	    start_point_1 = pkt_start_points(1) + 160 + 10;
-
-	    %%%% CLIENT FIRST TX %%%%
-	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, start_point_1);
-	    %if file_num == 5
-	      n_n = 1;
-	      %plot_result(theta, PMU_trans_7, n_n, 'b');
-	      polar(theta,PMU_trans_7{n_n}, 'b');
-	      hold on
-	    %end
-
-	    start_point_2 = pkt_start_points(2) + 160 + 10;
-
-	    %%%% ATTACKER %%%%
-	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, start_point_2);
-	    %if file_num == 5
-	      n_n = 1;
-	      %plot_result(theta, PMU_trans_7, n_n);
-	      polar(theta,PMU_trans_7{n_n}, 'r');
-	      hold on
-	    %end
-
-
-	    %off_index = 2;
-
-	    %[theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, 0);
-	    %%if file_num == 5
-	    %  n_n = 1;
-	    %  %plot_result(theta, PMU_trans_7, n_n, 'b');
-	    %  polar(theta,PMU_trans_7{n_n}, 'b');
-	    %  hold on
-	    %%end
-
-	    %%%% CLIENT SECOND TX %%%%
-% 	    [theta, PMU_trans_7, Pos_new] = s_innerloop(INPDATA, OFF, off_index);
-% 	    %if file_num == 5
-% 	      n_n = 1;
-% 	      %plot_result(theta, PMU_trans_7, n_n);
-% 	      polar(theta,PMU_trans_7{n_n}, 'g');
-% 	      hold on
-% 	    %end
-
-
-
-	    end
+    %end
             
-	    %SIMILARITY
+    %SIMILARITY
             
         
-      %end %end of off_index=1:2 for loop
-      hold off
+    hold off
 
     if nargin < 1
     ev=['clear load/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_'  sprintf('%03d', file_num) '.mat'];
@@ -237,16 +186,21 @@ function OFF = offsets(random_num)
   OFF = [OFF12 OFF13 OFF14 OFF15 OFF16 OFF17 OFF18];
 end
 
-function plot_result(theta, PMU_trans_7, n_n)
-      %if (off_index==2 && file_num==28 && random_num==1)
-      %if (off_index==2 && file_num==5 && random_num==1)
-	  
-	  %PMU_trans_7=(PMU_817_ave{n_n}/MA2_817{n_n}).';
-	  a = PMU_trans_7{n_n};
-	  polar(theta,a);
-	  
-	  %hold on
-	  
-      %end
-      %}
+function INPDATA = load_trace_data(file_num)
+  jie_gap= 20000;
+  jie_distance='5cm';
+
+  ev=['load traces/MOBICOM2013_alternative_' int2str(jie_gap) '_' jie_distance '_'  sprintf('%03d', file_num) '.mat'];
+  eval(ev);
+
+  INPDATA=[...
+      Node2_Radio1_RxData;...
+      Node2_Radio2_RxData;...
+      Node2_Radio3_RxData;...
+      Node2_Radio4_RxData;...
+      Node1_Radio1_RxData;...
+      Node1_Radio2_RxData;...
+      Node1_Radio3_RxData;...
+      Node1_Radio4_RxData;...
+      ];
 end

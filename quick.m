@@ -1,15 +1,18 @@
 function quick(t)
   %quick_spectesting()
   %quick_per_vs_msglen()
-  %quick_cplentesting(t)
-  quick_cplentesting_pxb()
+  quick_cplentesting(t)
+  %quick_cplentesting_pxb()
 end
 
 function quick_cplentesting(t)
   %cnrs = 25:3:60;
+  %cnrs = 25:3:45;
+  cnrs = [31:3:45];
+  %cnrs = [18 22];
   %cnrs = 55;
   %cnrs = Inf;
-  cnrs = 50;
+  %cnrs = 50;
   %cnrs = 100;
   %cplens=[16,32,64];
 
@@ -22,15 +25,15 @@ function quick_cplentesting(t)
   %ch = 'f10';
   %ch = 'f100';
   %ch = 'f50';
-  %ch = 'f20';
-  ch = 'passthrough';
+  ch = 'f20';
+  %ch = 'passthrough';
   nbytes = 1000;
-  %nmsgs = 500;
+  nmsgs = 500;
   %nmsgs = 200;
   %nmsgs = 50;
   %nmsgs = 10;
   %nmsgs = 3;
-  nmsgs = 1;
+  %nmsgs = 1;
   %parfor cplen_idx = 1:length(cplens)
   %for cplen_idx = 1:length(cplens)
   for cplen_idx = t:t
