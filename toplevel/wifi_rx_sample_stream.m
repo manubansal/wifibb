@@ -2,7 +2,7 @@
 %>> [samples, n_samples] = load_samples('../wifibb-traces/traces54/usrp-1s.dat','cplx');
 %>> rx_sample_stream(samples)
 
-function rx_pkts = rx_sample_stream(samples, cplen)
+function rx_pkts = wifi_rx_sample_stream(samples, cplen)
   [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   %path = sprintf('%s/%s*', BDATA_DIR, confStr)
 

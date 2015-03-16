@@ -1,4 +1,4 @@
-function quick(t)
+function test_quick(t)
   %quick_spectesting()
   %quick_per_vs_msglen()
   quick_cplentesting(t)
@@ -6,6 +6,13 @@ function quick(t)
 end
 
 function quick_cplentesting(t)
+ cd parambuilders
+ dp = default_sim_parameters();
+ tp = wifi_tx_parameters();
+ rp = wifi_rx_parameters();
+ cp = wifi_common_parameters();
+ cd ..
+
   %cnrs = 25:3:60;
   %cnrs = 25:3:45;
   cnrs = [31:3:45];
@@ -39,7 +46,10 @@ function quick_cplentesting(t)
   for cplen_idx = t:t
     cplen = cplens(cplen_idx);
     lb = sprintf('cp%d%s', cplen, ch)
-    for cnr = cnrs; test_wifi_chain(lb,cnr, nbytes, 54, nmsgs, ch, [cplen,cplen,cplen,cplen]); end
+    for cnr = cnrs; 
+      %test_wifi_chain(lb,cnr, nbytes, 54, nmsgs, ch, [cplen,cplen,cplen,cplen]); 
+      test_wifi_chain(dp,tp,rp,cp,lb,cnr, nbytes, 54, nmsgs, ch, [cplen,cplen,cplen,cplen]); 
+    end
   end
 end
 

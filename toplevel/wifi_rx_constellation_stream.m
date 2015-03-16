@@ -3,7 +3,7 @@
 %>> rx_constellation_stream(constpoints)
 % payload_len is in number of bytes
 
-function rx_constellation_stream(samples, payload_len)
+function wifi_rx_constellation_stream(samples, payload_len)
   [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   %path = sprintf('%s/%s*', BDATA_DIR, confStr)
 

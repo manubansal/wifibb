@@ -13,7 +13,7 @@ function test_wifi_chain(sim_params, tx_params, rx_params, common_params, tag, s
   end
 
   if nargin < 3
-  tx_params = wifi_rx_parameters();
+  rx_params = wifi_rx_parameters();
   end
 
   if nargin < 4
