@@ -28,5 +28,4 @@ function [h, ltf_x] = wifi_time_domain_channel_impulse_response(ltf_sync_freq_do
   %stem(abs(h))
   %xlabel('Sample index','FontSize',20)
   %ylabel('Relative magnitude','FontSize',20)
-  %pause
 end

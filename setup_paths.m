@@ -2,6 +2,8 @@ function [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   addpath('./wifi');
   addpath('./util');
   addpath('./unittests');
+  addpath('./mimoch');
+  addpath('./loc');
 
   setenv('TRACE_DIR', './traces');
   setenv('DATA_DIR', strcat(getenv('TRACE_DIR'), '/data'));
