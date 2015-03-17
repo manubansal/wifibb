@@ -36,12 +36,12 @@ Explicitly building parameters
 and running standalone test
 -----------------------------
 >> setup_paths
->> cd parambuilders
+>> cd parambuilders/wifi64
 >> dp = default_sim_parameters();
 >> tp = wifi_tx_parameters();
 >> rp = wifi_rx_parameters();
 >> cp = wifi_common_parameters();
->> cd ..
+>> cd ../..
 >> test_wifi_chain(dp,tp,rp,cp);
 
 -----------------------------

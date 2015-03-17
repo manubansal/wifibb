@@ -7,12 +7,12 @@ function [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   addpath([cwd '/loc']);
   addpath([cwd '/toplevel']);
   addpath([cwd '/examples']);
-  addpath([cwd '/parambuilders']);
   addpath([cwd]);
 
   setenv('TRACE_DIR', [cwd '/traces']);
   setenv('DATA_DIR', strcat(getenv('TRACE_DIR'), '/data'));
-
+  setenv('PARAMS_DIR', [cwd '/parambuilders']);
+  
   TRACE_DIR = [cwd '/traces'];
   DATA_DIR = strcat(TRACE_DIR, '/data');
   CDATA_DIR = strcat(TRACE_DIR, '/cdata');	%c-style data

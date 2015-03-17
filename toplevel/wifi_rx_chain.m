@@ -1,5 +1,5 @@
 %------------------------------------------------------------------------------------
-function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr, cplen)
+function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, sim_params, copt, opt, stats, confStr, cplen)
 %------------------------------------------------------------------------------------
   rx_data_bytes = [];
 
@@ -44,7 +44,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   [stats, pkt_samples, coarse_cfo_freq_off_khz] = ...
   	wifi_coarse_cfo_correction(opt, stats, pkt_samples, data.corrvec, data.pkt_start_point);
   [stats, pkt_samples, fine_cfo_freq_off_khz] = ...
-  	wifi_fine_cfo_correction(opt, stats, pkt_samples, cplen);
+  	wifi_fine_cfo_correction(copt, opt, stats, pkt_samples, cplen);
 
   net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
 
@@ -60,7 +60,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
 
 
   [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi] ...
-  		= wifi_preamble_channel_estimation(opt, stats, pkt_samples, cplen);
+  		= wifi_preamble_channel_estimation(copt, opt, stats, pkt_samples, cplen);
 
   [avgsnr avgsnr_dB snr_vector snr_vector_dB avgsnr_cross_dB] = util_ltfSNR(uu_ltf1, uu_ltf2, chi);
   ltf_avgsnr_dB = avgsnr_dB
@@ -89,7 +89,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %%********************************
   %%%%%%%%% process signal field
   %%********************************
-  sim_params = default_sim_parameters();
   [ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameter_parser(opt,sim_params.rate_sig);
   nbpsc = nbpsc_sig;	%signal field is coded with bpsk
   nsyms = sim_params.sig_syms;	%signal field occupies one ofdm symbol
@@ -191,7 +190,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
     writeVars_decode(rx_data_bits_deint, opt.soft_slice_nbits, opt.tblen_signal, rx_data_bits_dec);
   end
 
-  [stats data]				= wifi_parse_signal_top(data, opt, stats, rx_data_bits_dec);
+  [stats data]				= wifi_parse_signal_top(data, sim_params, copt, opt, stats, rx_data_bits_dec);
 
   %%*********************************
   %%%%%% decide whether to process data field
@@ -385,7 +384,6 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   %decode the actual data length portion
-  sim_params = default_sim_parameters();
   data_and_tail_length_bits = sim_params.service_bits + data.sig_payload_length * 8 + sim_params.tail_bits;	%first 16 for service, last 6 for tail
   actual_data_portion_with_tail = rx_data_bits_depunct(1:(data_and_tail_length_bits * 2));	%since it's a half rate code
 

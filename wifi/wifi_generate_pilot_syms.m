@@ -1,10 +1,10 @@
 
 %----------------------------------------------------------------------------------------------------------------------------
-function tx_pilot_syms = generate_pilot_syms(datalength_nsyms)
+function tx_pilot_syms = wifi_generate_pilot_syms(common_params, datalength_nsyms)
 %----------------------------------------------------------------------------------------------------------------------------
   %pilot generative code
 
-  common_params = wifi_common_parameters({});
+%  common_params = wifi_common_parameters({});
   nsubc = common_params.nsubc;
 
   % Pilot Subcarrier Sequence Generator %
@@ -12,7 +12,7 @@ function tx_pilot_syms = generate_pilot_syms(datalength_nsyms)
   
   pilot_sc_ext = [pilot_sc pilot_sc pilot_sc pilot_sc pilot_sc]; %127 * 5 = 635 long - enough for all packet lengths
 
-  if nargin < 1
+  if nargin < 2
     datalength_nsyms = length(pilot_sc_ext);
   end
 

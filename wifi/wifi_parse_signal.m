@@ -1,10 +1,8 @@
 
-function [rate len modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(rx_sig_field)
+function [rate len modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(sim_params, common_params, rx_sig_field)
   %display('wifi_parse_signal input:');
   %rx_sig_field
 
-  common_params = wifi_common_parameters({});
-  sim_params = default_sim_parameters();
   rate_idx = [6 7 2 3 4 5 0 1];
 
   %rate_chart = [48 54 12 18 24 36 6 9];

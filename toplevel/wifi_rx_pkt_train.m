@@ -1,4 +1,4 @@
-function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(opt, samples, confStr, cplen)
+function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(sim_params, copt, opt, samples, confStr, cplen)
   %scale = sqrt(2);
   scale = 'kk';
   %mod = 'jj';
@@ -25,7 +25,7 @@ function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(opt, samples, confStr, 
 
   data.samples = samples;
 
-  pilot_syms = wifi_generate_pilot_syms();
+  pilot_syms = wifi_generate_pilot_syms(copt);
 
   data.sig_and_data_tx_pilot_syms = [pilot_syms];
   data.pkt_start_point = -1;
@@ -73,7 +73,7 @@ function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(opt, samples, confStr, 
 
     %analyze next packet
     display('-------------- analyzing next packet --------------')
-    [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, opt, stats, confStr, cplen);
+    [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = wifi_rx_chain(data, sim_params, copt, opt, stats, confStr, cplen);
     display(['frame_type: ',num2str(frame_type),' crcValid: ',num2str(crcValid)])
     if crcValid == -1
       display('this pkt could not be processed through the receive chain, maybe because of insufficient samples')

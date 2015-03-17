@@ -1,8 +1,8 @@
 
 %------------------------------------------------------------------------------------
-function [stats data rx_data_bits_dec ndbps nsyms] = wifi_parse_signal_top(data, opt, stats, rx_data_bits_dec)
+function [stats data rx_data_bits_dec ndbps nsyms] = wifi_parse_signal_top(data, sim_params, copt, opt, stats, rx_data_bits_dec)
 %------------------------------------------------------------------------------------
-  [rate length modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(rx_data_bits_dec);
+  [rate length modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(sim_params, copt, rx_data_bits_dec);
   display('------------------------------------------------------------');
   display('parse signal results: ');
   %display('data bits:');

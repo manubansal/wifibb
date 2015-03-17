@@ -1,12 +1,11 @@
 
-function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(opt, stats, pkt_samples, cplen)
+function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(copt, opt, stats, pkt_samples, cplen)
   sample_duration_sec = opt.sample_duration_sec;
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
   sig_len = opt.sig_len;
   ltf_shift_len = opt.ltf_shift_len;
 
-  copt = wifi_common_parameters({});
   cp_len_ltf = copt.cp_len_s_ltf;
   cp_skip_ltf  = copt.cp_skip_ltf;
 

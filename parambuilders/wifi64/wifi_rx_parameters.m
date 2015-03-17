@@ -1,6 +1,7 @@
 function opt = wifi_rx_parameters(scale, mod, opt)
-  [DATA_DIR, TRACE_DIR] = setup_paths();
-
+  %[DATA_DIR, TRACE_DIR] = setup_paths();
+  TRACE_DIR = getenv('TRACE_DIR');
+  
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   % user configuration
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%

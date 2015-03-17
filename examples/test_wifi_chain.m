@@ -3,21 +3,30 @@ function test_wifi_chain(sim_params, tx_params, rx_params, common_params, tag, s
   %df = sprintf('diary.test_wifi_chain.%s.%d.%d.%d.%d', tag, snr, msglen, rate, nmsgs)
   %diary(df);
   %df = df
-
+  
+  CURR_DIR = pwd;    
   if nargin < 1
-  sim_params = default_sim_parameters();
+      cd(strcat(getenv('PARAMS_DIR'), '/wifi64'));
+      sim_params = default_sim_parameters();
+      cd(CURR_DIR);
   end
   
   if nargin < 2
-  tx_params = wifi_tx_parameters();
+      cd(strcat(getenv('PARAMS_DIR'), '/wifi64'));
+      tx_params = wifi_tx_parameters();
+      cd(CURR_DIR);
   end
 
   if nargin < 3
-  rx_params = wifi_rx_parameters();
+      cd(strcat(getenv('PARAMS_DIR'), '/wifi64'));
+      rx_params = wifi_rx_parameters();
+      cd(CURR_DIR);
   end
 
   if nargin < 4
-  common_params = wifi_common_parameters({});
+      cd(strcat(getenv('PARAMS_DIR'), '/wifi64'));
+      common_params = wifi_common_parameters({});
+      cd(CURR_DIR);
   end
 
   if nargin < 5
@@ -71,7 +80,7 @@ function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, c
   %% pick the message(s)
   %%%%%%%%%%%%%%%%%%%%%%
   msgs_hex = util_msg_hex(msglen);
-  n_msgs = length(msgs_hex);
+  n_msgs = length(msgs_hex); 
   if n_msgs ~= 1
     warning('using only the first msg')
   end
@@ -120,7 +129,7 @@ function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, c
   %%%%%%%%%%%%%%%%%%%%%%
   %% decode messages
   %%%%%%%%%%%%%%%%%%%%%%
-  rx_pkts = wifi_rx_pkt_train(rxp, td_pkt_samples_16bit, confStr, cplen);
+  rx_pkts = wifi_rx_pkt_train(smp, cmp, rxp, td_pkt_samples_16bit, confStr, cplen);
 
   %%%%%%%%%%%%%%%%%%%%%%
   %% detailed comparison
