@@ -1,5 +1,5 @@
-function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(cmp, msg_scr, rate, plcp_or_data, confStr, tx_params)
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate);
+function [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(cmp, msg_scr, rate, rate_chart, plcp_or_data, confStr, tx_params)
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate, rate_chart);
   n_ofdm_syms = length(msg_scr)/ndbps;
   %pause
 

@@ -42,7 +42,7 @@ function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(sim_params, copt, opt, 
   end
 
 
-  data.deinterleave_tables = wifi_deinterleaveTables(opt);
+  data.deinterleave_tables = wifi_deinterleaveTables(opt, sim_params);
 
   t = 0;
   ber = 0;

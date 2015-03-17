@@ -22,7 +22,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   rate_chart = sim_params.rate_chart;
   tx_sig_field = wifi_pack_signal(rate, rate_chart, base_msg_len_bytes);
   %tx_sig_field = wifi_pack_signal(rate, orig_base_msg_len_bytes);
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate_sig);
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate_sig, rate_chart);
   
   npad = ceil(length(tx_sig_field)/ndbps) * ndbps - length(tx_sig_field);
   pad = zeros(1, npad);
@@ -31,12 +31,12 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
   %n_ofdm_syms_sig = 1;
   %tx_sig_field = tx_sig_field
   %pause
-  [sigsym, ig1, ig2] = wifi_tx_chain_inner(cmp, tx_sig_field, rate_sig, 'plcp', confStr, tx_params);
+  [sigsym, ig1, ig2] = wifi_tx_chain_inner(cmp, tx_sig_field, rate_sig, rate_chart,'plcp', confStr, tx_params);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% create the data field
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
-  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate);
+  [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate, rate_chart);
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   %% prepare the message with service, tail and pad bits
@@ -74,7 +74,7 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_sample
 
 
   %--------------------------------------------------------------------------------------
-  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(cmp, msg_scr, rate, 'data', confStr, tx_params);
+  [mapped_syms, databits_i_all, databits_q_all] = wifi_tx_chain_inner(cmp, msg_scr, rate, rate_chart, 'data', confStr, tx_params);
   %--------------------------------------------------------------------------------------
 
   samples_f = reshape(mapped_syms, prod(size(mapped_syms)), 1);

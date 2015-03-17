@@ -1,11 +1,11 @@
 
-function [t] = wifi_deinterleaveTables(cmp)
+function [t] = wifi_deinterleaveTables(cmp,smp)
   %ncbps = 48, 96, 192, 288
   %nbpsc = 1, 2, 4, 6
-  [~, ~, ncbps_bpsk, nbpsc_bpsk, ~, ~, ~, ~] = wifi_parameter_parser(cmp, 6);
-  [~, ~, ncbps_qpsk, nbpsc_qpsk, ~, ~, ~, ~] = wifi_parameter_parser(cmp, 12);
-  [~, ~, ncbps_qam16, nbpsc_qam16, ~, ~, ~, ~] = wifi_parameter_parser(cmp, 24);
-  [~, ~, ncbps_qam64, nbpsc_qam64, ~, ~, ~, ~] = wifi_parameter_parser(cmp, 48);
+  [~, ~, ncbps_bpsk, nbpsc_bpsk, ~, ~, ~, ~] = wifi_parameter_parser(cmp, smp.rate_chart(1), smp.rate_chart);
+  [~, ~, ncbps_qpsk, nbpsc_qpsk, ~, ~, ~, ~] = wifi_parameter_parser(cmp, smp.rate_chart(3), smp.rate_chart);
+  [~, ~, ncbps_qam16, nbpsc_qam16, ~, ~, ~, ~] = wifi_parameter_parser(cmp, smp.rate_chart(5), smp.rate_chart);
+  [~, ~, ncbps_qam64, nbpsc_qam64, ~, ~, ~, ~] = wifi_parameter_parser(cmp, smp.rate_chart(7), smp.rate_chart);
   
   t.bpsk = table(ncbps_bpsk, nbpsc_bpsk);
   t.qpsk = table(ncbps_qpsk, nbpsc_qpsk);

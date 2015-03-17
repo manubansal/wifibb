@@ -4,12 +4,13 @@ power_access = 1;
 power_quickc = 0;
 
 %% Generate the LTE access signal
-cd(strcat(getenv('PARAMS_DIR'),'/wifi64'))
+cd(strcat(getenv('PARAMS_DIR'),'/access1024'))
 
 access_sim_params = default_sim_parameters();
 access_tx_params = wifi_tx_parameters();
 access_rx_params = wifi_rx_parameters();
 access_common_params = wifi_common_parameters({});
+cd ../..
 
 access_msg = zeros(access_sim_params.msglen*8, 1);
 access_rate = access_sim_params.rate;
@@ -21,12 +22,13 @@ access_cplen = access_common_params.cplen;
 access_samples = td_pkt_samples;
 
 %% Generate the QuickC signal
-cd(strcat(getenv('PARAMS_DIR'),'/wifi64'))
+cd(strcat(getenv('PARAMS_DIR'),'/quickc1024'))
 
 quickc_sim_params = default_sim_parameters();
 quickc_tx_params = wifi_tx_parameters();
 quickc_rx_params = wifi_rx_parameters();
 quickc_common_params = wifi_common_parameters({});
+cd ../..
 
 quickc_msg = zeros(quickc_sim_params.msglen*8, 1);
 quickc_rate = quickc_sim_params.rate;
@@ -58,7 +60,7 @@ display('------------------- begin find_stream_correlation -------------------')
 display('------------------- done find_stream_correlation -------------------');
 
 %% Detect Packet
-data.deinterleave_tables = wifi_deinterleaveTables(access_rx_params);
+data.deinterleave_tables = wifi_deinterleaveTables(access_rx_params, access_sim_params);
 
 display('-------------- detecting packet --------------')
 [stats data] = wifi_detect_next_packet(data, access_rx_params, stats);
@@ -88,7 +90,7 @@ display('------------------- done detecting packet -------------------');
 %% Process Packet Header
 
 sig_samples = pkt_samples(access_common_params.stf_len + access_common_params.ltf_len + 1:access_common_params.stf_len + access_common_params.ltf_len + access_common_params.sig_len);
-[ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameter_parser(access_rx_params, access_sim_params.rate_sig);
+[ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameter_parser(access_rx_params, access_sim_params.rate_sig, access_sim_params.rate_chart);
 nbpsc = nbpsc_sig;	%signal field is coded with bpsk
 nsyms = access_sim_params.sig_syms;	%signal field occupies one ofdm symbol
 [ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(access_rx_params,0);

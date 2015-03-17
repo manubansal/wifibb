@@ -89,7 +89,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %%********************************
   %%%%%%%%% process signal field
   %%********************************
-  [ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameter_parser(opt,sim_params.rate_sig);
+  [ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameter_parser(opt,sim_params.rate_sig, sim_params.rate_chart);
   nbpsc = nbpsc_sig;	%signal field is coded with bpsk
   nsyms = sim_params.sig_syms;	%signal field occupies one ofdm symbol
 
