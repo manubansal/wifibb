@@ -1,5 +1,5 @@
 
-function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen)
 
   %sim_params = default_sim_parameters();
   %tx_params = wifi_tx_parameters();

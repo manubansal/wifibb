@@ -2,6 +2,10 @@
 %----------------------------------------------------------------------------------------------------------------------------
 function [stats data]= wifi_find_stream_correlation(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
+  if nargin < 3
+      stats = util_rx_stats();
+  end
+  
   %plotSamples(samples);
   samples = data.samples;
   corrwin = opt.corrwin;

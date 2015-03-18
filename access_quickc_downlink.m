@@ -6,7 +6,6 @@ power_quickc = 0.0307;
 
 %% Generate the LTE access signal
 cd(strcat(getenv('PARAMS_DIR'),'/access1024'))
-
 access_sim_params = default_sim_parameters();
 access_tx_params = wifi_tx_parameters();
 access_rx_params = wifi_rx_parameters();
@@ -17,14 +16,13 @@ access_msg = zeros(access_sim_params.msglen*8, 1);
 access_rate = access_sim_params.rate;
 access_cplen = access_common_params.cplen;
 
-[samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(...
+[ig1, ig2, ig3, ig4, td_data_samples, td_pkt_samples, ig5] = wifi_tx_chain(...
     access_sim_params, access_tx_params, access_common_params, access_msg, access_rate, 'Access' , access_cplen);
 
 access_samples = td_pkt_samples;
 
 %% Generate the QuickC signal
 cd(strcat(getenv('PARAMS_DIR'),'/quickc1024'))
-
 quickc_sim_params = default_sim_parameters();
 quickc_tx_params = wifi_tx_parameters();
 quickc_rx_params = wifi_rx_parameters();
@@ -35,7 +33,7 @@ quickc_msg = zeros(quickc_sim_params.msglen*8, 1);
 quickc_rate = quickc_sim_params.rate;
 quickc_cplen = quickc_common_params.cplen;
 
-[samples_f, n_ofdm_syms, databits_i, databits_q, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(...
+[ig1, ig2, ig3, ig4, td_data_samples, td_pkt_samples, ig5] = wifi_tx_chain(...
     quickc_sim_params, quickc_tx_params, quickc_common_params, quickc_msg, quickc_rate, 'QuickC', quickc_cplen);
 
 quickc_samples =  vertcat(zeros(length(td_pkt_samples) - length(td_data_samples), 1), td_data_samples);

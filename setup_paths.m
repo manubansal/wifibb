@@ -7,6 +7,7 @@ function [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths()
   addpath([cwd '/loc']);
   addpath([cwd '/toplevel']);
   addpath([cwd '/examples']);
+  addpath([cwd '/demo_downlink']);
   addpath([cwd]);
 
   setenv('TRACE_DIR', [cwd '/traces']);
