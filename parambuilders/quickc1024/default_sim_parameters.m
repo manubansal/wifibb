@@ -8,7 +8,7 @@ function [sim_params] = default_sim_parameters()
         [3.4560, 5.1840, 6.9120, 10.3680, 13.8240, 20.7360, 27.6480, 31.1040];   
     
     
-    sim_params.rate = 31.1040; 
+    sim_params.rate = 10.3680; %31.1040; 
     sim_params.rate_sig = 3.4560; 
     
     sim_params.msglen = 500;

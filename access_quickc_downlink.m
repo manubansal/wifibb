@@ -1,7 +1,8 @@
 %% parameters
-overall_snr = 25;
-power_access = 1;
-power_quickc = 0;
+overall_snr = 30;
+% 15 dB margin 
+power_access = 0.9693;
+power_quickc = 0.0307;
 
 %% Generate the LTE access signal
 cd(strcat(getenv('PARAMS_DIR'),'/access1024'))
@@ -159,9 +160,88 @@ end
 [stats data rx_data_syms rx_pilot_syms uu_pilot_syms ofdm_syms_f] = ...
     wifi_pilot_sampling_delay_correction(stats, data, access_rx_params, ofdm_syms_f, uu_pilot_syms, nsyms + 1);
 
-%% Throw away signal field
-rx_data_syms(:,1)=[];
-rx_data_syms = rx_data_syms(:,1:nsyms);
+%% Throw away postpad - keep the sig samples
+rx_data_syms = rx_data_syms(:,1:nsyms+1);
+
+%% Assume that the access layer is in QPSK for data and BPSK for signal field and guess the symbols
+
+QPSK = [-1-1j,-1+1j, 1-1j, 1+1j]./sqrt(2);
+BPSK = [-1, 1];
+
+data_pos_real = real(rx_data_syms(2:end,:)) > 0;
+data_pos_imag = imag(rx_data_syms(2:end,:)) > 0;
+
+data_guesses = QPSK(1)*(~data_pos_real & ~data_pos_imag) + ...
+QPSK(2)*(~data_pos_real & data_pos_imag) + ...
+QPSK(3)*(data_pos_real & ~data_pos_imag) + ...
+QPSK(4)*(data_pos_real & data_pos_imag) ;
+
+sig_pos = real(rx_data_syms(1,:)) > 0;
+
+sig_guesses = BPSK(1)*(~sig_pos) + BPSK(2)*sig_pos; 
+
+overall_guesses = vertcat(sig_guesses, data_guesses);
+
+%% cancel the symbols
+
+rx_data_syms = rx_data_syms - overall_guesses;
+
+%% re-scale the new constellation (quickc)
+
+rx_data_syms = rx_data_syms*sqrt(power_access)/sqrt(power_quickc);
+
+%% Process Packet Header for quickc
+
+[ndbps_sig, rt120_sig, ncbps_sig, nbpsc_sig, nsubc_sig, psubc_idx_sig, d1subc_idx_sig, dsubc_idx_sig] = wifi_parameter_parser(quickc_rx_params, quickc_sim_params.rate_sig, quickc_sim_params.rate_chart);
+nbpsc = nbpsc_sig;	%signal field is coded with bpsk
+nsyms = quickc_sim_params.sig_syms;	%signal field occupies one ofdm symbol
+[ig1, ig2, ig3, ig4, nsubc, psubc_idx, d1subc_idx, dsubc_idx] = wifi_parameter_parser(quickc_rx_params,0);
+
+[rx_data_bits]  		= wifi_wrapper_demap_packet(rx_data_syms(:,1), nsyms, nbpsc, quickc_rx_params.soft_slice_nbits);
+
+[stats data rx_data_bits_deint]   = wifi_wrapper_deinterleave(data, quickc_rx_params, stats, rx_data_bits, nbpsc);
+
+
+[rx_data_bits_dec]    = wifi_wrapper_decode(rx_data_bits_deint,ndbps_sig - 6 , quickc_rx_params);
+
+[stats data]		= wifi_parse_signal_top(data, quickc_sim_params, quickc_common_params, quickc_rx_params, stats, rx_data_bits_dec);
+
+%% validity of sig field of quickc
+
+nbpsc = data.sig_modu;
+nsyms = data.sig_nsyms;
+coderate = data.sig_code;
+
+not_enough_samples = false;
+if (size(rx_data_syms(:, 2:end),2) < nsyms )
+    not_enough_samples = true;
+end
+
+
+if (~(data.sig_valid && data.sig_parityCheck) || not_enough_samples)
+    parsed_data = [];
+    frame_type = -1;
+    ber = -1;
+    crcValid = -1;
+    data.frame_type = frame_type;
+    display('------------------------------------------------------------');
+    display('parse data results: ');
+    display(strcat('frame_type (0: data, 1: ack, 2: unknown):', num2str(frame_type), ...
+        ' ber:', num2str(ber), ' crcValid:', num2str(crcValid)));
+    display('------------------------------------------------------------');
+        
+    if (not_enough_samples)
+        display('ERROR: not enough data samples in the trace, continuing without data decode...')
+    else
+        display('signal field not valid, continuing without data decode...')
+    end
+    
+    return
+end
+
+
+%% Decode quickc
+rx_data_syms = rx_data_syms(:, 2:end);
 
 [rx_data_bits]  = wifi_wrapper_demap_packet(rx_data_syms, data.sig_nsyms, data.sig_modu, access_rx_params.soft_slice_nbits);
 
