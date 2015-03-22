@@ -30,12 +30,16 @@ function [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correct
     angle_corr_short = angle(sum(conj(stf_penultimate_period) .* stf_last_period));
     angle_corr_pred_from_short = angle_corr_short * (opt.num_stf_periods/2);
     %freq_off_khz = (angle_corr/(pi*stf_len*sample_duration_sec))/1000
-    freq_off_khz_short = (angle_corr_short/(2*pi*stf_period*sample_duration_sec))/1000;
+   % freq_off_khz_short = (angle_corr_short/(2*pi*stf_period*sample_duration_sec))/1000;
 
     if (abs(angle_corr_pred_from_short - angle_corr) > pi) 
-      display('CFO detection algorithm maybe be missing multiples of pi.');
+      display('CFO detection algorithm maybe be missing multiples of pi. - correcting for it');
       %display('Inspect the values above and press any key to proceed.');
       %pause
+      %we missed multiples of 2*pi
+      num_cycles_missed = round((angle_corr_pred_from_short - angle_corr)/(2*pi));
+      angle_corr = angle_corr + num_cycles_missed*2*pi;
+      freq_off_khz = (angle_corr/(2*pi*stf_shift_len*sample_duration_sec))/1000;
     end
 
     stats.coarse_cfo_angle_corr(end+1,:) = angle_corr;
