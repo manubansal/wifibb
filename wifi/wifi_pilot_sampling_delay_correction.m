@@ -62,9 +62,11 @@ wifi_pilot_sampling_delay_correction(stats, data, opt, ofdm_syms_f, uu_pilot_sym
     %%%%%%%%% this one seems buggy %%%%%
 
     p_corr_terms = exp(-i * diag([-(opt.nsubc/2):(opt.nsubc/2)-1]) * ones(opt.nsubc,size(ofdm_syms_f,2)) * diag(p_vec));
+    data.p_corr_terms = p_corr_terms;
     ofdm_syms_f = ofdm_syms_f .* p_corr_terms;
 
     rx_pilot_syms = ofdm_syms_f(psubc_idx, :);
+    data.rx_pilot_syms_after_pilot_sampling_delay_correction = rx_pilot_syms;
     uu_pilot_syms = rx_pilot_syms .* tx_pilot_syms;	%tx pilot symbols are all +-1, so this gives 
   							%the rx symbol corresponding to tx symbol 1
 

@@ -86,6 +86,7 @@ function [stats, pkt_samples, coarse_cfo_freq_off_khz] = wifi_coarse_cfo_correct
 
     %cfo correction
     pkt_samples = pkt_samples .* cfo_corr;
+    stats.coarse_cfo_corr_vector = cfo_corr;
 
     %cfo corrected ltf and data portions
     ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
