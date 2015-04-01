@@ -93,7 +93,7 @@ function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, c
   %% conf string
   %%%%%%%%%%%%%%%%%%%%%%
   %confStr = sprintf('rate%d.snr%d.nmsgs%d.scale%04.2f', rate, snr, n_msgs, scale)
-  confStr = sprintf('%s.rate%d.snr%d.nmsgs%d.msglen%d.scale%04.2f', tag, rate, snr, n_msgs, msglen, scale)
+  confStr = sprintf('%s.rate%d.snr%d.nmsgs%d.msglen%d.scale%04.2f', tag, round(rate*1000), snr, n_msgs, msglen, scale)
 
 
   %%%%%%%%%%%%%%%%%%%%%%
