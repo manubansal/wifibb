@@ -24,7 +24,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %base ltf samples, before any rx processing
   ltf_samples = pkt_samples(stf_len+1:stf_len+ltf_len);
   if (opt.dumpVars_ltfRxSamples)
-    util_dumpData('ltfRxSamples', confStr, ltf_samples)
+    util_dumpData(copt, 'ltfRxSamples', confStr, ltf_samples)
   end
 
 

@@ -206,7 +206,7 @@ function util_dumpData(cmp, id, confStr, data)
 
   elseif strcmp(id, 'ltfRxSamples')
     %count_exp = 160;
-    count_exp = 192;
+    count_exp = cmp.ltf_len;
     fprintf(1, 'Dumping ltfRxSamples\n');
     if (sum(size(data(:)) == [count_exp,1]) ~= 2)
       fprintf(1, 'Bad size, skipping\n');

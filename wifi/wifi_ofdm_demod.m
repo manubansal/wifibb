@@ -20,6 +20,7 @@ function [stats data ofdm_syms_f] = wifi_ofdm_demod(samples, nsyms, data, opt, s
   cp_skip  = opt.cp_skip ;
 
   n_syms = length(data_samples)/sym_len_s;
+  data.worst_samples_3 = data_samples;
   %size(data_samples)
   ofdm_syms_t = reshape(data_samples, sym_len_s, n_syms);
   %size(ofdm_syms_t)
@@ -29,12 +30,14 @@ function [stats data ofdm_syms_f] = wifi_ofdm_demod(samples, nsyms, data, opt, s
 
   %for debug
   data.ofdm_syms_t_with_cp = ofdm_syms_t;
+  data.worst_samples_2 = data.ofdm_syms_t_with_cp;
 
   %remove cp
   ofdm_syms_t = ofdm_syms_t(1+cp_skip:cp_skip+fft_size,:);
 
   %for debug
   data.ofdm_syms_t_no_cp = ofdm_syms_t;
+  data.worst_samples_1 = data.ofdm_syms_t_no_cp;
 
   %ofdm demod
   ofdm_syms_f = fftshift(fft(ofdm_syms_t),1);	%fftshift along rows (each column is fftshifted)
