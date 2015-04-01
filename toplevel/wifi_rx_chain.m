@@ -46,7 +46,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   [stats, pkt_samples, fine_cfo_freq_off_khz] = ...
   	wifi_fine_cfo_correction(copt, opt, stats, pkt_samples, cplen);
 
-  net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz
+  net_cfo_freq_off_khz = coarse_cfo_freq_off_khz + fine_cfo_freq_off_khz;
+  display(['net_cfo_freq_off_khz: ' num2str(net_cfo_freq_off_khz)]);
 
   %signal field samples after cfo correction
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
@@ -63,8 +64,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   		= wifi_preamble_channel_estimation(copt, opt, stats, pkt_samples, cplen);
 
   [avgsnr avgsnr_dB snr_vector snr_vector_dB avgsnr_cross_dB] = util_ltfSNR(uu_ltf1, uu_ltf2, chi);
-  ltf_avgsnr_dB = avgsnr_dB
-  ltf_avgsnr_dB_cross = avgsnr_cross_dB
+  ltf_avgsnr_dB = avgsnr_dB;
+  ltf_avgsnr_dB_cross = avgsnr_cross_dB;
 
   sig_samples = pkt_samples(stf_len+ltf_len+1:stf_len+ltf_len+sig_len);
   data_samples = pkt_samples(stf_len+ltf_len+sig_len+1:end);
@@ -138,7 +139,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
   %++++++++++++++++++++++++++++++++++++++++++++++
 
   [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  avgsnr_dB_from_plcp_constellation_evm = avgsnr_dB
+  avgsnr_dB_from_plcp_constellation_evm = avgsnr_dB;
 
   plcp_rx_data_syms = rx_data_syms;
 
@@ -159,8 +160,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
       end
   end
 
-  ltf_avgsnr_dB = ltf_avgsnr_dB
-  ltf_avgsnr_dB_cross = ltf_avgsnr_dB_cross
+  ltf_avgsnr_dB = ltf_avgsnr_dB;
+  ltf_avgsnr_dB_cross = ltf_avgsnr_dB_cross;
 
   display('plotted plcp constellation, continue?')
   %pause
@@ -328,7 +329,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
 
   %NOTE: the following can be very inaccurate. ltf SNR is a much better estimate.
   [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(rx_data_syms, nbpsc);
-  avgsnr_dB_from_data_constellation_evm = avgsnr_dB
+  avgsnr_dB_from_data_constellation_evm = avgsnr_dB;
 
 
   % plot the constellation for data part
@@ -483,9 +484,12 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
     ' ber:', num2str(ber), ' seq:', seq, ' crcValid:', num2str(crcValid)));
   display('---------------------------------------------------------------------');
 
-  power_ratio_SNR_dB = (stats.snr_db(end))
-  ltf_avgsnr_dB = ltf_avgsnr_dB
-  avgsnr_dB_from_data_constellation_evm = avgsnr_dB_from_data_constellation_evm
+  power_ratio_SNR_dB = (stats.snr_db(end));
+  %ltf_avgsnr_dB = ltf_avgsnr_dB;
+  %avgsnr_dB_from_data_constellation_evm = avgsnr_dB_from_data_constellation_evm;
+  display(['power_ratio_SNR_dB: ' num2str(power_ratio_SNR_dB)]);
+  display(['ltf_avgsnr_dB: ' num2str(ltf_avgsnr_dB)]);
+  display(['avgsnr_dB_from_data_constellation_evm: ' num2str(avgsnr_dB_from_data_constellation_evm)]);
 
   %%***************************************
   %% update statistics

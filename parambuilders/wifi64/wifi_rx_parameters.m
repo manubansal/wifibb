@@ -19,7 +19,7 @@ function opt = wifi_rx_parameters(scale, mod, opt)
     %opt.trace.traceFolder = 'traces-wifi-sbx-decim/'
 
     %opt.trace.traceFolder = '../wifibb-traces/traces-wifi-sbx-decim/'
-    opt.trace.traceFolder = strcat(TRACE_DIR, '/traces-wifi-sbx-decim/')
+    opt.trace.traceFolder = strcat(TRACE_DIR, '/traces-wifi-sbx-decim/');
 
     %scale = 1;			%factor by which to scale down the samples (so this cuts down the tx gain (linear)
     if (nargin < 1)
@@ -257,7 +257,7 @@ function opt = wifi_rx_parameters(scale, mod, opt)
 
   %rxpkts_nsyms_250_mod_1_scale_256_atten_30_rxgain_35
   %traceFile = strcat('traces/rxpkts_',rxpktparams,'.dat')
-  opt.trace.traceFile = strcat(opt.trace.traceFolder,'/rxpkts_',opt.trace.rxpktparams,'.dat')
+  opt.trace.traceFile = strcat(opt.trace.traceFolder,'/rxpkts_',opt.trace.rxpktparams,'.dat');
   opt.trace.iBitsFile = strcat('data/ibits_',opt.trace.txpktparams,'.mat'); %data bits matrix for I-channel
   opt.trace.qBitsFile = strcat('data/qbits_',opt.trace.txpktparams,'.mat'); %data bits matrix for Q-channel
   opt.trace.symbsFile = strcat('data/symbs_',opt.trace.txpktparams,'.mat');	%modulated data symbols matrix
@@ -285,17 +285,10 @@ function opt = wifi_rx_parameters(scale, mod, opt)
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  display('tx and rx parameters of the experiment:');
-
+  %display('tx and rx parameters of the experiment:');
 
   %% HACK to make sure trace is not being used %%
-  opt.trace = {}
+  opt.trace = {};
 
-  opt
-
-
-
-
-
-
+  %opt
 end

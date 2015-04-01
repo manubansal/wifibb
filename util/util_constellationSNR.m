@@ -72,10 +72,10 @@ function [avgsnr avgsnr_dB snr_vector snr_vector_dB] = util_constellationSNR(poi
   %with EVM Normalization Method chosen as Reference Signal.
   snr_vector = nearest_map_power./noise_power_vector;	%questionable
   snr_vector_dB = 10 * log10(snr_vector);		%questionable
-  mean_reference_symbol_energy = mean(nearest_map_power)
-  mean_error_vector_energy = mean(noise_power_vector)
-  evm_rms = sqrt(mean_error_vector_energy/mean_reference_symbol_energy)
-  snr_from_evm_rms_dB = -20*log10(evm_rms)
+  mean_reference_symbol_energy = mean(nearest_map_power);
+  mean_error_vector_energy = mean(noise_power_vector);
+  evm_rms = sqrt(mean_error_vector_energy/mean_reference_symbol_energy);
+  snr_from_evm_rms_dB = -20*log10(evm_rms);
   avgsnr = 1/(evm_rms^2);
-  avgsnr_dB = snr_from_evm_rms_dB
+  avgsnr_dB = snr_from_evm_rms_dB;
 end

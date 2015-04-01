@@ -40,8 +40,8 @@ function [stats data]= wifi_detect_next_packet(data, opt, stats)
 
   next_search_window_i = next_search_window_start:next_search_window_start+peak_search_win_size-1;
   next_search_window_c = abscorrvec(next_search_window_start:min(end,next_search_window_start+peak_search_win_size-1));
-  [m i] = max(next_search_window_c)
-  pkt_start_point = next_search_window_i(i)
+  [m i] = max(next_search_window_c);
+  pkt_start_point = next_search_window_i(i);
 
   if (length(pkt_start_point) == 0)
     display('no more packets detected');
@@ -49,8 +49,8 @@ function [stats data]= wifi_detect_next_packet(data, opt, stats)
     m = -1;
     i = -1;
   else
-    display('maximum correlation value at any pkt start point:');
-    max_corr_val = m
+    display(['maximum correlation value at any pkt start point:' num2str(m)]);
+    %max_corr_val = m
     stats.min_max_corr_val = min(stats.min_max_corr_val, m);
     stats.max_max_corr_val = max(stats.max_max_corr_val, m);
 
@@ -59,16 +59,17 @@ function [stats data]= wifi_detect_next_packet(data, opt, stats)
 
     %%%version 3
     if (m < sq_corr_threshold)
-      m
-      i
+      %m
+      %i
       error('max_corr_less_than_corr_threshold','packet detect point has correlation value smaller than threshold');
     end
   end
 
   stats.max_corr_val = m;
   display('biasing pkt_start_point by shifting it back by configured number of shift-back samples...');
-  pkt_start_point_old = pkt_start_point
-  pkt_start_point = pkt_start_point - opt.pkt_start_pnt_shift_back_bias_s
+  pkt_start_point_old = pkt_start_point;
+  pkt_start_point = pkt_start_point - opt.pkt_start_pnt_shift_back_bias_s;
+  display(['pkt_start_point: ' num2str(pkt_start_point)]);
   stats.pkt_start_points(end+1,:) = pkt_start_point;
   data.pkt_start_point = pkt_start_point;
 

@@ -14,7 +14,7 @@ function [avgsnr avgsnr_dB snr_vector snr_vector_dB avgsnr_cross_dB] = util_ltfS
   avgsnr = mean(snr_vector);
   avgsnr_dB = 10 * log10(avgsnr);
 
-  avgsnr_cross_dB = 0
+  avgsnr_cross_dB = 0;
   %ltf_snr_vector_dB = snr_vector_dB
 
   %avg_noise_power = mean(noise_power_vector);

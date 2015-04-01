@@ -95,12 +95,12 @@ function [stats data pkt_samples] = wifi_get_packet(data, opt, stats)
   data_power = util_power(data_samples(1:min(length(data_samples),sym_len_s)));%estimate only from the first data symbol
   pkt_power = util_power(pkt_samples);
 
-  idle_noise_power_db = db(idle_noise_power)
-  stf_power_db = db(stf_power)
-  ltf_power_db = db(ltf_power)
-  sig_power_db = db(sig_power)
-  data_power_db = db(data_power)
-  pkt_power_db = db(pkt_power)
+  display(['idle_noise_power_db: ' num2str(db(idle_noise_power))]);
+  display(['stf_power_db 	 ' num2str(db(stf_power))]);
+  display(['ltf_power_db 	 ' num2str(db(ltf_power))]);
+  display(['sig_power_db 	 ' num2str(db(sig_power))]);
+  display(['data_power_db 	 ' num2str(db(data_power))]);
+  display(['pkt_power_db 	 ' num2str(db(pkt_power))]);
 
   snr_lin = stf_power/idle_noise_power;
   snr_db = db(snr_lin);

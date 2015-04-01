@@ -74,11 +74,12 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs
   end
   %size(cat_td_pkt_samples)
 
-  display('number of samples in data packet(s): ')
-  n_samples = length(cat_td_pkt_samples)
-  display('data packet(s) duration (us):')
+  n_samples = length(cat_td_pkt_samples);
+  display(['number of samples in data packet(s): ' num2str(n_samples)]);
+
   samples_per_us = 1/(10^6*common_params.sample_duration_sec);
-  dur_us = n_samples/samples_per_us
+  dur_us = n_samples/samples_per_us;
+  display(['data packet(s) duration (us):' num2str(dur_us)]);
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -159,16 +160,18 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs
   td_pkt_samples_16bit = round(td_pkt_samples*32767/1.0*3);
 
 
-  display('number of samples in zero-padded packet(s): ')
-  n_samples = length(td_pkt_samples_16bit)
-  display('zero-padded packet(s) duration (us):')
-  dur_us = n_samples/samples_per_us
+  n_samples = length(td_pkt_samples_16bit);
+  display(['number of samples in zero-padded packet(s): ' num2str(n_samples)]);
+
+  dur_us = n_samples/samples_per_us;
+  display(['zero-padded packet(s) duration (us):' num2str(dur_us)]);
 
   disp('displaying the maximum real and imaginary components in generated packet');
   disp('make sure they are not over 32767, the maximum permissible 16 bit value');
 
-  max_real=max(real(td_pkt_samples_16bit))
-  max_imag=max(imag(td_pkt_samples_16bit))
+  max_real=max(real(td_pkt_samples_16bit));
+  max_imag=max(imag(td_pkt_samples_16bit));
+  fprintf('max_real: %d, max_imag: %d\n', [max_real max_imag]);
 
   if (max_real > 32767 || max_imag > 32767)
     error('max exceeded','maximum value of a sample exceeds dynamic range; try increasing the scale value.');
