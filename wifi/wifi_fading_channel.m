@@ -14,6 +14,8 @@
 function ys = wifi_fading_channel(xs, ch)
   if strcmp(ch, 'passthrough')
     ys = using_passthrough(xs);
+  elseif strcmp(ch, 'matlablte')
+    ys = using_matlablte(xs);
   elseif strncmp(ch, 'r', 1) || strncmp(ch, 't', 1)
     ys = using_rayleighchan(xs, ch);
   elseif strncmp(ch, 'f', 1)
@@ -23,6 +25,39 @@ function ys = wifi_fading_channel(xs, ch)
   else
   %  error('bad channel selection')
   end
+end
+
+
+function ys = using_matlablte(xs)
+  channel.Seed = 1;
+  channel.NRxAnts = 1;
+
+  %channel.DelayProfile = 'EVA';
+  channel.DelayProfile = 'EPA';
+
+  channel.DopplerFreq = 5;
+
+  %channel.MIMOCorrelation = 'Low';
+  channel.MIMOCorrelation = 'High';
+
+  channel.ModelType = 'GMEDS';        % Rayleigh fading model type
+
+  channel.NormalizeTxAnts = 'On';     % Normalize for transmit antennas
+  channel.NormalizePathGains = 'On';  % Normalize delay profile power
+  channel.InitPhase = 'Random';       % Random initial phases
+  channel.NTerms = 16;                % Oscillators used in fading model
+
+  %channel.SamplingRate = info.SamplingRate;
+  channel.SamplingRate = 15360000;
+
+  % The initialization time for channel modeling is set each
+  % subframe to simulate a continuously varying channel
+  %channel.InitTime = subframeNo/1000;
+  channel.InitTime = 0;
+
+  txWaveform = xs;
+  rxWaveform = lteFadingChannel(channel,txWaveform);
+  ys = rxWaveform;
 end
 
 function ys = using_passthrough(xs)

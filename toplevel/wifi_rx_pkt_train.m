@@ -59,7 +59,9 @@ function [rx_pkts, pkt_start_points] = wifi_rx_pkt_train(sim_params, copt, opt, 
 
     %detect next packet
     display('-------------- detecting next packet --------------')
-    [stats data] = wifi_detect_next_packet(data, opt, stats);
+    [pkt_start_point stats data] = wifi_detect_next_packet(data, opt, stats);
+    data.pkt_start_point = pkt_start_point;
+
     if (data.pkt_start_point == -1)
       display('pkt_start_point is -1, breaking')
       break;

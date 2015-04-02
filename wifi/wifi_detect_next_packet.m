@@ -1,6 +1,6 @@
 
 %----------------------------------------------------------------------------------------------------------------------------
-function [stats data]= wifi_detect_next_packet(data, opt, stats)
+function [pkt_start_point stats data]= wifi_detect_next_packet(data, opt, stats)
 %----------------------------------------------------------------------------------------------------------------------------
   pkt_start_point = -1;
   abscorrvec = data.abscorrvec;
@@ -71,7 +71,8 @@ function [stats data]= wifi_detect_next_packet(data, opt, stats)
   pkt_start_point = pkt_start_point - opt.pkt_start_pnt_shift_back_bias_s;
   display(['pkt_start_point: ' num2str(pkt_start_point)]);
   stats.pkt_start_points(end+1,:) = pkt_start_point;
-  data.pkt_start_point = pkt_start_point;
+
+  %data.pkt_start_point = pkt_start_point;
 
   %display('pkt start points:');
   %pkt_start_points = stats.pkt_start_points

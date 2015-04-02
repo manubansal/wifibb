@@ -125,8 +125,9 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs
   %% apply a fading channel to the transmission
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
 
-  %td_pkt_samples = wifi_fading_channel(td_pkt_samples);
-  all_td_pkt_samples_faded = wifi_fading_channel(all_td_pkt_samples_with_zeropads, ch);
+  %% this one applies a different channel realization to each pkt
+  %all_td_pkt_samples_faded = wifi_fading_channel(all_td_pkt_samples_with_zeropads, ch);
+  all_td_pkt_samples_faded = all_td_pkt_samples_with_zeropads;
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -137,6 +138,9 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs
     td_pkt_samples = [td_pkt_samples; all_td_pkt_samples_faded{ii}];
   end
 
+  %% this one applies the same channel on the full pkt stream
+  td_pkt_samples = wifi_fading_channel(td_pkt_samples, ch);
+  
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% add the AWGN noise vector
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
