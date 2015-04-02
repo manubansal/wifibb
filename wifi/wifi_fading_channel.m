@@ -11,11 +11,15 @@
 
 
 %all_td_pkt_samples_with_zeropads{ii} = [zero_postpad_samples; all_td_pkt_samples{ii}; zero_postpad_samples];
-function ys = wifi_fading_channel(xs, ch)
+function ys = wifi_fading_channel(xs, ch, seed)
   if strcmp(ch, 'passthrough')
     ys = using_passthrough(xs);
   elseif strcmp(ch, 'matlablte')
-    ys = using_matlablte(xs);
+    if nargin < 3
+      %seed = 0 will result in a random seed (default)
+      seed = 0;
+    end
+    ys = using_matlablte(xs, seed);
   elseif strncmp(ch, 'r', 1) || strncmp(ch, 't', 1)
     ys = using_rayleighchan(xs, ch);
   elseif strncmp(ch, 'f', 1)
@@ -28,8 +32,9 @@ function ys = wifi_fading_channel(xs, ch)
 end
 
 
-function ys = using_matlablte(xs)
-  channel.Seed = 1;
+function ys = using_matlablte(xs, seed)
+  %channel.Seed = 1;
+  channel.Seed = seed;
   channel.NRxAnts = 1;
 
   %channel.DelayProfile = 'EVA';
