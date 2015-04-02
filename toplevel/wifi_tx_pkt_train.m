@@ -168,6 +168,7 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
   % and not by quantization noise. in the case of infinite awgn
   % snr, snr would be limited by quantization noise.)
   td_pkt_samples = td_pkt_samples/scale;
+  signal_rms = signal_rms/scale;
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -175,7 +176,6 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   td_pkt_samples_16bit = round(td_pkt_samples*32767/1.0*3);
   signal_rms = signal_rms*32767/1.0*3;
-  signal_rms_linear = signal_rms;
 
 
   n_samples = length(td_pkt_samples_16bit);
@@ -194,4 +194,6 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
   if (max_real > 32767 || max_imag > 32767)
     error('max exceeded','maximum value of a sample exceeds dynamic range; try increasing the scale value.');
   end
+  
+  signal_rms_linear = signal_rms;
 end
