@@ -1,4 +1,4 @@
-function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs_hex, rate, snr, scale, confStr, ch, cplen)
+function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(smp, txp, cmp, msgs_hex, rate, snr, scale, confStr, ch, cplen)
   %sim_params = default_sim_parameters();
   %tx_params = wifi_tx_parameters();
   %common_params = wifi_common_parameters();
@@ -82,28 +82,33 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs
   display(['data packet(s) duration (us):' num2str(dur_us)]);
 
 
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %% compute the AWGN noise vector and compose the packet train with pads
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   signal_rms = rms(cat_td_pkt_samples);
 
-  rms_prepad_samples = zeros(samples_per_us * zero_prepad_dur_us - 1, 1) + signal_rms; 	
-  %-1 in zero-pad-length is because data portion is generated with one
-  %extra sample for windowing
 
-  rms_postpad_samples = zeros(samples_per_us * zero_postpad_dur_us, 1) + signal_rms; 	
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% compute the AWGN noise vector 
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  if ~isfield(txp, 'APPLY_AWGN') || txp.APPLY_AWGN
+    rms_prepad_samples = zeros(samples_per_us * zero_prepad_dur_us - 1, 1) + signal_rms; 	
+    %-1 in zero-pad-length is because data portion is generated with one
+    %extra sample for windowing
 
-  td_pkt_samples = [];
-  for ii = 1:n_msgs
-    td_pkt_samples = [td_pkt_samples; rms_prepad_samples; ...
-    	all_td_pkt_samples{ii}; rms_postpad_samples];
+    rms_postpad_samples = zeros(samples_per_us * zero_postpad_dur_us, 1) + signal_rms; 	
+
+    td_pkt_samples = [];
+    for ii = 1:n_msgs
+      td_pkt_samples = [td_pkt_samples; rms_prepad_samples; ...
+	  all_td_pkt_samples{ii}; rms_postpad_samples];
+    end
+
+    noisy_td_pkt_samples = wifi_awgn(td_pkt_samples, snr);
+    noise_vector = noisy_td_pkt_samples - td_pkt_samples;
   end
 
 
-  noisy_td_pkt_samples = wifi_awgn(td_pkt_samples, snr);
-
-  noise_vector = noisy_td_pkt_samples - td_pkt_samples;
-
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
+  %% compose the packet train with pads
+  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   zero_prepad_samples = zeros(samples_per_us * zero_prepad_dur_us - 1, 1);
   %-1 in zero-pad-length is because data portion is generated with one
   %extra sample for windowing
@@ -122,30 +127,37 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs
   end
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %% apply a fading channel to the transmission
+  %% apply a fading channel to the transmission and vectorize
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  %% this one applies a different channel realization to each pkt
-  %all_td_pkt_samples_faded = wifi_fading_channel(all_td_pkt_samples_with_zeropads, ch);
-  all_td_pkt_samples_faded = all_td_pkt_samples_with_zeropads;
-
-
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  %% vectorize
-  %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-  td_pkt_samples = [];
-  for ii = 1:n_msgs
-    td_pkt_samples = [td_pkt_samples; all_td_pkt_samples_faded{ii}];
+  if ~isfield(txp,'APPLY_FADING') || (txp.APPLY_FADING && strcmp(txp.FADING_BY,'packet'))
+    %% MODEL 1: this one applies a different channel realization to each pkt (default)
+    all_td_pkt_samples_faded = wifi_fading_channel(all_td_pkt_samples_with_zeropads, ch);
+    td_pkt_samples = [];
+    for ii = 1:n_msgs
+      td_pkt_samples = [td_pkt_samples; all_td_pkt_samples_faded{ii}];
+    end
+  elseif txp.APPLY_FADING && strcmp(txp.FADING_BY,'stream')
+    %% MODEL 2: this one applies the same channel on the full pkt stream
+    all_td_pkt_samples_faded = all_td_pkt_samples_with_zeropads;
+    for ii = 1:n_msgs
+      td_pkt_samples = [td_pkt_samples; all_td_pkt_samples_faded{ii}];
+    end
+    td_pkt_samples = wifi_fading_channel(td_pkt_samples, ch);
+  else
+    %% no fading
+    all_td_pkt_samples_faded = all_td_pkt_samples_with_zeropads;
+    td_pkt_samples = [];
+    for ii = 1:n_msgs
+      td_pkt_samples = [td_pkt_samples; all_td_pkt_samples_faded{ii}];
+    end
   end
-
-  %% this one applies the same channel on the full pkt stream
-  td_pkt_samples = wifi_fading_channel(td_pkt_samples, ch);
   
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
   %% add the AWGN noise vector
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-
-  td_pkt_samples = td_pkt_samples + noise_vector;
+  if ~isfield(txp, 'APPLY_AWGN') || txp.APPLY_AWGN
+    td_pkt_samples = td_pkt_samples + noise_vector;
+  end
 
 
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
@@ -162,6 +174,8 @@ function [td_pkt_samples_16bit msgs_scr] = wifi_tx_pkt_train(smp, txp, cmp, msgs
   %quantize samples
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   td_pkt_samples_16bit = round(td_pkt_samples*32767/1.0*3);
+  signal_rms = signal_rms*32767/1.0*3;
+  signal_rms_linear = signal_rms;
 
 
   n_samples = length(td_pkt_samples_16bit);
