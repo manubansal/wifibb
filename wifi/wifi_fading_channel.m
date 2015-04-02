@@ -14,6 +14,8 @@
 function ys = wifi_fading_channel(xs, ch, seed)
   if strcmp(ch, 'passthrough')
     ys = using_passthrough(xs);
+  elseif strcmp(ch, 'correlated')
+    ys = using_correlated(xs);  
   elseif strcmp(ch, 'matlablte')
     if nargin < 3
       %seed = 0 will result in a random seed (default)
@@ -67,6 +69,35 @@ end
 
 function ys = using_passthrough(xs)
   ys = xs;
+end
+
+function ys = using_correlated(xs)
+    sampling_rate = 20e6;
+    sampling_time = 1/sampling_rate;
+    
+    % 90% coherence time (walking: 5-10 ms, driving 1-2 ms)
+    coherence_time_corr = 0.9;
+    coherence_time = 2e-3; 
+    
+    % correlation coefficient (rho) across 100 us
+    rho = coherence_time_corr^(100e-6/coherence_time);
+        % basically rho^(coherence_time/100 us) = coherence_time_corr
+    
+    num_samples_in_100us = floor(100e-6/sampling_time);
+
+    h = zeros(length(xs), 1);
+    h(1) = sqrt(10^(-5*rand/10))*exp(1j*2*pi*rand);
+    
+    for i_h = 2 : length(h)
+        if(mod(i_h, num_samples_in_100us) == 1)
+            h(i_h) = rho*h(i_h - 1) + ...
+                sqrt(1 - rho^2)*sqrt(10^(-10*rand/10))*exp(1j*2*pi*rand);
+        else
+            h(i_h) = h(i_h - 1);
+        end
+    end
+
+    ys = xs.*h;
 end
 
 function ys = using_fixedchan(xs, ch)
