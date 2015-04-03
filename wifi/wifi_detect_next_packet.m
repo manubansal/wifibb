@@ -72,7 +72,7 @@ function [pkt_start_point stats data]= wifi_detect_next_packet(data, opt, stats)
   display(['pkt_start_point: ' num2str(pkt_start_point)]);
   stats.pkt_start_points(end+1,:) = pkt_start_point;
 
-  %data.pkt_start_point = pkt_start_point;
+  data.pkt_start_point = pkt_start_point;
 
   %display('pkt start points:');
   %pkt_start_points = stats.pkt_start_points
