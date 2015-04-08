@@ -8,7 +8,6 @@ rate = str2double(num_strs(1));
 
 if strcmp(id, '')
 elseif strcmp(id, 'ltfRxSamples')
-    %count_exp = 160;
     count_exp = cmp.ltf_len;
     fprintf(1, 'Dumping ltfRxSamples\n');
     if (sum(size(data(:)) == [count_exp,1]) ~= 2)
@@ -44,8 +43,40 @@ elseif strcmp(id, 'ltfCFOCorrSamples')
     fclose(f);
     if (count ~= count_exp * 2)
         error('something went wrong')
-    end    
-    
+    end
+elseif strcmp(id, 'plcpCFOCorrSamples')
+    count_exp = cmp.sig_len;
+    fprintf(1, 'Dumping plcpCFOCorrSamples\n');
+    if (sum(size(data(:)) == [count_exp,1]) ~= 2)
+        fprintf(1, 'Bad size, skipping\n');
+        return;
+    end
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpCFOCorrSamples.mdat');
+    fprintf(1, ['Writing to ',fn,'\n']);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'int16', 'ieee-be');
+    fclose(f);
+    if (count ~= count_exp * 2)
+        error('something went wrong')
+    end
+elseif strcmp(id, 'plcpEqSymbols')
+    fprintf(1, 'Dumping plcpEqSymbols\n');
+    data = data(:);
+    len = length(data);
+    dr = real(data); dr = dr(:);
+    di = imag(data); di = di(:);
+    data = [dr di].';
+    fn = strcat(BDATA_DIR, '/', confStr, '.plcpEqSymbols.mdat');
+    fprintf(1, ['Writing to ',fn,'\n']);
+    f = fopen(fn, 'a+');
+    count = fwrite(f, data, 'int16', 'ieee-be');
+    fclose(f);
+    if (count ~= len * 2)
+        error('something went wrong')
+    end
 elseif strcmp(id, 'plcpMappedSymbols')
     fprintf(1, 'Dumping plcpMappedSymbols\n');
     data = data(:);
