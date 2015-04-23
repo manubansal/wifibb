@@ -50,7 +50,11 @@ Decoding a sample wifi stream
 >> [samples, n_samples] = load_samples('../wifibb-traces/traces54/usrp-1s.dat','cplx');
 >> rx_sample_stream(samples)
 
-
+---------------------------
+NOTE : logging trace files
+---------------------------
+Most trace logging has been setup to "append" the trace data. So upto the implementer to delete all *.c and *.dat and *.mdat and *.txt files 
+in the trace directory before logging new traces
 
 
 

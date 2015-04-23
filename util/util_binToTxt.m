@@ -55,7 +55,7 @@ function convertFile(filename, outfilename, ns_to_skip, ns_to_write, ns_per_iter
 %----------------------------------------------------------------------------------------------------------------------------
 
   fid=fopen(filename,'r');
-  outfd = fopen(outfilename, 'w');
+  outfd = fopen(outfilename, 'a');
 
   skip = ns_to_skip;
 

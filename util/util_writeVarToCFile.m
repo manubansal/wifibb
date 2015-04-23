@@ -32,7 +32,7 @@ function util_writeVarToCFile(var, varname, nbitsToRightShift, Qval, datatype, f
 end
 
 function writeToFile(outfilename, fullvarname, data, ns, datatype)
-  outfd = fopen(outfilename, 'w');
+  outfd = fopen(outfilename, 'a');
   line1 = '#include "swpform.h"\n\n';
   lengthline = ['Uint32 ',fullvarname,'_length = ',num2str(ns),';\n\n'];
   line2 = ['#pragma DATA_SECTION(',fullvarname,', ".trace");\n\n'];

@@ -6,7 +6,7 @@ function util_writeSamplesToBinaryFile(filename, samples, len)
   if (nargin == 2)
     len = length(samples)
   end
-  fid=fopen(filename,'w');
+  fid=fopen(filename,'a');
   rr=real(samples(1:len));
   ii=imag(samples(1:len));
   ri = [rr ii].';
