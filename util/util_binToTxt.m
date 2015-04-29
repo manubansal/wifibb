@@ -3,7 +3,7 @@
 % suitable for using with a C wifi decoder chain.
 
 %----------------------------------------------------------------------------------------------------------------------------
-function util_binToTxt(DATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter)
+function util_binToTxt(DATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter, suffix)
 %----------------------------------------------------------------------------------------------------------------------------
   if (nargin < 2)
 
@@ -33,6 +33,10 @@ function util_binToTxt(DATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter)
   ns_per_iter = 10000;
   end
 
+  if nargin < 6
+  suffix = '';
+  end
+
 
   %inpfilename = '../traces/trac-wifi-sbx-decim/trace.dat'
   %inpfilename = 'cdata/trace_6mbps.dat'
@@ -40,7 +44,7 @@ function util_binToTxt(DATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter)
   %tracename = strcat('trace_6mbps_skip_',num2str(ns_to_skip),'_ns_',num2str(ns_to_write));
   %outfilename = strcat('cdata/',tracename,'.c');
   inpfilename = strcat(DATA_DIR,'/',INP_FILE)
-  tracename = strcat('trace_skip_',num2str(ns_to_skip),'_ns_',num2str(ns_to_write));
+  tracename = strcat('trace_skip_',num2str(ns_to_skip),'_ns_',num2str(ns_to_write),suffix);
   %outfilename = strcat(DATA_DIR,'/',tracename,'.c')
   outfilename = strcat(DATA_DIR,'/',INP_FILE,'_',tracename,'.c')
 

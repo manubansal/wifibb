@@ -1,4 +1,8 @@
-function util_writeSamples(td_pkt_samples_16bit, confStr)
+function util_writeSamples(td_pkt_samples_16bit, confStr, suffix)
+    if nargin < 3
+    suffix = '';
+    end
+
     %%%%%%%%%%%%%%%%%%%
     [DATA_DIR, TRACE_DIR, CDATA_DIR, BDATA_DIR] = setup_paths();
     dt = datestr(now, 'yyyymmdd_HHMMSS')
@@ -54,5 +58,5 @@ function util_writeSamples(td_pkt_samples_16bit, confStr)
     ns_to_skip = 0;
     ns_to_write = length(td_pkt_samples_16bit);
     ns_per_iter = length(td_pkt_samples_16bit);
-    util_binToTxt(BDATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter);
+    util_binToTxt(BDATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter, suffix);
 end
