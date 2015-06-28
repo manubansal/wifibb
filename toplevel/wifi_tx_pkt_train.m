@@ -46,7 +46,7 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
   all_td_pkt_samples = {};
   cat_td_pkt_samples = [];
   msgs_scr = {};
-  for ii = 1:n_msgs
+  parfor ii = 1:n_msgs
     fprintf(1, 'encoding msg #%d\n', ii);
     msg_hex = msgs_hex{ii};
     msg_dec = hex2dec(msg_hex);
@@ -67,9 +67,11 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
     [samples_f, n_ofdm_syms, databits_i, databits_q, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen);
     %--------------------------------------------------------------------------
 
-    msgs_scr{end + 1} = msg_scr;
+    %msgs_scr{end + 1} = msg_scr;
+    msgs_scr{ii} = msg_scr;
 
-    all_td_pkt_samples{end+1} = td_pkt_samples;
+    %all_td_pkt_samples{end+1} = td_pkt_samples;
+    all_td_pkt_samples{ii} = td_pkt_samples;
     cat_td_pkt_samples = [cat_td_pkt_samples; td_pkt_samples];
   end
   %size(cat_td_pkt_samples)
