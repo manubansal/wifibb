@@ -46,8 +46,10 @@ function util_writeSamples(td_pkt_samples_16bit, confStr, suffix)
     fprintf(1, 'Writing to %s\n', pktTxtFile);
     fprintf(1, 'Writing to %s\n', pktBinFile);
 
-    util_writeSamplesToTextFile(pktTxtFile, td_pkt_samples_16bit)
-    util_writeSamplesToBinaryFile(pktBinFile, td_pkt_samples_16bit);
+    %util_writeSamplesToTextFile(pktTxtFile, td_pkt_samples_16bit)
+    %util_writeSamplesToBinaryFile(pktBinFile, td_pkt_samples_16bit);
+    system(['cp ' t_pktTxtFile ' ' pktTxtFile]);
+    system(['cp ' t_pktBinFile ' ' pktBinFile]);
     %save(iBitsFile, 'databits_i');
     %save(qBitsFile, 'databits_q');
     %save(symbsFile, 'datasyms');
