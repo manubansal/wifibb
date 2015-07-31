@@ -68,7 +68,7 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
 
     % generate data samples
     %--------------------------------------------------------------------------
-    [samples_f, n_ofdm_syms, databits_i, databits_q, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen, use_length_field_for_seq_no, ii);
+    [samples_f, n_ofdm_syms, databits_i, databits_q, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen, use_length_field_for_seq_no, ii - 1);
     %--------------------------------------------------------------------------
 
     %msgs_scr{end + 1} = msg_scr;
