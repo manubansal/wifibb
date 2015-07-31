@@ -1,7 +1,8 @@
 
-function [rate len modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(sim_params, common_params, rx_sig_field)
+function [rate len modu code parityCheck valid ndbps nsyms seqno] = wifi_parse_signal(sim_params, common_params, rx_sig_field, use_length_field_for_seq_no, data_len)
   %display('wifi_parse_signal input:');
   %rx_sig_field
+
 
   rate_idx = [6 7 2 3 4 5 0 1];
 
@@ -36,6 +37,13 @@ function [rate len modu code parityCheck valid ndbps nsyms] = wifi_parse_signal(
   pow_2 = 2.^(0:11);
   length_field = reshape(length_field, 1, length(length_field));
   len = sum(pow_2 .* length_field);
+
+  if use_length_field_for_seq_no
+    seqno = len;
+    len = data_len;
+  else
+    seqno = 0;
+  end
 
   if (len > 1600)
     valid = false

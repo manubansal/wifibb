@@ -1,5 +1,5 @@
 
-function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen)
+function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen, use_length_field_for_seq_no, ii)
 
   %sim_params = default_sim_parameters();
   %tx_params = wifi_tx_parameters();
@@ -20,7 +20,17 @@ function [samples_f, n_ofdm_syms, databits_i_all, databits_q_all, datasyms, td_d
   %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%% 
   rate_sig = sim_params.rate_sig;
   rate_chart = sim_params.rate_chart;
-  tx_sig_field = wifi_pack_signal(rate, rate_chart, base_msg_len_bytes);
+  if use_length_field_for_seq_no
+    display(['using length field for seq no, base_msg_len_bytes = ' num2str(base_msg_len_bytes)])
+    if (ii >= 2^12)
+      jj = mod(ii, 2^12);
+      warning(['seq no. too big to encode in length field, given: ' num2str(ii) ', using: ' num2str(jj)])
+      ii = jj;
+    end
+    tx_sig_field = wifi_pack_signal(rate, rate_chart, ii);
+  else
+    tx_sig_field = wifi_pack_signal(rate, rate_chart, base_msg_len_bytes);
+  end
   %tx_sig_field = wifi_pack_signal(rate, orig_base_msg_len_bytes);
   [ndbps, rt120, ncbps, nbpsc] = wifi_parameter_parser(cmp, rate_sig, rate_chart);
   

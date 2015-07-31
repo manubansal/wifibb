@@ -1,8 +1,14 @@
-function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] = ...
+function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes seqno] = ...
 	wifi_rx_chain_after_pkt_detection(...
-		data, sim_params, copt, opt, stats, confStr, cplen, pkt_samples...
+		data, sim_params, copt, opt, stats, confStr, cplen, pkt_samples,...
+		use_length_field_for_seq_no, data_len...
 		)
   rx_data_bytes = [];
+  
+  if nargin < 10
+      use_length_field_for_seq_no = false;
+      data_len = 0;
+  end
 
   stf_len = opt.stf_len;
   ltf_len = opt.ltf_len;
@@ -178,7 +184,7 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
     writeVars_decode(rx_data_bits_deint, opt.soft_slice_nbits, opt.tblen_signal, rx_data_bits_dec);
   end
 
-  [stats data]				= wifi_parse_signal_top(data, sim_params, copt, opt, stats, rx_data_bits_dec);
+  [stats data]				= wifi_parse_signal_top(data, sim_params, copt, opt, stats, rx_data_bits_dec, use_length_field_for_seq_no, data_len);
 
   %%*********************************
   %%%%%% decide whether to process data field
@@ -491,6 +497,8 @@ function [stats parsed_data frame_type crcValid rx_data_bits_dec rx_data_bytes] 
     display('data processed for filter-matching pkt. continue?')
     pause
   end
+
+  seqno = data.seqno;
 end
 
 

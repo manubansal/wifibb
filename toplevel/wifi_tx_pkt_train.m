@@ -1,4 +1,4 @@
-function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(smp, txp, cmp, msgs_hex, rate, snr, scale, confStr, ch, cplen)
+function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(smp, txp, cmp, msgs_hex, rate, snr, scale, confStr, ch, cplen, use_length_field_for_seq_no)
   %sim_params = default_sim_parameters();
   %tx_params = wifi_tx_parameters();
   %common_params = wifi_common_parameters();
@@ -25,6 +25,10 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
 
   if (nargin < 10)
     cplen = common_params.cplen;
+  end
+
+  if (nargin < 11)
+    use_length_field_for_seq_no = false;
   end
   
   n_msgs = length(msgs_hex);
@@ -64,7 +68,7 @@ function [td_pkt_samples_16bit msgs_scr signal_rms_linear] = wifi_tx_pkt_train(s
 
     % generate data samples
     %--------------------------------------------------------------------------
-    [samples_f, n_ofdm_syms, databits_i, databits_q, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen);
+    [samples_f, n_ofdm_syms, databits_i, databits_q, datasyms, td_data_samples, td_pkt_samples, msg_scr] = wifi_tx_chain(smp, txp, cmp, msg, rate, confStr, cplen, use_length_field_for_seq_no, ii);
     %--------------------------------------------------------------------------
 
     %msgs_scr{end + 1} = msg_scr;
