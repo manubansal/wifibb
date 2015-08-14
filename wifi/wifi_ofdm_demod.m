@@ -40,7 +40,7 @@ function [stats data ofdm_syms_f] = wifi_ofdm_demod(samples, nsyms, data, opt, s
   data.worst_samples_1 = data.ofdm_syms_t_no_cp;
 
   %ofdm demod
-  ofdm_syms_f = fftshift(fft(ofdm_syms_t),1);	%fftshift along rows (each column is fftshifted)
+  ofdm_syms_f = fftshift(1/sqrt(length(ofdm_syms_t))*fft(ofdm_syms_t),1);	%fftshift along rows (each column is fftshifted)
 
   tx_pilot_syms = data.sig_and_data_tx_pilot_syms(:,1:nsyms);
   %%%%%tx_data1_syms = data.tx_data_syms(d1subc_idx, :);

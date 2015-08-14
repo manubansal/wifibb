@@ -99,7 +99,7 @@ function [stats, pkt_samples, fine_cfo_freq_off_khz] = wifi_fine_cfo_correction(
   %%%%%%since noise is not white anymore due to frequency-selective filters, we 
   %%%%%%want to have the true PSD computed using fft
   %%%%%size(noise_symbols)
-  %%%%%noise_syms_f = fftshift(fft(noise_symbols));
+  %%%%%noise_syms_f = fftshift(1/sqrt(length(noise_symbols))*fft(noise_symbols));
   %%%%%size(noise_syms_f)
   %%%%%noise_syms_f_power = noise_syms_f .* conj(noise_syms_f);
   %%%%%format long;

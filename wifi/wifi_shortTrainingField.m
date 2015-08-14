@@ -6,7 +6,7 @@ function [stf_time_domain, stf_time_domain_16bit, stf_sync_total] = wifi_shortTr
   short_sync_freq_domain = common_params.short_sync_freq_domain;
 
 
-  short_sync_time_oneperiod = ifft(ifftshift(short_sync_freq_domain));
+  short_sync_time_oneperiod = sqrt(length(short_sync_freq_domain))*ifft(ifftshift(short_sync_freq_domain));
 
   %s = short_sync_time_oneperiod
 

@@ -10,7 +10,7 @@ function ltf_sync_total = wifi_longTrainingField(cmp, cplen)
 
   ltf_sync_freq_domain = opt.ltf_sync_freq_domain;
   
-  ltf_sync_time_oneperiod = (ifft(ifftshift(ltf_sync_freq_domain)));
+  ltf_sync_time_oneperiod = sqrt(length(ltf_sync_freq_domain))*ifft(ifftshift(ltf_sync_freq_domain));
 
   window_func = [0.5 ones(1,ltf_len-1) 0.5]';
   %add cp and double the length, and multiply by the window function

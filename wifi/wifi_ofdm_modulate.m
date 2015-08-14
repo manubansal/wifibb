@@ -30,7 +30,15 @@ function [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(cmp, datasyms, cplen)
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
     %add pilot subcarriers
     %%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
-    pilot_sc = copt.pilot_sc;
+    if(~isfield(copt, 'zero_pilots'))
+        copt.zero_pilots = 0;
+    end
+    
+    if(copt.zero_pilots)
+        pilot_sc = zeros(size(copt.pilot_sc)); % for debugging
+    else
+        pilot_sc = copt.pilot_sc;
+    end
 
     pilot_sc_ext = [pilot_sc pilot_sc pilot_sc pilot_sc pilot_sc]; %127 * 5 = 635 long - enough for all packet lengths
 
@@ -55,7 +63,7 @@ function [tdsyms_w_cp, tdsyms] = wifi_ofdm_modulate(cmp, datasyms, cplen)
     fsyms_data_and_pilot = fdsyms + fpsyms;
 
 
-    tdsyms = ifft(fsyms_data_and_pilot);
+    tdsyms = sqrt(length(fsyms_data_and_pilot))*ifft(fsyms_data_and_pilot);
 
     %verify that the dc components are near-zero
     dc_component = sum(tdsyms);

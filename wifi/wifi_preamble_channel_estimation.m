@@ -19,7 +19,7 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
 %			  1, -1, -1, 1, 1, -1, 1, -1, 1, -1, -1, -1, -1, -1, 1, 1, -1, -1, 1, -1, 1, -1, 1, 1, 1, 1]';
 %  ltf_sync_freq_domain = [ zeros(6,1); ltf_sync_freq_domain; zeros(5,1)];
 
-  %ltf_sync_time_oneperiod = (ifft(ifftshift(ltf_sync_freq_domain)))
+  %ltf_sync_time_oneperiod = (sqrt(length(ltf_sync_freq_domain))*ifft(ifftshift(ltf_sync_freq_domain)))
 
 %  window_func = [0.5 ones(1,159) 0.5]';
 %  %add cp and double the length, and multiply by the window function
@@ -27,10 +27,10 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
 %				  ltf_sync_time_oneperiod; 
 %				  ltf_sync_time_oneperiod;
 %				  ltf_sync_time_oneperiod(1)]
-  ltf1_s = ltf_samples(cp_len+1+cp_skip:cp_len+cp_skip+fft_size);
-  ltf2_s = ltf_samples(cp_len+1+cp_skip+fft_size:cp_len+cp_skip+2*fft_size);
-  ltf1_f = fftshift(fft(ltf1_s));
-  ltf2_f = fftshift(fft(ltf2_s));
+  ltf1_s = ltf_samples(cp_len+cp_skip+1:cp_len+cp_skip+fft_size);
+  ltf2_s = ltf_samples(cp_len+cp_skip+fft_size+1:cp_len+cp_skip+2*fft_size);
+  ltf1_f = fftshift(1/sqrt(length(ltf1_s))*fft(ltf1_s));
+  ltf2_f = fftshift(1/sqrt(length(ltf2_s))*fft(ltf2_s));
 
   if (opt.printVars_chEsts)
 	  display('the two ltfs in frequency domain: ')
@@ -38,30 +38,61 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
 	  pause
   end
 
-  %%%%%%%%%%%%% begin algo 1 %%%%%%%%%%%%%%%
+%   %%%%%%%%%%%%% begin algo 1 %%%%%%%%%%%%%%%
+%   %complex channel gain
+%   ltf_f_av = (ltf1_f+ltf2_f)/2;			%NOTE: This may be a bad idea in the presence of sampling frequency offset.
+%   						%SFO should firt be corrected, then the ltf symbols should be averaged.
+% 
+%   %display('ltf1, ltf2, ltf_average:');
+%   %[ltf1_f.' ltf2_f.' ltf_f_av.']
+% 
+%   ch = (ltf_f_av.') .* ltf_sync_freq_domain;		%multiplication is used instead of division because
+%   						%the reference ltf symbol sequence (freq domain) contains
+% 						%zeroes. since the loaded symbols have magnitude 1, multiplication
+% 						%is equivalent to division for rest of the subcarriers.
+%   %%%%%%%%%%%%% finish algo 1 %%%%%%%%%%%%%%%
+  
+  %%%%%%%%%%%%% begin algo 2 %%%%%%%%%%%%%%%
   %complex channel gain
-  ltf_f_av = (ltf1_f+ltf2_f)/2;			%NOTE: This may be a bad idea in the presence of sampling frequency offset.
-  						%SFO should firt be corrected, then the ltf symbols should be averaged.
+  ch1 = (ltf1_f.') .* ltf_sync_freq_domain;
+  ch2 = (ltf2_f.') .* ltf_sync_freq_domain;
+    % multiplication is used instead of division because the 
+    % reference ltf symbol sequence (freq domain) contains zeroes. 
+    % since the loaded symbols have magnitude 1, multiplication
+	% is equivalent to division for rest of the subcarriers.
+  
+  ch = (ch1 + ch2)/2;
+%   for i_ch = 1 : length(ch1)
+%       window_by_2 = min(min(i_ch-1, length(ch1)-i_ch), 2);
+%       ch(i_ch) = mean([ch1(i_ch-window_by_2 : i_ch+window_by_2) ; 
+%           ch2(i_ch-window_by_2 : i_ch+window_by_2)]);
+%   end
 
-  %display('ltf1, ltf2, ltf_average:');
-  %[ltf1_f.' ltf2_f.' ltf_f_av.']
+%  save('./debug/ch_0', 'ch');
+%  ch = getfield(load('ch_0.mat', 'ch'), 'ch');
 
-  ch = (ltf_f_av.') .* ltf_sync_freq_domain;		%multiplication is used instead of division because
-  						%the reference ltf symbol sequence (freq domain) contains
-						%zeroes. since the loaded symbols have magnitude 1, multiplication
-						%is equivalent to division for rest of the subcarriers.
-  %%%%%%%%%%%%% finish algo 1 %%%%%%%%%%%%%%%
+  ltf_f_av = ch.*ltf_sync_freq_domain;
+  ltf_f_av = ltf_f_av.';
+
+  %%%%%%%%%%%%% finish algo 2 %%%%%%%%%%%%%%%
+
+  %%%%%%%%%%%%% begin algo 3 (td ch est) %%%%%%%%%%%%%%%
+
+  [h, ltf_x] = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen);
+  
+  %%%%%%%%%%%%% finish algo 3 %%%%%%%%%%%%%%%
 
   %add to statistics
   stats.all_ltf1_64(end+1:end+fft_size) = ltf1_f;
   stats.all_ltf2_64(end+1:end+fft_size) = ltf2_f;
   stats.all_ltf_av_64(end+1:end+fft_size) = ltf_f_av;
   stats.all_channel_64(end+1:end+fft_size) = ch;
+  stats.td_channel = h;
 
   if (opt.printVars_chEsts)
 	  [ [1:copt.nsubc]' fix(opt.ti_factor * ch)]
 	  nsubc = copt.nsubc
-	  psubc_idx = copt.psubc_idx;				%regular order (dc in middle)
+	  psubc_idx = copt.psubc_idx;	%regular order (dc in middle)
 	  dsubc_idx = copt.dsubc_idx;	%regular order (dc in middle)
 	  ch_data = [[1:copt.ndatasubc]' fix(opt.ti_factor * ch(dsubc_idx))]
 	  ch_pilot = [[1:copt.npsubc]' fix(opt.ti_factor * ch(psubc_idx))]
@@ -94,8 +125,6 @@ function [stats, uu_ltf1, uu_ltf2, ltf1_f, ltf2_f, ltf_f_av, ch, ch_abs_db, chi]
   %[ch ch_abs_db]
 
 
-  %VERSION 1
-  [h, ltf_x] = wifi_time_domain_channel_impulse_response(ltf_sync_freq_domain, ltf_samples, cplen);
 
 
   td_data_samples = [0 0].';

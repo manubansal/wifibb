@@ -13,8 +13,15 @@ function hhat = time_domain_channel_impulse_response(xl,yl,taplength)
     error('WARNING: too few samples for solving for channel impulse response')
   end
 
-  X=convmtx(xl(:),taplength);
-  Xr=X(taplength:end-taplength+1,:);
+%   X=convmtx(xl(:),taplength);
+%   Xr=X(taplength:end-taplength+1,:);
+
+  % Construct Xr
+  Xr = zeros(length(x), taplength);
+  for i_row = 1 : length(x)
+     Xr(i_row, :) = xl(taplength+i_row-1 : -1 : i_row);
+  end
+      
   %sizeXr = size(Xr)
   %pause
 
@@ -43,7 +50,7 @@ function hhat = time_domain_channel_impulse_response(xl,yl,taplength)
   %computing with regularization - this allows putting weight on L2-norm
   %minimization, which helps finding a cleaner channel estimate (more
   %realistic) rather than succumbing to over-fitting errors.
-  lambda = 0.001;
+  lambda = 0.000;
   Xi = inv(Xr.'*Xr + lambda*eye(size(Xr,2)))*Xr.';
   hhat=Xi*y;
 
