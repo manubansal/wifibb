@@ -1,6 +1,10 @@
-function util_writeSamples(td_pkt_samples_16bit, confStr, suffix)
+function util_writeSamples(td_pkt_samples_16bit, confStr, suffix, little_endian)
     if nargin < 3
     suffix = '';
+    end
+
+    if nargin < 4
+    little_endian = false;
     end
 
     %%%%%%%%%%%%%%%%%%%
@@ -37,8 +41,12 @@ function util_writeSamples(td_pkt_samples_16bit, confStr, suffix)
     fprintf(1, 'Writing to %s\n', t_pktTxtFile);
     fprintf(1, 'Writing to %s\n', t_pktBinFile);
 
-    util_writeSamplesToTextFile(t_pktTxtFile, td_pkt_samples_16bit)
-    util_writeSamplesToBinaryFile(t_pktBinFile, td_pkt_samples_16bit);
+    if little_endian
+      warning('writing samples to text file in little-endian format is not supported yet')
+    else
+      util_writeSamplesToTextFile(t_pktTxtFile, td_pkt_samples_16bit)
+    end
+    util_writeSamplesToBinaryFile(t_pktBinFile, td_pkt_samples_16bit, length(td_pkt_samples_16bit), little_endian);
     %save(t_iBitsFile, 'databits_i');
     %save(t_qBitsFile, 'databits_q');
     %save(t_symbsFile, 'datasyms');
@@ -48,7 +56,11 @@ function util_writeSamples(td_pkt_samples_16bit, confStr, suffix)
 
     %util_writeSamplesToTextFile(pktTxtFile, td_pkt_samples_16bit)
     %util_writeSamplesToBinaryFile(pktBinFile, td_pkt_samples_16bit);
-    system(['cp ' t_pktTxtFile ' ' pktTxtFile]);
+    if little_endian
+      warning('writing samples to text file in little-endian format is not supported yet')
+    else
+      system(['cp ' t_pktTxtFile ' ' pktTxtFile]);
+    end
     system(['cp ' t_pktBinFile ' ' pktBinFile]);
     %save(iBitsFile, 'databits_i');
     %save(qBitsFile, 'databits_q');
@@ -60,5 +72,9 @@ function util_writeSamples(td_pkt_samples_16bit, confStr, suffix)
     ns_to_skip = 0;
     ns_to_write = length(td_pkt_samples_16bit);
     ns_per_iter = length(td_pkt_samples_16bit);
-    util_binToTxt(BDATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter, suffix);
+    if little_endian
+      warning('writing samples to text file in little-endian format is not supported yet')
+    else
+      util_binToTxt(BDATA_DIR, INP_FILE, ns_to_skip, ns_to_write, ns_per_iter, suffix);
+    end
 end
