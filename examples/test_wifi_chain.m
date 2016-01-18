@@ -126,9 +126,9 @@ function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, c
   %%%%%%%%%%%%%%%%%%%%%%
   if tx_params.writeSamples
       if (little_endian)
-          util_writeSamples(td_pkt_samples_16bit, strcat(confStr,'_le_'),'', true)
+          util_writeSamples(td_pkt_samples_16bit, strcat(confStr,'_le'),'', true)
       else
-          util_writeSamples(td_pkt_samples_16bit, strcat(confStr,'_be_'),'', false)
+          util_writeSamples(td_pkt_samples_16bit, strcat(confStr,'_be'),'', false)
       end
   end
 
