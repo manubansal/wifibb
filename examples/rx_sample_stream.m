@@ -1,4 +1,4 @@
-function rx_packets = rx_sample_stream(samples)
+function [rx_pkts, pkt_start_points] = rx_sample_stream(samples)
 
 CURR_DIR = pwd;
 cd(strcat(getenv('PARAMS_DIR'), '/wifi64'));
@@ -9,5 +9,5 @@ cd(CURR_DIR);
 tag = sim_params.tag;
 cplen = common_params.cplen;
 
-rx_packets = wifi_rx_pkt_train(sim_params, common_params, rx_params, ...
-    samples, tag, cplen);
+[rx_pkts, pkt_start_points] = wifi_rx_pkt_train(sim_params, ...
+    common_params, rx_params, samples, tag, cplen);
