@@ -1,5 +1,5 @@
 %function test_wifi_chain(tag, snr, msglen, rate, nmsgs, ch, cplen)
-function test_wifi_chain(sim_params, tx_params, rx_params, common_params, tag, snr, msglen, rate, nmsgs, ch, cplen)
+function test_wifi_chain(sim_params, tx_params, rx_params, common_params, tag, snr, msglen, rate, nmsgs, ch, cplen, little_endian)
   %df = sprintf('diary.test_wifi_chain.%s.%d.%d.%d.%d', tag, snr, msglen, rate, nmsgs)
   %diary(df);
   %df = df
@@ -66,12 +66,14 @@ function test_wifi_chain(sim_params, tx_params, rx_params, common_params, tag, s
   if nargin < 11
     cplen = common_params.cplen;
   end
-
+  if nargin < 12
+      little_endian = false;
+  end
   %do_test_old(rate, snr)
-  do_test(sim_params, tx_params, rx_params, common_params, tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
+  do_test(sim_params, tx_params, rx_params, common_params, tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen, little_endian)
 end
 
-function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen)
+function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, ch, cplen, little_endian)
   %scale = sqrt(2);
   %scale = 2;
   scale = tx_params.scale;
@@ -123,7 +125,11 @@ function do_test(smp, txp, rxp, cmp, tag, rate, snr, msglen, nmsgs, tx_params, c
   %% write samples
   %%%%%%%%%%%%%%%%%%%%%%
   if tx_params.writeSamples
-    util_writeSamples(td_pkt_samples_16bit, confStr)
+      if (little_endian)
+          util_writeSamples(td_pkt_samples_16bit, strcat(confStr,'_le'),'', true)
+      else
+          util_writeSamples(td_pkt_samples_16bit, strcat(confStr,'_be'),'', false)
+      end
   end
 
   %%%%%%%%%%%%%%%%%%%%%%
